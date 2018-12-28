@@ -9,6 +9,22 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.4.0.0  -- 2018/12/28
+
+Fork ArchiveDiffer from StudyKotlin-JBinding
+
+### Changed
+* Change UI as Tab to prepare multi-tasking
+* Export redundant logics to `Logic`
+
+### Fixed
+* Move some print code which placed wrong point 
+
+## 0.3.2.0  -- 2018/12/27
+
+### Changed
+* Make UI reatively
+
 ## 0.3.1.0  -- 2018/12/25
 
 ### Changed
