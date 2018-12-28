@@ -80,7 +80,7 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
         return null
     }
 
-    if (inArchive.archiveFormat.isAllowedArchives()) return null
+    if (!inArchive.archiveFormat.isAllowedArchives()) return null
 
     return ArchiveAndStream(inArchive, randomAccessFile, null)
 }
@@ -110,7 +110,7 @@ private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
         return null
     }
 
-    if (inArchive.archiveFormat.isAllowedArchives()) return null
+    if (!inArchive.archiveFormat.isAllowedArchives()) return null
 
     return ArchiveAndStream(inArchive, null, archiveOpenVolumeCallback)
 }
