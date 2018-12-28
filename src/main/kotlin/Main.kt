@@ -3,7 +3,8 @@ import javafx.application.Application
 import archive.*
 
 fun main(args : Array<String>) {
-    println("StudyKotlin-JBinding")
+    println("ArchiveDiffer-Kotlin")
+    if (!jBindingChecker()) error("Fail to initialize 7Zip-JBinding")
 
     try {
         initialize(theIgnoringListPath)
@@ -12,5 +13,5 @@ fun main(args : Array<String>) {
         return
     }
 
-    if (jBindingChecker()) Application.launch(GUI().javaClass, *args)
+    Application.launch(GUI().javaClass, *args)
 }
