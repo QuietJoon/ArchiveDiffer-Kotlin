@@ -76,82 +76,25 @@ class GUI : Application() {
 
                     theTable!!.prepareWorkingDirectory()
 
-                    for ( anArchiveSet in theTable!!.theArchiveSets)
-                        printItemList(anArchiveSet, anArchiveSet.getThisIDs())
+                    printStatus(theTable!!)
 
-                    for ( anItemRecord in theTable!!.theItemTable ) {
-                        print(anItemRecord.key.toString())
-                        println(anItemRecord.value.toString())
-                    }
-
-                    println("Difference only")
-                    var count = 0
-                    var resultList = mutableListOf<String>()
-                    for (anItemEntry in theTable!!.theItemTable) {
-                        if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
-                            count++
-                            val stringBuilder = StringBuilder()
-                            stringBuilder.append(anItemEntry.key.toString())
-                            stringBuilder.append(anItemEntry.value.toString())
-                            val theString = stringBuilder.toString()
-                            resultList.add(theString)
-                            println(theString)
-                        }
-                    }
-                    println("Same")
-                    resultList.add("--------------------------------    Same    --------------------------------")
-                    for (anItemEntry in theTable!!.theItemTable) {
-                        if (anItemEntry.value.isFilled || anItemEntry.value.isExtracted) {
-                            val stringBuilder = StringBuilder()
-                            stringBuilder.append(anItemEntry.key.toString())
-                            stringBuilder.append(anItemEntry.value.toString())
-                            val theString = stringBuilder.toString()
-                            resultList.add(theString)
-                            println(theString)
-                        }
-                    }
+                    printResult(theTable!!)
 
                     var runCount = 1
                     while (true) {
                         println("Phase #$runCount")
                         if (theTable!!.runOnce()) break
 
-                        for (anArchiveSet in theTable!!.theArchiveSets)
-                            printItemList(anArchiveSet, anArchiveSet.getThisIDs())
+                        printStatus(theTable!!)
 
-                        for (anItemRecord in theTable!!.theItemTable) {
-                            print(anItemRecord.key.toString())
-                            println(anItemRecord.value.toString())
-                        }
+                        printResult(theTable!!)
 
-                        println("Difference only")
-                        count = 0
-                        resultList = mutableListOf()
-                        for (anItemEntry in theTable!!.theItemTable) {
-                            if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
-                                count++
-                                val stringBuilder = StringBuilder()
-                                stringBuilder.append(anItemEntry.key.toString())
-                                stringBuilder.append(anItemEntry.value.toString())
-                                val theString = stringBuilder.toString()
-                                resultList.add(theString)
-                                println(theString)
-                            }
-                        }
-                        println("Same")
-                        resultList.add("--------------------------------    Same    --------------------------------")
-                        for (anItemEntry in theTable!!.theItemTable) {
-                            if (anItemEntry.value.isFilled || anItemEntry.value.isExtracted) {
-                                val stringBuilder = StringBuilder()
-                                stringBuilder.append(anItemEntry.key.toString())
-                                stringBuilder.append(anItemEntry.value.toString())
-                                val theString = stringBuilder.toString()
-                                resultList.add(theString)
-                                println(theString)
-                            }
-                        }
                         runCount++
                     }
+
+                    val result = printFinalResult(theTable!!)
+                    val count = result.first
+                    val resultList = result.second
 
                     if (count == 0) {
                         println("Have no different files in the ArchiveSets")
@@ -161,31 +104,6 @@ class GUI : Application() {
                     statusIndicator.fill = Paint.valueOf("Green")
                     analyzedIndicator.fill = Paint.valueOf(if (count == 0) "Green" else "Red")
 
-                    println("Difference only")
-                    resultList = mutableListOf()
-                    for (anItemEntry in theTable!!.theItemTable) {
-                        if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
-                            count++
-                            val stringBuilder = StringBuilder()
-                            stringBuilder.append(anItemEntry.key.toString())
-                            stringBuilder.append(anItemEntry.value.simpleString(theTable!!.theItemList))
-                            val theString = stringBuilder.toString()
-                            resultList.add(theString)
-                            println(theString)
-                        }
-                    }
-                    println("Same")
-                    resultList.add("--------------------------------    Same    --------------------------------")
-                    for (anItemEntry in theTable!!.theItemTable) {
-                        if (anItemEntry.value.isFilled || anItemEntry.value.isExtracted) {
-                            val stringBuilder = StringBuilder()
-                            stringBuilder.append(anItemEntry.key.toString())
-                            stringBuilder.append(anItemEntry.value.simpleString(theTable!!.theItemList))
-                            val theString = stringBuilder.toString()
-                            resultList.add(theString)
-                            println(theString)
-                        }
-                    }
 
                     isJobFinished = true
                     delay(17L)
