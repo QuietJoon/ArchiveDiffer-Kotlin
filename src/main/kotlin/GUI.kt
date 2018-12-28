@@ -112,6 +112,8 @@ class GUI : Application() {
 
                     theTable!!.closeAllArchiveSets()
                     theTable!!.removeAllArchiveSets()
+
+                    println("End a phase")
                 }
 
                 GlobalScope.launch {
@@ -121,8 +123,6 @@ class GUI : Application() {
                         delay(31L)
                     }
                 }
-
-                println("End a phase")
             } else {
                 filePathsLabel.text = "No File"
                 statusIndicator.fill = Paint.valueOf("Pink")
