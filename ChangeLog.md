@@ -9,10 +9,16 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
-## 0.4.1.1  -- 2018/12/28
+## 0.5.0.0  -- 2018/12/29
+
+### Changed
+* Redefine Archive and ArchiveSet - Return to original design
+
+## 0.4.1.1  -- 2018/12/29
 
 ### Changed
 * Move common/global variables from Environment to Constants
+* Limit archive format {ZIP,RAR,RAR4,7z} only
 
 ## 0.4.1.0  -- 2018/12/28
 

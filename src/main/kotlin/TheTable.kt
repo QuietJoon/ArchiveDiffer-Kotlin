@@ -63,7 +63,6 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     }
 
     fun registerAnItemRecordWithExistance(anArchiveSet: ArchiveSet, key: ItemKey, archiveSetIDs: IntArray) {
-        println("Size: ${anArchiveSet.itemMap.size}")
         val anItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecordWithExistance>: No such item by $key")
         if (theIgnoringList.match(anItem)) {
             println("Skip: ${anItem.path.last()}")
@@ -228,8 +227,8 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 theArchiveMap[anArchive.archiveID] = anArchive
                 theArchiveSets[anArchive.archiveSetID].archiveMap[anArchive.archiveID] = anArchive
 
-                val simpleArchive = anANS.inArchive.simpleInterface
-                for (sItem in simpleArchive.archiveItems) {
+                val anSimpleArchive = anANS.inArchive.simpleInterface
+                for (sItem in anSimpleArchive.archiveItems) {
                     if (!sItem.isFolder) {
                         theArchiveSets[anArchive.archiveSetID].addNewItem(anArchive.realArchivePaths[0],anArchive.itemID, anArchive.archiveID, sItem)
                     }
