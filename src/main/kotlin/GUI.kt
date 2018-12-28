@@ -22,11 +22,11 @@ class GUI : Application() {
         val fxml = javaClass.getResource("fxml/Main.fxml")
         val root: Parent = FXMLLoader.load(fxml)
         val scene = Scene(root)
-        val fileIndicator = root.lookup("#FileIndicator") as Rectangle // For number of proper input file
-        val filePathsLabel = root.lookup("#FilePathsLabel") as Label // Name of input file
-        val statusIndicator = root.lookup("#StatusIndicator") as Rectangle // Show progress
-        val differencesLabel = root.lookup("#DifferencesLabel") as TextArea
-        val analyzedIndicator = root.lookup("#AnalyzedIndicator") as Rectangle // Show final result
+        val fileIndicator = root.lookup("#FileIndicator1") as Rectangle // For number of proper input file
+        val filePathsLabel = root.lookup("#FilePathsLabel1") as Label // Name of input file
+        val statusIndicator = root.lookup("#StatusIndicator1") as Rectangle // Show progress
+        val differencesLabel = root.lookup("#DifferencesLabel1") as TextArea
+        val analyzedIndicator = root.lookup("#AnalyzedIndicator1") as Rectangle // Show final result
         var fileSwitch = true
 
         scene.onDragOver = EventHandler { event ->
