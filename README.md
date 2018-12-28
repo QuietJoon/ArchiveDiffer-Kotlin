@@ -1,7 +1,7 @@
-StudyKotlin-JBinding
+ArchiveDiffer-Kotlin
 ====
 
-Studying Kotlin and 7-Zip JBinding for myself
+Kotlin implement of ArchiveDiffer
 
 ## Feature
 

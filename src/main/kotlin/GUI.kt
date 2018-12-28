@@ -17,7 +17,7 @@ import util.filePathAnalyze
 class GUI : Application() {
 
     override fun start(primaryStage: Stage) {
-        primaryStage.title = "Study 7-Zip JBinding!"
+        primaryStage.title = "ArchiveDiffer-Kotlin"
         primaryStage.isAlwaysOnTop = true
         val fxml = javaClass.getResource("fxml/Main.fxml")
         val root: Parent = FXMLLoader.load(fxml)
