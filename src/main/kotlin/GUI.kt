@@ -11,7 +11,7 @@ import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import kotlinx.coroutines.*
 
-import util.filePathAnalyze
+import util.*
 
 
 class GUI : Application() {
@@ -59,8 +59,20 @@ class GUI : Application() {
                 analyzedIndicator.fill = Paint.valueOf("GRAY")
 
                 val filePaths = filePathAnalyze(db.files)
+                val packagedFilePaths = packageFilePathsWithoutGuide(db.files)
 
                 filePathsLabel.text = filePaths.joinToString(separator = "\n")
+
+                for ( archiveSetPaths in packagedFilePaths) {
+                    println("ArchiveSet")
+                    for ( archivePaths in archiveSetPaths ) {
+                        println("\tArchive")
+                        for (aPath in archivePaths) {
+                            println("\t\t" + aPath.last())
+                        }
+                    }
+                }
+
                 GlobalScope.launch {
                     for ( i in 0..10 ) {
                         fileIndicator.fill = Paint.valueOf(if (fileSwitch) "Blue" else "White")
@@ -73,7 +85,7 @@ class GUI : Application() {
                 var theTable: TheTable? = null
                 var doesTheTableExist = false
                 GlobalScope.launch {
-                    theTable = makeTheTable(filePaths, theDebugDirectory)
+                    theTable = makeTheTable(packagedFilePaths, theDebugDirectory)
                     doesTheTableExist = true
                 }
 
@@ -134,6 +146,7 @@ class GUI : Application() {
                         delay(31L)
                     }
                 }
+
             } else {
                 filePathsLabel.text = "No File"
                 statusIndicator.fill = Paint.valueOf("Pink")

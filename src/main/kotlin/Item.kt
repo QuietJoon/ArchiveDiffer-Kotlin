@@ -8,9 +8,10 @@ class Item (
     , val dataSize: DataSize
     , val modifiedDate: Date
     , val path: JointPath
-    , val parentID: ItemID
+    , val parentID: ItemID // Real parentArchiveID
     , val idInArchive: ItemIndex
-    , val parentArchiveSetID: ArchiveSetID
+    , val parentArchiveID: ArchiveID // Virtual parentArchiveID (Not real, but same archive)
+    , val archiveSetID: ArchiveSetID
 ) {
     val id: ItemID
 
@@ -29,9 +30,9 @@ class Item (
     fun generateItemKey(dupCount: Int) = ItemKey(path.last().isArchiveSensitively(),dataCRC, dataSize, dupCount)
 
 
-    fun makeItemRecordFromItem(archiveSetNum: Int, rootArchiveSetID: ArchiveSetID,theArchiveSetID: ArchiveSetID): ItemRecord {
+    fun makeItemRecordFromItem(archiveSetNum: Int, theArchiveID: ArchiveID, archiveSetID: ArchiveSetID): ItemRecord {
         val existence = arrayOfNulls<ExistanceMark>(archiveSetNum)
-        existence[rootArchiveSetID]=Pair(theArchiveSetID,id)
+        existence[archiveSetID]=Pair(theArchiveID,id)
         return ItemRecord(
             dataCRC = dataCRC
             , dataSize = dataSize
@@ -76,13 +77,13 @@ class Item (
         hash = hash * hashPrime + path.hashCode()
         hash = hash * hashPrime + parentID.hashCode()
         hash = hash * hashPrime + idInArchive.hashCode()
-        hash = hash * hashPrime + parentArchiveSetID.hashCode()
+        hash = hash * hashPrime + parentArchiveID.hashCode()
         hash = hash * hashPrime + id.hashCode()
         return hash
     }
 }
 
-fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID: ItemID, parentArchiveSetID: ArchiveSetID): Item {
+fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID: ItemID, parentArchiveID: ArchiveID, archiveSetID: ArchiveSetID): Item {
 
     val newPath = parentPath.plus(this.path)
 
@@ -93,7 +94,8 @@ fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID
         , path = newPath
         , parentID = parentID
         , idInArchive = this.itemIndex
-        , parentArchiveSetID = parentArchiveSetID
+        , parentArchiveID = parentArchiveID
+        , archiveSetID = archiveSetID
     )
 }
 

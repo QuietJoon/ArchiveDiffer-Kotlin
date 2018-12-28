@@ -48,7 +48,7 @@ fun getIDArrayWithoutIgnoringItem(inArchive: IInArchive, ignoringList: IgnoringL
     var idList = mutableListOf<Int>()
 
     simpleInArchive.archiveItems.forEachIndexed { idx, sItem ->
-        val item: Item = sItem.makeItemFromArchiveItem(emptyArray(),0,0)
+        val item: Item = sItem.makeItemFromArchiveItem(emptyArray(),0,0, -1)
         if (!ignoringList.match(item)) {
             idList.add(idx)
         }
@@ -57,7 +57,7 @@ fun getIDArrayWithoutIgnoringItem(inArchive: IInArchive, ignoringList: IgnoringL
     return idList.toIntArray()
 }
 
-fun printItemList(archiveSet: ArchiveSet, itemIDs: Array<ItemIndices>) {
+fun printItemMapOfArchiveSet(archiveSet: ArchiveSet, itemIDs: Array<ItemIndices>) {
     itemIDs.sortWith(Comparator { a, b ->
         if (a.first == b.first)
             a.second - b.second
@@ -65,21 +65,21 @@ fun printItemList(archiveSet: ArchiveSet, itemIDs: Array<ItemIndices>) {
     }
     )
 
-    var lastArchiveSetID: ArchiveSetID? = null
+    var lastArchiveID: ArchiveID? = null
     var inArchive: IInArchive? = null
     var itemIndexList: MutableList<Int> = mutableListOf()
     for (idPair in itemIDs) {
-        val theArchiveSetID = idPair.first
+        val theArchiveID = idPair.first
         val theItemIndex = idPair.second
-        if (lastArchiveSetID != theArchiveSetID) {
+        if (lastArchiveID != theArchiveID) {
             if (inArchive != null)
                 printItemListByIDs(inArchive, itemIndexList.toIntArray())
-            lastArchiveSetID = theArchiveSetID
-            inArchive = archiveSet.getInArchive(theArchiveSetID)
+            lastArchiveID = theArchiveID
+            inArchive = archiveSet.getInArchive(theArchiveID)
             itemIndexList = mutableListOf()
         }
         if (inArchive == null)
-            error("[ERROR]<printItemList>: inArchive($theArchiveSetID) found")
+            error("[ERROR]<printItemMapOfArchiveSet>: inArchive($theArchiveID) found")
         itemIndexList.add(theItemIndex)
     }
     if (inArchive != null)

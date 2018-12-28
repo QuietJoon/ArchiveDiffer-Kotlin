@@ -19,14 +19,14 @@ fun main (args: Array<String>) {
 
     println("Phase #0")
 
-    println(theTable.theItemTable.size)
+    println(theTable.theItemMap.size)
     println(theTable.theItemList.size)
-    println(theTable.theArchiveSets[0].itemList.size)
+    println(theTable.theArchiveSets[0].itemMap.size)
 
     for ( anArchiveSet in theTable.theArchiveSets)
-        printItemList(anArchiveSet, anArchiveSet.getThisIDs())
+        printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
 
-    for ( anItemRecord in theTable.theItemTable ) {
+    for ( anItemRecord in theTable.theItemMap ) {
         print(anItemRecord.key.toString())
         println(anItemRecord.value.toString())
     }
@@ -34,7 +34,7 @@ fun main (args: Array<String>) {
     println("Difference only")
     var count = 0
     var resultList = mutableListOf<String>()
-    for (anItemEntry in theTable.theItemTable) {
+    for (anItemEntry in theTable.theItemMap) {
         if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
             count++
             val stringBuilder = StringBuilder()
@@ -53,9 +53,9 @@ fun main (args: Array<String>) {
         if (theTable.runOnce()) break
 
         for ( anArchiveSet in theTable.theArchiveSets)
-            printItemList(anArchiveSet, anArchiveSet.getThisIDs())
+            printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
 
-        for ( anItemRecord in theTable.theItemTable ) {
+        for ( anItemRecord in theTable.theItemMap ) {
             print(anItemRecord.key.toString())
             println(anItemRecord.value.toString())
         }
@@ -63,7 +63,7 @@ fun main (args: Array<String>) {
         println("Difference only")
         count = 0
         resultList = mutableListOf<String>()
-        for (anItemEntry in theTable.theItemTable) {
+        for (anItemEntry in theTable.theItemMap) {
             if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
                 count++
                 val stringBuilder = StringBuilder()

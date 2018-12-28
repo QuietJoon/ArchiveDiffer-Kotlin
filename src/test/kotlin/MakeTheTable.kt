@@ -1,6 +1,3 @@
-import archive.*
-
-
 fun main (args: Array<String>) {
 
     val theIgnoringListPath = "H:\\Kazuki\\AD\\IgnoringList.20181214.txt"
@@ -23,18 +20,18 @@ fun main (args: Array<String>) {
     var xTable = TheTable(xArchiveSetList.toTypedArray(), "R:\\Debug")
 
     println(xTable.archiveSetNum)
-    println(xTable.theItemTable.size)
+    println(xTable.theItemMap.size)
     println(xTable.theItemList.size)
-    println(xTable.theArchiveSets[0].itemList.size)
+    println(xTable.theArchiveSets[0].itemMap.size)
     for ( anArchiveSet in xTable.theArchiveSets)
-        printItemList(anArchiveSet, anArchiveSet.getThisIDs())
+        printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
 
-    for ( anItemRecord in xTable.theItemTable ) {
+    for ( anItemRecord in xTable.theItemMap ) {
         print(anItemRecord.key.toString())
         println(anItemRecord.value.toString())
     }
 
-    for (anKey in xTable.theItemTable.keys)
+    for (anKey in xTable.theItemMap.keys)
         println(anKey.toString())
     */
     val theArchivePaths: Array<RealPath> = arrayOf(
@@ -62,19 +59,19 @@ fun main (args: Array<String>) {
 
     println(theIgnoringList.ignoringList.size)
     println(theTable.archiveSetNum)
-    println(theTable.theItemTable.size)
+    println(theTable.theItemMap.size)
     println(theTable.theItemList.size)
-    println(theTable.theArchiveSets[0].itemList.size)
+    println(theTable.theArchiveSets[0].itemMap.size)
     for ( anArchiveSet in theTable.theArchiveSets)
-        printItemList(anArchiveSet, anArchiveSet.getThisIDs())
+        printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
 
-    for ( anItemRecord in theTable.theItemTable ) {
+    for ( anItemRecord in theTable.theItemMap ) {
         print(anItemRecord.key.toString())
         println(anItemRecord.value.toString())
     }
 
 /*
-    for (anKey in theTable.theItemTable.keys)
+    for (anKey in theTable.theItemMap.keys)
         println(anKey.toString())
 */
 }

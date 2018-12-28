@@ -1,5 +1,7 @@
 package util
 
+import ArchiveSetPaths
+import JointPath
 import java.io.File
 import com.ibm.icu.lang.*
 
@@ -27,6 +29,23 @@ fun getFirstOrSingleArchivePaths(paths: Array<Path>) : Array<Path> {
         }
     }
     return firstOrSingle.toTypedArray()
+}
+
+fun packageFilePathsWithoutGuide(files: List<File>): Array<ArchiveSetPaths> {
+    val sorted = files.map{it.toString()}.sorted()
+    val resultList = mutableListOf<ArchiveSetPaths>()
+    var aList = mutableListOf<JointPath>()
+    for ( path in sorted ) {
+        if ( path.isSingleVolume() || path.isFirstVolume()) {
+            if (aList.size != 0) resultList.add(arrayOf(aList.toTypedArray()))
+            aList = mutableListOf()
+            aList.add(arrayOf(path))
+        } else {
+            aList.add(arrayOf(path))
+        }
+    }
+    resultList.add(arrayOf(aList.toTypedArray()))
+    return resultList.toTypedArray()
 }
 
 

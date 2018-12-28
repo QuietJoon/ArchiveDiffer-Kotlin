@@ -1,17 +1,14 @@
-import archive.openArchive
-
 fun initialize(ignoringListConfigPath: RealPath) {
     // Set IgnoringList
     theIgnoringList = readIgnoringList(ignoringListConfigPath)
 }
 
-fun makeTheTable(theArchivePaths: Array<RealPath>, rootOutputDirectory: String): TheTable {
+fun makeTheTable(theArchiveSetPaths: Array<ArchiveSetPaths>, rootOutputDirectory: String): TheTable {
     val archiveSetList = mutableListOf<ArchiveSet>()
-    theArchivePaths.forEachIndexed { idx, archivePath ->
-        val ans = openArchive(archivePath) ?: error ("[ERROR]<makeTheTable>: Fail to open the archive ${theArchivePaths.joinToString()}")
+    theArchiveSetPaths.forEachIndexed { idx, anArchiveSetPaths ->
+        val anArchiveSet = ArchiveSet(idx, anArchiveSetPaths)
 
-        val archiveSet = ArchiveSet(arrayOf(archivePath),idx,idx,ans,0)
-        archiveSetList.add(archiveSet)
+        archiveSetList.add(anArchiveSet)
     }
 
     return TheTable(archiveSetList.toTypedArray(), rootOutputDirectory)
