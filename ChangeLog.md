@@ -9,6 +9,16 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.4.1.1  -- 2018/12/28
+
+### Changed
+* Move common/global variables from Environment to Constants
+
+## 0.4.1.0  -- 2018/12/28
+
+### Added
+* Support multi-tasking
+
 ## 0.4.0.0  -- 2018/12/28
 
 Fork ArchiveDiffer from StudyKotlin-JBinding
