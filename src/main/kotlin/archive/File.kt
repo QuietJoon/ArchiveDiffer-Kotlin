@@ -80,7 +80,7 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
         return null
     }
 
-    if (inArchive.archiveFormat == ArchiveFormat.CAB) return null // Because Cab seems to be have no CRC
+    if (inArchive.archiveFormat.isAllowedArchives()) return null
 
     return ArchiveAndStream(inArchive, randomAccessFile, null)
 }
@@ -109,8 +109,13 @@ private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
         println(String.format("[Error]<openArchive>: Fail to open InArchive with $aFilePath\n%s", e.toString()))
         return null
     }
+
+    if (inArchive.archiveFormat.isAllowedArchives()) return null
+
     return ArchiveAndStream(inArchive, null, archiveOpenVolumeCallback)
 }
+
+private fun ArchiveFormat.isAllowedArchives() = theAllowedSet.contains(this)
 
 class ArchiveOpenVolumeCallback : IArchiveOpenVolumeCallback, IArchiveOpenCallback {
 
