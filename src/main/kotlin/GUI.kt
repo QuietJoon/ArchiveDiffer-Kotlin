@@ -22,14 +22,25 @@ class GUI : Application() {
         val fxml = javaClass.getResource("fxml/Main.fxml")
         val root: Parent = FXMLLoader.load(fxml)
         val scene = Scene(root)
-        val fileIndicator = root.lookup("#FileIndicator1") as Rectangle // For number of proper input file
-        val filePathsLabel = root.lookup("#FilePathsLabel1") as Label // Name of input file
-        val statusIndicator = root.lookup("#StatusIndicator1") as Rectangle // Show progress
-        val differencesLabel = root.lookup("#DifferencesLabel1") as TextArea
-        val analyzedIndicator = root.lookup("#AnalyzedIndicator1") as Rectangle // Show final result
+
+        // TODO: sessionID=4 is little different
+        for ( sessionID in 1..3)
+            initTab(root, sessionID)
+        primaryStage.scene = scene
+        primaryStage.show()
+    }
+
+    private fun initTab(root: Parent, sessionID: Int) {
+
+        val tab = root.lookup("#TabSession$sessionID")
+        val fileIndicator = root.lookup("#FileIndicator$sessionID") as Rectangle // For number of proper input file
+        val filePathsLabel = root.lookup("#FilePathsLabel$sessionID") as Label // Name of input file
+        val statusIndicator = root.lookup("#StatusIndicator$sessionID") as Rectangle // Show progress
+        val differencesLabel = root.lookup("#DifferencesLabel$sessionID") as TextArea
+        val analyzedIndicator = root.lookup("#AnalyzedIndicator$sessionID") as Rectangle // Show final result
         var fileSwitch = true
 
-        scene.onDragOver = EventHandler { event ->
+        tab.onDragOver = EventHandler { event ->
             val db = event.dragboard
             if (db.hasFiles()) {
                 event.acceptTransferModes(TransferMode.COPY)
@@ -38,7 +49,7 @@ class GUI : Application() {
             }
         }
 
-        scene.onDragDropped = EventHandler { event ->
+        tab.onDragDropped = EventHandler { event ->
             val db = event.dragboard
             var success = false
             if (db.hasFiles()) {
@@ -130,7 +141,5 @@ class GUI : Application() {
             event.isDropCompleted = success
             event.consume()
         }
-        primaryStage.scene = scene
-        primaryStage.show()
     }
 }
