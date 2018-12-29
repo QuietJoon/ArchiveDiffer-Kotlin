@@ -5,7 +5,7 @@ import archive.*
 import util.*
 
 class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirectory: RealPath) {
-    val theItemMap: ItemRecordTable = sortedMapOf()
+    val theItemTable: ItemRecordTable = sortedMapOf()
     val theItemList: ItemList = mutableMapOf()
     val theArchiveSets: Array<ArchiveSet>
     val theArchiveMap: ArchiveMap = mutableMapOf()
@@ -48,16 +48,16 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         aKey = queryResult.second
         if (queryItemRecord == null) {
             val anItemRecord = anItem.makeItemRecordFromItem(archiveSetNum, idPair.first, anArchiveSet.archiveSetID)
-            theItemMap[aKey] = anItemRecord
+            theItemTable[aKey] = anItemRecord
         } else if (queryItemRecord.existence[idPair.third] == null) {
             val newExistance = queryItemRecord.existence
             newExistance[idPair.third] = Pair(idPair.first,idPair.second)
-            theItemMap[aKey]!!.existence = newExistance
+            theItemTable[aKey]!!.existence = newExistance
         } else {
             println("[WARN]<registerAnItemRecord>: add again ${anItem.path.last()}")
         }
-        if (theItemMap[aKey]!!.existence.isFilled())
-            theItemMap[aKey]!!.isFilled = true
+        if (theItemTable[aKey]!!.existence.isFilled())
+            theItemTable[aKey]!!.isFilled = true
 
         theItemList[anItem.id] = anItem
     }
@@ -76,37 +76,37 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         aKey = queryResult.second
         if (queryItemRecord == null) {
             val anItemRecord = anItem.makeItemRecordFromItem(archiveSetNum, idPair.first, anArchiveSet.archiveSetID)
-            theItemMap[aKey] = anItemRecord
+            theItemTable[aKey] = anItemRecord
         }
 
         archiveSetIDs.forEach {
-            theItemMap[aKey]!!.existence[it] =
+            theItemTable[aKey]!!.existence[it] =
                     Pair(anItem.parentArchiveID, anItem.id)
         }
 
-        if (theItemMap[aKey]!!.existence.isFilled())
-            theItemMap[aKey]!!.isFilled = true
+        if (theItemTable[aKey]!!.existence.isFilled())
+            theItemTable[aKey]!!.isFilled = true
 
         theItemList[anItem.id] = anItem
     }
 
     fun queryInsensitive(aKey: ItemKey): Pair<ItemRecord?,ItemKey> {
-        val aRecord = theItemMap[aKey]
+        val aRecord = theItemTable[aKey]
         if (aRecord != null) return Pair(aRecord,aKey)
 
         var newKey: ItemKey
         var newRecord: ItemRecord?
         if (aKey.isArchive == null) {
             newKey = aKey.copy(isArchive = true)
-            newRecord = theItemMap[newKey]
+            newRecord = theItemTable[newKey]
             if (newRecord == null) {
                 newKey = aKey.copy(isArchive = false)
-                newRecord = theItemMap[newKey]
+                newRecord = theItemTable[newKey]
             }
         }
         else {
             newKey = aKey.copy(isArchive = null)
-            newRecord = theItemMap[newKey]
+            newRecord = theItemTable[newKey]
         }
         return if (newRecord == null) Pair(aRecord,aKey)
                 else Pair(newRecord,newKey)
@@ -130,28 +130,28 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     }
 
     fun getFirstItemKey(): ItemKey? {
-        theItemMap.forEach {
+        theItemTable.forEach {
             if (!it.value.isFilled)
                 if (it.key.isArchive != false)
-                    if (theItemMap[it.key]!!.isFirstOrSingle
-                        && !theItemMap[it.key]!!.isExtracted) return it.key
+                    if (theItemTable[it.key]!!.isFirstOrSingle
+                        && !theItemTable[it.key]!!.isExtracted) return it.key
         }
         return null
     }
 
     fun modifyKeyOfTheItemTable(oldKey: ItemKey, newKey: ItemKey) {
-        val queriedValue = theItemMap[oldKey]
+        val queriedValue = theItemTable[oldKey]
 
         if (queriedValue == null) {
             error("[ERROR]<modifyKey>: No such ItemRecord with $oldKey")
         } else {
-            theItemMap.remove(oldKey)
-            theItemMap.put(newKey,queriedValue)
+            theItemTable.remove(oldKey)
+            theItemTable.put(newKey,queriedValue)
         }
     }
 
     fun printSameItemTable(len: Int, fullNameOnly: Boolean, relativePathOnly: Boolean) {
-        for ( itemEntry in theItemMap ) {
+        for ( itemEntry in theItemTable ) {
             if (itemEntry.value.isFilled) {
                 println(itemEntry.key)
                 itemEntry.value.existence.forEach {
@@ -173,7 +173,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     fun findMultiVolumes(path: RelativePath, archiveSetID: ArchiveID): IntArray {
         val commonName = path.getCommonNameOfMultiVolume()
         val idList = mutableListOf<Int>()
-        for ( itemEntry in theItemMap ) {
+        for ( itemEntry in theItemTable ) {
             val existence = itemEntry.value.existence[archiveSetID]
             if (existence != null)
                 if (!itemEntry.value.isFirstOrSingle)
@@ -186,7 +186,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     fun runOnce(): Boolean {
         var theKey = getFirstItemKey()
         if (theKey != null) {
-            var theItemRecord = theItemMap[theKey] ?: error("[Error]<runOnce>: No such item by $theKey")
+            var theItemRecord = theItemTable[theKey] ?: error("[Error]<runOnce>: No such item by $theKey")
             val idx = theItemRecord.getAnyID()
             val parentArchive: Archive = theArchiveMap[idx.first] ?: error("[Error]<runOnce>: No such Archive ${idx.first}")
             // Actually, this is not good enough. However, we assume that even the item is different, same key means same contents.
@@ -212,15 +212,15 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             if (anANS != null) {
                 if (theItemRecord.isArchive == null) {
                     val newKey = theKey.copy(isArchive = true)
-                    theItemMap[theKey]!!.isArchive = true
+                    theItemTable[theKey]!!.isArchive = true
                     modifyKeyOfTheItemTable(theKey,newKey)
                     theKey = newKey
                 }
 
-                theItemMap[theKey]!!.isExtracted = true
+                theItemTable[theKey]!!.isExtracted = true
                 for (id in idxs) {
                     val anKey = theItemList[id]!!.generateItemKey()
-                    theItemMap[anKey]!!.isExtracted = true
+                    theItemTable[anKey]!!.isExtracted = true
                 }
 
                 var anArchive = Archive(jointPaths,anANS, idx.second, parentArchive.archiveSetID)
@@ -242,7 +242,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
 
             } else {
                 if (theItemRecord.isArchive == null) {
-                    theItemMap[theKey]!!.isArchive = false
+                    theItemTable[theKey]!!.isArchive = false
                     modifyKeyOfTheItemTable(theKey,theKey.copy(isArchive = false))
                 } else {
                     error("[ERROR]<runOnce>: Fail to open an Archive ${theItemRecord.path}")
@@ -378,7 +378,6 @@ data class ItemRecord (
 
 typealias ItemRecordTable = SortedMap<ItemKey, ItemRecord>
 typealias ItemList = MutableMap<ItemID,Item>
-//typealias ItemMap = MutableMap<ItemKey,Item>
 typealias ArchiveMap = MutableMap<Int,Archive>
 typealias ExistanceMark = Pair<ArchiveID,ItemID>
 typealias ExistanceBoard = Array<ExistanceMark?>

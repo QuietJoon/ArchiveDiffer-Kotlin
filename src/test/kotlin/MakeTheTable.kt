@@ -20,18 +20,18 @@ fun main (args: Array<String>) {
     var xTable = TheTable(xArchiveSetList.toTypedArray(), "R:\\Debug")
 
     println(xTable.archiveSetNum)
-    println(xTable.theItemMap.size)
+    println(xTable.theItemTable.size)
     println(xTable.theItemList.size)
     println(xTable.theArchiveSets[0].itemMap.size)
     for ( anArchiveSet in xTable.theArchiveSets)
         printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
 
-    for ( anItemRecord in xTable.theItemMap ) {
+    for ( anItemRecord in xTable.theItemTable ) {
         print(anItemRecord.key.toString())
         println(anItemRecord.value.toString())
     }
 
-    for (anKey in xTable.theItemMap.keys)
+    for (anKey in xTable.theItemTable.keys)
         println(anKey.toString())
     */
     val theArchivePaths: Array<RealPath> = arrayOf(
@@ -59,19 +59,19 @@ fun main (args: Array<String>) {
 
     println(theIgnoringList.ignoringList.size)
     println(theTable.archiveSetNum)
-    println(theTable.theItemMap.size)
+    println(theTable.theItemTable.size)
     println(theTable.theItemList.size)
     println(theTable.theArchiveSets[0].itemMap.size)
     for ( anArchiveSet in theTable.theArchiveSets)
         printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
 
-    for ( anItemRecord in theTable.theItemMap ) {
+    for ( anItemRecord in theTable.theItemTable ) {
         print(anItemRecord.key.toString())
         println(anItemRecord.value.toString())
     }
 
 /*
-    for (anKey in theTable.theItemMap.keys)
+    for (anKey in theTable.theItemTable.keys)
         println(anKey.toString())
 */
 }

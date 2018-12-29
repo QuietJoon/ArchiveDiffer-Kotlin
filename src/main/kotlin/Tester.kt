@@ -3,7 +3,7 @@ fun testWithTheTable(theTable: TheTable): Pair<String, Array<String>> {
 
     println("Number of ArchiveSet: ${theTable.archiveSetNum}")
     println("Size of TheIgnoringList: ${theIgnoringList.ignoringList.size}")
-    println("Size of TheItemTable: ${theTable.theItemMap.size}")
+    println("Size of TheItemTable: ${theTable.theItemTable.size}")
     println("Size of TheItemList: ${theTable.theItemList.size}")
     println("Size of ItemList of ArchiveSet 0: ${theTable.theArchiveSets[0].itemMap.size}")
 
@@ -12,7 +12,7 @@ fun testWithTheTable(theTable: TheTable): Pair<String, Array<String>> {
         printItemMapOfArchiveSet(anArchiveSet, anArchiveSet.getThisIDs())
         */
 
-    for (anItemEntry in theTable.theItemMap) {
+    for (anItemEntry in theTable.theItemTable) {
         print(anItemEntry.key.toString())
         println(anItemEntry.value.toString())
     }
@@ -20,7 +20,7 @@ fun testWithTheTable(theTable: TheTable): Pair<String, Array<String>> {
     println("Difference only")
     var count = 0
     val resultList = mutableListOf<String>()
-    for (anItemEntry in theTable.theItemMap) {
+    for (anItemEntry in theTable.theItemTable) {
         if (!anItemEntry.value.isFilled) {
             count++
             val stringBuilder = StringBuilder()
