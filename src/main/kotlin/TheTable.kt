@@ -186,15 +186,8 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             val idsList: List<ItemID> = idxs.plus(idx.second)
             val iidsList: IntArray = idsList.map{theItemList[it]!!.idInArchive}.sorted().toIntArray()
             // Not sure when the first archive is exe file
-            val paths: List<Path> = idsList.map { rootOutputDirectory + directoryDelimiter + theItemList[it]!!.path }.sorted()
+            val paths: List<Path> = idsList.map { rootOutputDirectory + directoryDelimiter + theItemList[it]!!.path.last() }.sorted()
             val jointPaths: List<JointPath> = paths.map {theParentArchive.realArchivePaths[0].plus(it)}
-
-            println("Print New ArchiveSet's JointPaths")
-            jointPaths.forEach{
-                for (path in it)
-                    println("APath: $path")
-                println()
-            }
 
             Extract( theParentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
                 .extractSomething(theParentArchive.ans.inArchive, iidsList)
