@@ -1,3 +1,5 @@
+import util.packageFilePathsWithoutGuide
+
 fun main (args: Array<String>) {
 
     val theIgnoringListPath = "H:\\Kazuki\\AD\\IgnoringList.20181214.txt"
@@ -34,7 +36,7 @@ fun main (args: Array<String>) {
     for (anKey in xTable.theItemTable.keys)
         println(anKey.toString())
     */
-    val theArchivePaths: Array<RealPath> = arrayOf(
+    val theArchivePaths: List<RealPath> = listOf(
           "R:\\TestArchives\\ZA0.rar"
         , "R:\\TestArchives\\ZA1.rar"
         , "R:\\TestArchives\\ZA2.zip"
@@ -55,7 +57,8 @@ fun main (args: Array<String>) {
     )
     */
 
-    var theTable = makeTheTable(theArchivePaths, "R:\\Debug")
+
+    var theTable = makeTheTable(packageFilePathsWithoutGuide(theArchivePaths), "R:\\Debug")
 
     println(theIgnoringList.ignoringList.size)
     println(theTable.archiveSetNum)

@@ -1,9 +1,10 @@
 import archive.*
+import util.packageFilePathsWithoutGuide
 
 
 fun main (args: Array<String>) {
 
-    val theArchivePaths: Array<RealPath> = arrayOf(
+    val theArchivePaths: List<RealPath> = listOf(
           "R:\\TestArchives\\Source.zip"
         , "R:\\TestArchives\\SourceMultiRAR4.part1.rar"
         , "R:\\TestArchives\\SourceMultiRAR5.part1.rar"
@@ -12,9 +13,9 @@ fun main (args: Array<String>) {
     )
 
     val archiveSetList = mutableListOf<ArchiveSet>()
-    theArchivePaths.forEachIndexed { idx, archivePath ->
-        val ans = openArchive(archivePath) ?: error("[Error]<ItemRecordTest>: Fail to open")
-        val archiveSet = ArchiveSet(arrayOf(archivePath),idx,idx,ans,0)
+
+    packageFilePathsWithoutGuide(theArchivePaths).forEachIndexed { idx, archiveSetPaths ->
+        val archiveSet = ArchiveSet(idx,archiveSetPaths)
         archiveSetList.add(archiveSet)
     }
 
@@ -22,8 +23,10 @@ fun main (args: Array<String>) {
     val theIgnoringList = readIgnoringList(theIgnoringListPath)
     printIgnoringListWithLevel(theIgnoringList)
 
-    for ( archiveSet in archiveSetList) {
-        val notIgnoringItemIDArray = getIDArrayWithoutIgnoringItem(archiveSet.getInArchive(),theIgnoringList)
-        printItemListByIDs(archiveSet.getInArchive(), notIgnoringItemIDArray)
+    for ( anArchiveSet in archiveSetList) {
+        for ( anArchive in anArchiveSet.archiveMap) {
+            val notIgnoringItemIDArray = getIDArrayWithoutIgnoringItem(anArchive.value.ans.inArchive, theIgnoringList)
+            printItemListByIDs(anArchive.value.ans.inArchive, notIgnoringItemIDArray)
+        }
     }
 }

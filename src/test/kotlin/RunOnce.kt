@@ -1,8 +1,10 @@
+import util.packageFilePathsWithoutGuide
+
 fun main (args: Array<String>) {
 
     val theIgnoringListPath = "H:\\Kazuki\\AD\\IgnoringList.20181214.txt"
     initialize(theIgnoringListPath)
-    val theArchivePaths: Array<RealPath> = arrayOf(
+    val theArchivePaths: List<RealPath> = listOf(
         "R:\\TestArchives\\ZA0.rar"
         , "R:\\TestArchives\\ZA1.rar"
         , "R:\\TestArchives\\ZA2.zip"
@@ -12,7 +14,7 @@ fun main (args: Array<String>) {
 
     println("Size of IgnoringList: ${theIgnoringList.ignoringList.size}")
 
-    var theTable = makeTheTable(theArchivePaths, theDebugDirectory)
+    var theTable = makeTheTable(packageFilePathsWithoutGuide(theArchivePaths), theDebugDirectory)
     theTable.prepareWorkingDirectory()
 
     println("Number of ArchiveSet: ${theTable.archiveSetNum}")
