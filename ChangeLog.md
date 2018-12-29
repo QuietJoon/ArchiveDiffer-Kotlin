@@ -3,16 +3,23 @@
 ## Unreleased changes
 
 ### Change
-* Implement real `ArchiveSet`
-  * Currently, `ArchiveSet` is just an archive
 * Add space holder for missing Item's full-name for `differencesLabel`
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
-## 0.5.1.1  -- 2018/12/29
+### Fix
+* Displaying with SelectiveTab is not working correctly
+
+## 0.5.2.0  -- 2018/12/29
+
+### Changed
+* ArchiveSet system fully implemented
 
 ### Fixed
+* Use Coroutine-JavaFX to avoid threading problem
 * Forget to identify `ItemID` and `Item.idInArchive`
+* Add correct child's path
+* Fix displaying `filePathsLabel` because of changing `packagedFilePathsWithoutGuide`
 
 ## 0.5.1.0  -- 2018/12/29
 
