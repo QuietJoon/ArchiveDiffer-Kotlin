@@ -64,10 +64,22 @@ class GUI : Application() {
                 statusIndicator.fill = Paint.valueOf("Black")
                 analyzedIndicator.fill = Paint.valueOf("GRAY")
 
-                val filePaths = filePathAnalyze(db.files)
                 val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
 
-                filePathsLabel.text = filePaths.joinToString(separator = "\n")
+                val sb = StringBuilder()
+                packagedFilePaths.forEachIndexed { sIdx, archiveSetPaths ->
+                    println("ArchiveSet $sIdx")
+                    archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
+                        println("\tArchive $aIdx")
+                        sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
+                        for (aPath in archivePaths) {
+                            println("\t\t" + aPath.last())
+
+                        }
+                    }
+                }
+                val str = sb.toString()
+                filePathsLabel.text = str
 
                 for ( archiveSetPaths in packagedFilePaths) {
                     println("ArchiveSet")
