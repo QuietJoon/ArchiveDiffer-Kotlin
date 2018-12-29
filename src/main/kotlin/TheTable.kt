@@ -196,10 +196,6 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 println()
             }
 
-            println("Print idsList")
-
-            println(tableInstance)
-            println("${theParentArchive.realArchivePaths.last().last()}")
             Extract( theParentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
                 .extractSomething(theParentArchive.ans.inArchive, iidsList)
 
