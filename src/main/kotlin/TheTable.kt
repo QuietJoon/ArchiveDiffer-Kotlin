@@ -160,7 +160,8 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         }
     }
 
-    private fun findMultiVolumes(path: RelativePath, archiveSetID: ArchiveID): MutableList<Int> {
+    // TODO: May files having commonName appears in physically different archives
+    private fun findMultiVolumes(path: RelativePath, archiveSetID: ArchiveID): List<ItemID> {
         val commonName = path.getCommonNameOfMultiVolume()
         val idList = mutableListOf<Int>()
         for ( itemEntry in theItemTable ) {
@@ -180,22 +181,19 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             val idx = theItemRecord.getAnyID()
             val theParentArchive: Archive = theArchiveMap[idx.first] ?: error("[Error]<runOnce>: No such Archive ${idx.first}")
             val anArchivePath = theItemList[idx.second]!!.path.last()
-            val idxs: MutableList<Int> = findMultiVolumes(anArchivePath,theParentArchive.archiveSetID)
-            val simpleArchive = theParentArchive.ans.inArchive.simpleInterface
-
-
+            val idxs: List<Int> = findMultiVolumes(anArchivePath,theParentArchive.archiveSetID)
             val anArchiveRealPath = rootOutputDirectory + directoryDelimiter + anArchivePath
+            // Do not need to sort/convert idsList. But There is no meaning not to do it here in this case.
+            val idsList = idxs.plus(idx.second).sorted().toIntArray()
+            // Not sure when the first archive is exe file
+            val paths: List<Path> = idsList.map { rootOutputDirectory + directoryDelimiter + theItemList[it]!!.path }.sorted()
+            val jointPaths: List<JointPath> = paths.map {theParentArchive.realArchivePaths[0].plus(it)}
 
-            val idsList = mutableListOf<Int>()
-
-            for ( id in idxs.plus(idx.second))
-                idsList.add(theItemList[id]!!.idInArchive)
-
-            val paths: List<Path> = idsList.map { rootOutputDirectory + directoryDelimiter + simpleArchive.getArchiveItem(it).path }
-            val jointPaths = paths.map {theParentArchive.realArchivePaths[0].plus(it) }.toTypedArray()
+            println("Print New ArchiveSet's JointPaths")
+            jointPaths.forEach{println(it)}
 
             Extract( theParentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
-                .extractSomething(theParentArchive.ans.inArchive, idsList.toIntArray())
+                .extractSomething(theParentArchive.ans.inArchive, idsList)
 
             var anANS = openArchive(anArchiveRealPath)
             if (anANS != null) {
@@ -212,16 +210,9 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                     theItemTable[anKey]!!.isExtracted = true
                 }
 
-                var anArchive = Archive(jointPaths,anANS, idx.second, theParentArchive.archiveSetID)
+                var anArchive = Archive(jointPaths.toTypedArray(),anANS, idx.second, theParentArchive.archiveSetID)
                 theArchiveMap[anArchive.archiveID] = anArchive
-                theArchiveSets[anArchive.archiveSetID].archiveMap[anArchive.archiveID] = anArchive
-
-                val anSimpleArchive = anANS.inArchive.simpleInterface
-                for (sItem in anSimpleArchive.archiveItems) {
-                    if (!sItem.isFolder) {
-                        theArchiveSets[anArchive.archiveSetID].addNewItem(anArchive.realArchivePaths[0],anArchive.itemID, anArchive.archiveID, sItem)
-                    }
-                }
+                theArchiveSets[anArchive.archiveSetID].addNewArchive(anArchive)
 
                 val aExistance = mutableListOf<Int>()
                 theItemRecord.existence.forEachIndexed{ eIdx, eV -> if (eV != null) aExistance.add(eIdx) }
