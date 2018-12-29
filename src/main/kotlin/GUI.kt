@@ -61,8 +61,8 @@ class GUI : Application() {
             if (db.hasFiles()) {
                 success = true
 
-                statusIndicator.fill = Paint.valueOf("Black")
-                analyzedIndicator.fill = Paint.valueOf("GRAY")
+                statusIndicator.fill = Paint.valueOf("DODGERBLUE")
+                analyzedIndicator.fill = Paint.valueOf("#eeff99")
 
                 val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
 
@@ -201,17 +201,20 @@ class GUI : Application() {
             newButton.isVisible = !newButton.isVisible
 
             isGroupingMode = !isGroupingMode
+            println("Is grouping mode: $isGroupingMode")
         }
 
         fileTable.columns[1].style = "-fx-alignment: CENTER-RIGHT;"
 
 
         tab.onDragOver = EventHandler { event ->
-            val db = event.dragboard
-            if (db.hasFiles()) {
-                event.acceptTransferModes(TransferMode.COPY)
-            } else {
-                event.consume()
+            if (isGroupingMode) {
+                val db = event.dragboard
+                if (db.hasFiles()) {
+                    event.acceptTransferModes(TransferMode.COPY)
+                } else {
+                    event.consume()
+                }
             }
         }
 
@@ -220,6 +223,9 @@ class GUI : Application() {
             var success = false
             if (db.hasFiles()) {
                 success = true
+
+                statusIndicator.fill = Paint.valueOf("DODGERBLUE")
+                analyzedIndicator.fill = Paint.valueOf("#eeff99")
 
                 if ( packagedFilePaths != null)
                     switchMode()
@@ -318,8 +324,6 @@ class GUI : Application() {
                     theTable!!.closeAllArchiveSets()
                     theTable!!.removeAllArchiveSets()
 
-                    packagedFilePaths = null
-
                     println("End a phase")
                 }
 
@@ -365,38 +369,56 @@ class GUI : Application() {
 
         goButton.setOnAction { event ->
             if (isGroupingMode) {
-                val groupIDSet: SortedSet<Int> = sortedSetOf()
-                fileTable.items.forEach {
-                    if (it != null)
-                        groupIDSet.add(it.getGroupID())
-                }
-
-                while (groupIDSet.last() != groupIDSet.size - 1) {
-                    var smallestGroupID = 0
-                    for (idx in groupIDSet) {
-                        if (smallestGroupID < idx) break
-                        smallestGroupID++
+                if (fileTable.items.isNotEmpty()) {
+                    val groupIDSet: SortedSet<Int> = sortedSetOf()
+                    fileTable.items.forEach {
+                        if (it != null)
+                            groupIDSet.add(it.getGroupID())
                     }
-                    val finding = groupIDSet.last()
-                    for (anItem in fileTable.items) {
-                        anItem.setGroupID(smallestGroupID)
+
+                    while (groupIDSet.last() != groupIDSet.size - 1) {
+                        var smallestGroupID = 0
+                        for (idx in groupIDSet) {
+                            if (smallestGroupID < idx) break
+                            smallestGroupID++
+                        }
+                        val finding = groupIDSet.last()
+                        for (anItem in fileTable.items) {
+                            anItem.setGroupID(smallestGroupID)
+                        }
+                    }
+
+                    val packagedFilePathList = mutableListOf<ArchiveSetPaths>()
+
+                    if (groupIDSet.size > 1) {
+                        for (i in 0 until groupIDSet.size) {
+                            val unpackagedPathList = mutableListOf<RealPath>()
+                            for (anItem in fileTable.items) {
+                                if (anItem.getGroupID() == i)
+                                    unpackagedPathList.add(anItem.getPath())
+                            }
+                            packagedFilePathList.add(packageFilePathsForGrouped(unpackagedPathList))
+                        }
+                        packagedFilePaths = packagedFilePathList.toTypedArray()
+
+                        switchMode()
                     }
                 }
+            } else {
+                fileIndicator.fill = Paint.valueOf("DODGERBLUE")
+                statusIndicator.fill = Paint.valueOf("DODGERBLUE")
+                analyzedIndicator.fill = Paint.valueOf("#eeff99")
+                differencesLabel.text = "Waiting"
 
-                val packagedFilePathList = mutableListOf<ArchiveSetPaths>()
+                packagedFilePaths = null
 
-                for ( i in 0 until groupIDSet.size ) {
-                    val unpackagedPathList = mutableListOf<RealPath>()
-                    for ( anItem in fileTable.items ) {
-                        if ( anItem.getGroupID() == i )
-                            unpackagedPathList.add(anItem.getPath())
-                    }
-                    packagedFilePathList.add(packageFilePathsForGrouped(unpackagedPathList))
-                }
-                packagedFilePaths = packagedFilePathList.toTypedArray()
+                // NOTE: Do not reset fileTable, because a user can try it again
+                //fileTable.items = FXCollections.observableArrayList()
+                fileTable.refresh()
+
+                switchMode()
             }
 
-            switchMode()
         }
     }
 }
