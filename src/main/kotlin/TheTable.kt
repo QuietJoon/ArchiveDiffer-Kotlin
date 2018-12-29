@@ -27,72 +27,72 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         for (anArchiveSet in theArchiveSets) {
             for (anArchive in anArchiveSet.archiveMap)
                 theArchiveMap[anArchive.key] = anArchive.value
-            for (anItem in anArchiveSet.itemMap)
-                registerAnItemRecord(anArchiveSet, anItem.key)
+                registerArchiveSetItemsRecord(anArchiveSet)
         }
 
         rootOutputDirectory = defaultOutputDirectory + directoryDelimiter + tableInstanceSerial
     }
 
-    fun registerAnItemRecord(anArchiveSet: ArchiveSet, key: ItemKey) {
-        val anItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecord>: No such item by $key")
-        if (theIgnoringList.match(anItem)) {
-            println("Skip: ${anItem.path.last()}")
-            return
-        }
+    private fun registerArchiveSetItemsRecord(anArchiveSet: ArchiveSet) {
+        for (anItem in anArchiveSet.itemMap) {
+            val theItem: Item = anArchiveSet.itemMap[anItem.key] ?: error("[Error]<registerAnItemRecord>: No such item by ${anItem.key}")
 
-        val idPair = Triple(anItem.parentArchiveID,anItem.id,anArchiveSet.archiveSetID)
-        var aKey = anItem.generateItemKey()
-        val queryResult = queryInsensitive(aKey)
-        val queryItemRecord: ItemRecord? = queryResult.first
-        aKey = queryResult.second
-        if (queryItemRecord == null) {
-            val anItemRecord = anItem.makeItemRecordFromItem(archiveSetNum, idPair.first, anArchiveSet.archiveSetID)
-            theItemTable[aKey] = anItemRecord
-        } else if (queryItemRecord.existence[idPair.third] == null) {
-            val newExistance = queryItemRecord.existence
-            newExistance[idPair.third] = Pair(idPair.first,idPair.second)
-            theItemTable[aKey]!!.existence = newExistance
-        } else {
-            println("[WARN]<registerAnItemRecord>: add again ${anItem.path.last()}")
-        }
-        if (theItemTable[aKey]!!.existence.isFilled())
-            theItemTable[aKey]!!.isFilled = true
+            val theParentArchiveID = theItem.parentArchiveID
+            val theArchiveSetID = anArchiveSet.archiveSetID
+            var theKey = theItem.generateItemKey()
+            val queryResult = queryInsensitive(theKey)
+            theKey = queryResult.first
+            val queryItemRecord: ItemRecord? = queryResult.second
+            if (queryItemRecord == null) {
+                val anItemRecord = theItem.makeItemRecordFromItem(archiveSetNum, theParentArchiveID, theArchiveSetID)
+                theItemTable[theKey] = anItemRecord
+            } else if (queryItemRecord.existence[theArchiveSetID] == null) {
+                val newExistance = queryItemRecord.existence
+                newExistance[theArchiveSetID] = Pair(theParentArchiveID, theItem.id)
+                theItemTable[theKey]!!.existence = newExistance
+            } else {
+                println("[WARN]<registerAnItemRecord>: add again ${theItem.path.last()}")
+            }
 
-        theItemList[anItem.id] = anItem
+            if (theItemTable[theKey]!!.existence.isFilled())
+                theItemTable[theKey]!!.isFilled = true
+
+            theItemList[theItem.id] = theItem
+        }
     }
 
-    fun registerAnItemRecordWithExistance(anArchiveSet: ArchiveSet, key: ItemKey, archiveSetIDs: IntArray) {
-        val anItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecordWithExistance>: No such item by $key")
-        if (theIgnoringList.match(anItem)) {
-            println("Skip: ${anItem.path.last()}")
+    private fun registerAnItemRecordWithExistance(anArchiveSet: ArchiveSet, key: ItemKey, archiveSetIDs: MutableList<Int>) {
+        val theItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecordWithExistance>: No such item by $key")
+        if (theIgnoringList.match(theItem)) {
+            println("Skip: ${theItem.path.last()}")
             return
         }
 
-        val idPair = Triple(anItem.parentArchiveID,anItem.id,anArchiveSet.archiveSetID)
-        var aKey = anItem.generateItemKey()
-        val queryResult = queryInsensitive(aKey)
-        val queryItemRecord: ItemRecord? = queryResult.first
-        aKey = queryResult.second
+        val theParentArchiveID = theItem.parentArchiveID
+        val theArchiveSetID = anArchiveSet.archiveSetID
+        var theKey = theItem.generateItemKey()
+        val queryResult = queryInsensitive(theKey)
+        theKey = queryResult.first
+        val queryItemRecord: ItemRecord? = queryResult.second
         if (queryItemRecord == null) {
-            val anItemRecord = anItem.makeItemRecordFromItem(archiveSetNum, idPair.first, anArchiveSet.archiveSetID)
-            theItemTable[aKey] = anItemRecord
+            val anItemRecord = theItem.makeItemRecordFromItem(archiveSetNum, theParentArchiveID, theArchiveSetID)
+            theItemTable[theKey] = anItemRecord
         }
 
         archiveSetIDs.forEach {
-            theItemTable[aKey]!!.existence[it] =
-                    Pair(anItem.parentArchiveID, anItem.id)
+            theItemTable[theKey]!!.existence[it] =
+                    Pair(theParentArchiveID, theItem.id)
         }
 
-        if (theItemTable[aKey]!!.existence.isFilled())
-            theItemTable[aKey]!!.isFilled = true
+        if (theItemTable[theKey]!!.existence.isFilled())
+            theItemTable[theKey]!!.isFilled = true
 
-        theItemList[anItem.id] = anItem
+        theItemList[theItem.id] = theItem
     }
 
-    fun queryInsensitive(aKey: ItemKey): Pair<ItemRecord?,ItemKey> {
+    private fun queryInsensitive(aKey: ItemKey): Pair<ItemKey,ItemRecord?> {
         val aRecord = theItemTable[aKey]
-        if (aRecord != null) return Pair(aRecord,aKey)
+        if (aRecord != null) return Pair(aKey,aRecord)
 
         var newKey: ItemKey
         var newRecord: ItemRecord?
@@ -108,28 +108,16 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             newKey = aKey.copy(isArchive = null)
             newRecord = theItemTable[newKey]
         }
-        return if (newRecord == null) Pair(aRecord,aKey)
-                else Pair(newRecord,newKey)
+        return if (newRecord == null) Pair(aKey, aRecord)
+                else Pair(newKey, newRecord)
     }
 
-    fun mergeExistance(a:ExistanceBoard, b:ExistanceBoard): ExistanceBoard {
-        val new = arrayOfNulls<ExistanceMark>(a.size)
-        for (i in 0.until(a.size)) {
-            if (a[i] != null) {
-                new[i] = a[i]
-            } else if (b[i] != null) {
-                new[i] = b[i]
-            }
-        }
-        return new
-    }
-
-    fun ExistanceBoard.isFilled(): Boolean {
+    private fun ExistanceBoard.isFilled(): Boolean {
         this.forEach{ if(it==null) return false }
         return true
     }
 
-    fun getFirstItemKey(): ItemKey? {
+    private fun getFirstItemKey(): ItemKey? {
         theItemTable.forEach {
             if (!it.value.isFilled)
                 if (it.key.isArchive != false)
@@ -139,7 +127,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         return null
     }
 
-    fun modifyKeyOfTheItemTable(oldKey: ItemKey, newKey: ItemKey) {
+    private fun modifyKeyOfTheItemTable(oldKey: ItemKey, newKey: ItemKey) {
         val queriedValue = theItemTable[oldKey]
 
         if (queriedValue == null) {
@@ -158,9 +146,11 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                     if (it == null) error("[Error]<printSameItemTable>: No item when `isFilled = true`")
                     else {
                         val theItem = theItemList[it.second] ?: error("[Error]<printSameItemTable>: No queried item from the key in existence: $itemEntry.key")
-                        val thePath = if (fullNameOnly) theItem.path.last().getFullName()
-                        else if (relativePathOnly) theItem.path.last()
-                        else theItem.path.joinToString(separator = "|")
+                        val thePath = when {
+                            fullNameOnly -> theItem.path.last().getFullName()
+                            relativePathOnly -> theItem.path.last()
+                            else -> theItem.path.joinToString(separator = "|")
+                        }
                         val regulatedPath = thePath.regulating(len)
                         print(regulatedPath + " | ")
                     }
@@ -170,17 +160,17 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         }
     }
 
-    fun findMultiVolumes(path: RelativePath, archiveSetID: ArchiveID): IntArray {
+    private fun findMultiVolumes(path: RelativePath, archiveSetID: ArchiveID): MutableList<Int> {
         val commonName = path.getCommonNameOfMultiVolume()
         val idList = mutableListOf<Int>()
         for ( itemEntry in theItemTable ) {
             val existence = itemEntry.value.existence[archiveSetID]
             if (existence != null)
-                if (!itemEntry.value.isFirstOrSingle)
+                if (!(itemEntry.value.isFirstOrSingle || itemEntry.key.isArchive == false))
                     if (theItemList[existence.second]!!.path.last().getCommonNameOfMultiVolume() == commonName)
                         idList.add(existence.second)
         }
-        return idList.toIntArray()
+        return idList
     }
 
     fun runOnce(): Boolean {
@@ -188,11 +178,10 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         if (theKey != null) {
             var theItemRecord = theItemTable[theKey] ?: error("[Error]<runOnce>: No such item by $theKey")
             val idx = theItemRecord.getAnyID()
-            val parentArchive: Archive = theArchiveMap[idx.first] ?: error("[Error]<runOnce>: No such Archive ${idx.first}")
-            // Actually, this is not good enough. However, we assume that even the item is different, same key means same contents.
+            val theParentArchive: Archive = theArchiveMap[idx.first] ?: error("[Error]<runOnce>: No such Archive ${idx.first}")
             val anArchivePath = theItemList[idx.second]!!.path.last()
-            val idxs: IntArray = findMultiVolumes(anArchivePath,parentArchive.archiveSetID)
-            val simpleArchive = parentArchive.ans.inArchive.simpleInterface
+            val idxs: MutableList<Int> = findMultiVolumes(anArchivePath,theParentArchive.archiveSetID)
+            val simpleArchive = theParentArchive.ans.inArchive.simpleInterface
 
 
             val anArchiveRealPath = rootOutputDirectory + directoryDelimiter + anArchivePath
@@ -203,10 +192,10 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 idsList.add(theItemList[id]!!.idInArchive)
 
             val paths: List<Path> = idsList.map { rootOutputDirectory + directoryDelimiter + simpleArchive.getArchiveItem(it).path }
-            val jointPaths = paths.map {parentArchive.realArchivePaths[0].plus(it) }.toTypedArray()
+            val jointPaths = paths.map {theParentArchive.realArchivePaths[0].plus(it) }.toTypedArray()
 
-            Extract( parentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
-                .extractSomething(parentArchive.ans.inArchive, idsList.toIntArray())
+            Extract( theParentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
+                .extractSomething(theParentArchive.ans.inArchive, idsList.toIntArray())
 
             var anANS = openArchive(anArchiveRealPath)
             if (anANS != null) {
@@ -223,7 +212,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                     theItemTable[anKey]!!.isExtracted = true
                 }
 
-                var anArchive = Archive(jointPaths,anANS, idx.second, parentArchive.archiveSetID)
+                var anArchive = Archive(jointPaths,anANS, idx.second, theParentArchive.archiveSetID)
                 theArchiveMap[anArchive.archiveID] = anArchive
                 theArchiveSets[anArchive.archiveSetID].archiveMap[anArchive.archiveID] = anArchive
 
@@ -238,7 +227,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 theItemRecord.existence.forEachIndexed{ eIdx, eV -> if (eV != null) aExistance.add(eIdx) }
 
                 for ( anIdx in anArchive.itemMap.keys)
-                    registerAnItemRecordWithExistance(theArchiveSets[anArchive.archiveSetID],anIdx,aExistance.toIntArray())
+                    registerAnItemRecordWithExistance(theArchiveSets[anArchive.archiveSetID],anIdx,aExistance)
 
             } else {
                 if (theItemRecord.isArchive == null) {
@@ -251,12 +240,6 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             return false
         }
         else return true
-    }
-
-    fun run() {
-        while (true) {
-            if (runOnce()) break
-        }
     }
 
     fun closeAllArchiveSets() {
