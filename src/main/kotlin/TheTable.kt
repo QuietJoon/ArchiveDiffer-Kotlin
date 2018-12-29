@@ -181,19 +181,27 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             val idx = theItemRecord.getAnyID()
             val theParentArchive: Archive = theArchiveMap[idx.first] ?: error("[Error]<runOnce>: No such Archive ${idx.first}")
             val anArchivePath = theItemList[idx.second]!!.path.last()
-            val idxs: List<Int> = findMultiVolumes(anArchivePath,theParentArchive.archiveSetID)
+            val idxs: List<ItemID> = findMultiVolumes(anArchivePath,theParentArchive.archiveSetID)
             val anArchiveRealPath = rootOutputDirectory + directoryDelimiter + anArchivePath
-            // Do not need to sort/convert idsList. But There is no meaning not to do it here in this case.
-            val idsList = idxs.plus(idx.second).sorted().toIntArray()
+            val idsList: List<ItemID> = idxs.plus(idx.second)
+            val iidsList: IntArray = idsList.map{theItemList[it]!!.idInArchive}.sorted().toIntArray()
             // Not sure when the first archive is exe file
             val paths: List<Path> = idsList.map { rootOutputDirectory + directoryDelimiter + theItemList[it]!!.path }.sorted()
             val jointPaths: List<JointPath> = paths.map {theParentArchive.realArchivePaths[0].plus(it)}
 
             println("Print New ArchiveSet's JointPaths")
-            jointPaths.forEach{println(it)}
+            jointPaths.forEach{
+                for (path in it)
+                    println("APath: $path")
+                println()
+            }
 
+            println("Print idsList")
+
+            println(tableInstance)
+            println("${theParentArchive.realArchivePaths.last().last()}")
             Extract( theParentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
-                .extractSomething(theParentArchive.ans.inArchive, idsList)
+                .extractSomething(theParentArchive.ans.inArchive, iidsList)
 
             var anANS = openArchive(anArchiveRealPath)
             if (anANS != null) {

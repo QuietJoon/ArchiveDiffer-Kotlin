@@ -9,6 +9,11 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.5.1.1  -- 2018/12/29
+
+### Fixed
+* Forget to identify `ItemID` and `Item.idInArchive`
+
 ## 0.5.1.0  -- 2018/12/29
 
 ### Changed
