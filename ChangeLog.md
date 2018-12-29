@@ -9,6 +9,15 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.5.1.0  -- 2018/12/29
+
+### Changed
+* Many refactoring/renaming
+
+### Added
+* Add `addNewArchive` in ArchiveSet
+* Add an document `Note.md`
+
 ## 0.5.0.0  -- 2018/12/29
 
 ### Changed
