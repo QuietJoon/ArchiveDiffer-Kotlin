@@ -139,7 +139,7 @@ class GUI : Application() {
 
                     if (count == 0) {
                         println("Have no different files in the ArchiveSets")
-                        resultList.add("Have no different files in the ArchiveSets")
+                        resultList.add(0,"Have no different files in the ArchiveSets")
                     }
 
                     statusIndicator.fill = Paint.valueOf("Green")
@@ -310,7 +310,7 @@ class GUI : Application() {
 
                     if (count == 0) {
                         println("Have no different files in the ArchiveSets")
-                        resultList.add("Have no different files in the ArchiveSets")
+                        resultList.add(0,"Have no different files in the ArchiveSets")
                     }
 
                     statusIndicator.fill = Paint.valueOf("Green")
