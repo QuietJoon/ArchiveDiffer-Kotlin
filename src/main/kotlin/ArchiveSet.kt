@@ -50,8 +50,15 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
         }
     }
 
-    fun addNewArchive() {
+    fun addNewArchive(anArchive: Archive) {
+        archiveMap[anArchive.archiveID] = anArchive
 
+        val simpleArchive = anArchive.ans.inArchive.simpleInterface
+        for (sItem in simpleArchive.archiveItems) {
+            if (!sItem.isFolder) {
+                addNewItem(anArchive.realArchivePaths[0], anArchive.itemID, anArchive.archiveID, sItem)
+            }
+        }
     }
 
     fun getInArchive(archiveID: ArchiveID): IInArchive {
