@@ -59,7 +59,7 @@ class GUI : Application() {
                 analyzedIndicator.fill = Paint.valueOf("GRAY")
 
                 val filePaths = filePathAnalyze(db.files)
-                val packagedFilePaths = packageFilePathsWithoutGuide(db.files)
+                val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
 
                 filePathsLabel.text = filePaths.joinToString(separator = "\n")
 

@@ -31,8 +31,8 @@ fun getFirstOrSingleArchivePaths(paths: Array<Path>) : Array<Path> {
     return firstOrSingle.toTypedArray()
 }
 
-fun packageFilePathsWithoutGuide(files: List<File>): Array<ArchiveSetPaths> {
-    val sorted = files.map{it.toString()}.sorted()
+fun packageFilePathsWithoutGuide(paths: List<String>): Array<ArchiveSetPaths> {
+    val sorted = paths.sorted()
     val resultList = mutableListOf<ArchiveSetPaths>()
     var aList = mutableListOf<JointPath>()
     for ( path in sorted ) {
