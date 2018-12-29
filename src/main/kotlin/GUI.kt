@@ -1,17 +1,22 @@
 import javafx.application.Application
+import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.Button
 import javafx.scene.control.Label
+import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
 import javafx.scene.input.TransferMode
 import javafx.scene.paint.Paint
 import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import kotlinx.coroutines.*
+import kotlinx.coroutines.javafx.*
 
 import util.*
+import java.util.*
 
 
 class GUI : Application() {
@@ -26,6 +31,7 @@ class GUI : Application() {
         // TODO: sessionID=4 is little different
         for ( sessionID in 1..3)
             initTab(root, sessionID)
+        initSelectiveTab(root, 4)
         primaryStage.scene = scene
         primaryStage.show()
     }
@@ -81,21 +87,21 @@ class GUI : Application() {
                     }
                 }
 
-                println("Make the table")
                 var theTable: TheTable? = null
                 var doesTheTableExist = false
+                println("Make the table")
                 GlobalScope.launch {
                     theTable = makeTheTable(packagedFilePaths, theDebugDirectory)
                     doesTheTableExist = true
                 }
 
                 var isJobFinished = false
-                differencesLabel.text = "Start Analyzing"
                 GlobalScope.launch {
                     while ( !doesTheTableExist ) {
                         statusIndicator.fill = Paint.valueOf("Gray")
                         delay(19L)
                     }
+                    differencesLabel.text = "Start Analyzing"
 
                     theTable!!.prepareWorkingDirectory()
 
@@ -153,6 +159,232 @@ class GUI : Application() {
             }
             event.isDropCompleted = success
             event.consume()
+        }
+    }
+    private fun initSelectiveTab(root: Parent, sessionID: Int) {
+
+        var packagedFilePaths: Array<ArchiveSetPaths>? = null
+
+        val tab = root.lookup("#TabSession$sessionID")
+        val fileIndicator = root.lookup("#FileIndicator$sessionID") as Rectangle // For number of proper input file
+        val filePathsLabel = root.lookup("#FilePathsLabel$sessionID") as Label // Name of input file
+        val statusIndicator = root.lookup("#StatusIndicator$sessionID") as Rectangle // Show progress
+        val differencesLabel = root.lookup("#DifferencesLabel$sessionID") as TextArea
+        val analyzedIndicator = root.lookup("#AnalyzedIndicator$sessionID") as Rectangle // Show final result
+
+        val fileTable = root.lookup("#TableView$sessionID") as TableView<GroupedFile>
+        val newButton = root.lookup("#NewButton$sessionID") as Button
+        val goButton = root.lookup("#GoButton$sessionID") as Button
+
+        var isGroupingMode = true
+
+        fun switchMode() {
+            fileIndicator.isVisible = !fileIndicator.isVisible
+            filePathsLabel.isVisible = !filePathsLabel.isVisible
+            statusIndicator.isVisible = !statusIndicator.isVisible
+            differencesLabel.isVisible = !differencesLabel.isVisible
+            analyzedIndicator.isVisible = !analyzedIndicator.isVisible
+
+            fileTable.isVisible = !fileTable.isVisible
+            newButton.isVisible = !newButton.isVisible
+
+            isGroupingMode = !isGroupingMode
+        }
+
+        fileTable.columns[1].style = "-fx-alignment: CENTER-RIGHT;"
+
+
+        tab.onDragOver = EventHandler { event ->
+            val db = event.dragboard
+            if (db.hasFiles()) {
+                event.acceptTransferModes(TransferMode.COPY)
+            } else {
+                event.consume()
+            }
+        }
+
+        tab.onDragDropped = EventHandler { event ->
+            val db = event.dragboard
+            var success = false
+            if (db.hasFiles()) {
+                success = true
+
+                if ( packagedFilePaths != null)
+                    switchMode()
+
+                val fileList = db.files.map {
+                    val anGroupingFile = GroupedFile(false, 0, it.toString())
+                    anGroupingFile.select.addListener { ov, old_val, new_val ->
+                        println(
+                            anGroupingFile.getPath() + "'s CB status changed from '"
+                                    + old_val + "' to '" + new_val + "'."
+                        )
+                    }
+                    anGroupingFile
+                }
+
+                fileTable.items = FXCollections.observableArrayList(fileList)
+
+                var doesLabelSet = false
+                GlobalScope.launch(Dispatchers.JavaFx) {
+                    while (isGroupingMode) delay(100L)
+                    if (packagedFilePaths == null) error("[ERROR]<initSelectiveTab>: packagedFilePath is not set yet")
+
+                    statusIndicator.fill = Paint.valueOf("Black")
+                    analyzedIndicator.fill = Paint.valueOf("GRAY")
+
+                    val sb = StringBuilder()
+                    packagedFilePaths!!.forEachIndexed { sIdx, archiveSetPaths ->
+                        println("ArchiveSet $sIdx")
+                        archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
+                            println("\tArchive $aIdx")
+                            sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
+                            for (aPath in archivePaths) {
+                                println("\t\t" + aPath.last())
+
+                            }
+                        }
+                    }
+                    val str = sb.toString()
+                    filePathsLabel.text = str
+                    println(str)
+                    doesLabelSet = true
+                }
+
+                var theTable: TheTable? = null
+                var doesTheTableExist = false
+                GlobalScope.launch(Dispatchers.JavaFx) {
+                    while (!doesLabelSet) delay(100L)
+                    println("Make the table")
+                    theTable = makeTheTable(packagedFilePaths!!, theDebugDirectory)
+                    doesTheTableExist = true
+                }
+
+                var isJobFinished = false
+                GlobalScope.launch(Dispatchers.JavaFx) {
+                    while (!doesTheTableExist) {
+                        statusIndicator.fill = Paint.valueOf("Gray")
+                        delay(19L)
+                    }
+                    differencesLabel.text = "Start Analyzing"
+
+                    theTable!!.prepareWorkingDirectory()
+
+                    printStatus(theTable!!)
+
+                    printResult(theTable!!)
+
+                    var runCount = 1
+                    while (true) {
+                        println("Phase #$runCount")
+                        if (theTable!!.runOnce()) break
+
+                        printStatus(theTable!!)
+
+                        printResult(theTable!!)
+
+                        runCount++
+                    }
+
+                    val result = printFinalResult(theTable!!)
+                    val count = result.first
+                    val resultList = result.second
+
+                    if (count == 0) {
+                        println("Have no different files in the ArchiveSets")
+                        resultList.add("Have no different files in the ArchiveSets")
+                    }
+
+                    statusIndicator.fill = Paint.valueOf("Green")
+                    analyzedIndicator.fill = Paint.valueOf(if (count == 0) "Green" else "Red")
+
+                    isJobFinished = true
+                    delay(17L)
+
+                    differencesLabel.text = resultList.joinToString(separator = "\n")
+
+                    theTable!!.closeAllArchiveSets()
+                    theTable!!.removeAllArchiveSets()
+
+                    packagedFilePaths = null
+
+                    println("End a phase")
+                }
+
+                GlobalScope.launch(Dispatchers.JavaFx) {
+                    while (!isJobFinished) {
+                        if (doesTheTableExist)
+                            differencesLabel.text = "Now analyzing"
+                        delay(31L)
+                    }
+                }
+            } else {
+                filePathsLabel.text = "No File"
+                statusIndicator.fill = Paint.valueOf("Pink")
+            }
+            event.isDropCompleted = success
+            event.consume()
+        }
+
+        newButton.setOnAction { event ->
+            val groupIDSet: SortedSet<Int> = sortedSetOf()
+
+            for (anItem in fileTable.items) {
+                if (anItem.isSelected)
+                    println(anItem.getPath())
+                else
+                    groupIDSet.add(anItem.getGroupID())
+            }
+            var newID = 0
+            for ( idx in groupIDSet ) {
+                if (newID < idx) break
+                newID++
+            }
+            for (anItem in fileTable.items) {
+                if (anItem.isSelected)
+                    anItem.setGroupID(newID)
+                // TODO: [BUG] This does not update GUI
+                anItem.isSelected = false
+            }
+
+            // TODO: Too bad, but works...
+            fileTable.refresh()
+        }
+
+        goButton.setOnAction { event ->
+            if (isGroupingMode) {
+                val groupIDSet: SortedSet<Int> = sortedSetOf()
+                fileTable.items.forEach {
+                    if (it != null)
+                        groupIDSet.add(it.getGroupID())
+                }
+
+                while (groupIDSet.last() != groupIDSet.size - 1) {
+                    var smallestGroupID = 0
+                    for (idx in groupIDSet) {
+                        if (smallestGroupID < idx) break
+                        smallestGroupID++
+                    }
+                    val finding = groupIDSet.last()
+                    for (anItem in fileTable.items) {
+                        anItem.setGroupID(smallestGroupID)
+                    }
+                }
+
+                val packagedFilePathList = mutableListOf<ArchiveSetPaths>()
+
+                for ( i in 0 until groupIDSet.size ) {
+                    val unpackagedPathList = mutableListOf<RealPath>()
+                    for ( anItem in fileTable.items ) {
+                        if ( anItem.getGroupID() == i )
+                            unpackagedPathList.add(anItem.getPath())
+                    }
+                    packagedFilePathList.add(packageFilePathsForGrouped(unpackagedPathList))
+                }
+                packagedFilePaths = packagedFilePathList.toTypedArray()
+            }
+
+            switchMode()
         }
     }
 }

@@ -6,13 +6,14 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.Button?>
+
+<?import ui.CheckBoxColumn?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 <children>
@@ -72,23 +73,23 @@
                         <font>
                            <Font name="Noto Sans Mono Regular" size="12.0" />
                         </font></TextArea>
-                     <TableView fx:id="TableView" editable="true" layoutX="16.0" layoutY="16.0" prefHeight="313.0" prefWidth="565.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+                     <TableView fx:id="TableView4" editable="true" layoutX="16.0" layoutY="16.0" prefHeight="313.0" prefWidth="565.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
                         <columns>
-                           <!-- <CheckBoxColumn minWidth="64.0" text="Check" /> -->
+                           <CheckBoxColumn minWidth="64.0" text="Check" />
                            <TableColumn minWidth="64.0" text="Group ID">
                               <cellValueFactory>
                                  <PropertyValueFactory property="groupID" />
                               </cellValueFactory>
                            </TableColumn>
-                           <TableColumn prefWidth="256.0" text="Name">
+                           <TableColumn prefWidth="256.0" text="Path">
                               <cellValueFactory>
-                                 <PropertyValueFactory property="name" />
+                                 <PropertyValueFactory property="path" />
                               </cellValueFactory>
                            </TableColumn>
                         </columns>
                      </TableView>
-                     <Button fx:id="NewButton" layoutX="16.0" layoutY="384.0" mnemonicParsing="false" text="Make New" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" />
-                     <Button fx:id="GoButton" layoutX="1543.0" layoutY="731.0" mnemonicParsing="false" text="Go" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="16.0" />
+                     <Button fx:id="NewButton4" layoutX="16.0" layoutY="384.0" mnemonicParsing="false" text="Make New" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0"/>
+                     <Button fx:id="GoButton4" layoutX="1543.0" layoutY="731.0" mnemonicParsing="false" text="Go" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="16.0"/>
                   </children>
                </AnchorPane>
             </content>

@@ -1,5 +1,6 @@
 package util
 
+import ArchivePaths
 import ArchiveSetPaths
 import JointPath
 import java.io.File
@@ -45,6 +46,23 @@ fun packageFilePathsWithoutGuide(paths: List<String>): Array<ArchiveSetPaths> {
         }
     }
     resultList.add(arrayOf(aList.toTypedArray()))
+    return resultList.toTypedArray()
+}
+
+fun packageFilePathsForGrouped(paths: List<String>): ArchiveSetPaths {
+    val sorted = paths.sorted()
+    val resultList = mutableListOf<ArchivePaths>()
+    var aList = mutableListOf<JointPath>()
+    for ( path in sorted ) {
+        if ( path.isSingleVolume() || path.isFirstVolume()) {
+            if (aList.size != 0) resultList.add(aList.toTypedArray())
+            aList = mutableListOf()
+            aList.add(arrayOf(path))
+        } else {
+            aList.add(arrayOf(path))
+        }
+    }
+    resultList.add(aList.toTypedArray())
     return resultList.toTypedArray()
 }
 
