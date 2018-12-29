@@ -7,8 +7,14 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
-### Fix
-* Displaying with SelectiveTab is not working correctly
+## 0.5.3.0  -- 2018/12/29
+
+### Fixed
+* Displaying with SelectiveTab is working correctly
+* Initialize indicator with Go button
+* Initialize fileTable with Go button
+* Use isGroupingMode and container's size for deciding initialization
+* Disable drag and drop when isGroupingMode is false
 
 ## 0.5.2.0  -- 2018/12/29
 
