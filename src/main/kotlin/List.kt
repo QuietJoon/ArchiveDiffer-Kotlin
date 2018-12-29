@@ -3,12 +3,12 @@ import net.sf.sevenzipjbinding.IInArchive
 import util.dateFormatter
 
 
-fun printIgnoringList(ignoringList: IgnoringList) {
+fun IgnoringList.printIgnoringList() {
 
     println("   CRC    |    Size    |     Modified Date   | Filename")
     println("----------+------------+---------------------+---------")
 
-    for (item in ignoringList.ignoringList) {
+    for (item in ignoringList) {
         println(
             String.format(
                 " %08X | %10s | %19s | %s",
@@ -21,12 +21,12 @@ fun printIgnoringList(ignoringList: IgnoringList) {
     }
 }
 
-fun printIgnoringListWithLevel(ignoringList: IgnoringList) {
+fun IgnoringList.printIgnoringListWithLevel() {
 
     println("     CRC     |      Size     |       Modified Date    |  Filename")
     println("-------------+---------------+------------------------+----------")
 
-    for (item in ignoringList.ignoringList) {
+    for (item in ignoringList) {
         println(
             String.format(
                 " %s %08X | %s %10s | %s %19s | %s %s",
@@ -44,8 +44,8 @@ fun printIgnoringListWithLevel(ignoringList: IgnoringList) {
 }
 
 fun getIDArrayWithoutIgnoringItem(inArchive: IInArchive, ignoringList: IgnoringList): IntArray {
-    val simpleInArchive = inArchive.getSimpleInterface()
-    var idList = mutableListOf<Int>()
+    val simpleInArchive = inArchive.simpleInterface
+    val idList = mutableListOf<Int>()
 
     simpleInArchive.archiveItems.forEachIndexed { idx, sItem ->
         val item: Item = sItem.makeItemFromArchiveItem(emptyArray(),0,0, -1)

@@ -1,5 +1,6 @@
 import javafx.beans.property.*
 
+
 class GroupedFile(isSelected: Boolean, groupID: GroupID, path: RealPath){
     val select = SimpleBooleanProperty()
     private val path = SimpleStringProperty()
@@ -15,13 +16,13 @@ class GroupedFile(isSelected: Boolean, groupID: GroupID, path: RealPath){
         this.isSelected = isSelected
     }
 
-    fun pathProperty():StringProperty = this.path
+    private fun pathProperty():StringProperty = this.path
 
     fun getPath():String = this.pathProperty().get()
 
     fun setPath(path:String) = this.pathProperty().set(path)
 
-    fun groupIDProperty():IntegerProperty = this.groupID
+    private fun groupIDProperty():IntegerProperty = this.groupID
 
     fun getGroupID():GroupID = this.groupIDProperty().get()
 

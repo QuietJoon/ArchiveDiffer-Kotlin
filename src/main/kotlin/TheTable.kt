@@ -4,6 +4,7 @@ import java.io.File
 import archive.*
 import util.*
 
+
 class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirectory: RealPath) {
     val theItemTable: ItemRecordTable = sortedMapOf()
     val theItemList: ItemList = mutableMapOf()
@@ -177,7 +178,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     fun runOnce(): Boolean {
         var theKey = getFirstItemKey()
         if (theKey != null) {
-            var theItemRecord = theItemTable[theKey] ?: error("[Error]<runOnce>: No such item by $theKey")
+            val theItemRecord = theItemTable[theKey] ?: error("[Error]<runOnce>: No such item by $theKey")
             val idx = theItemRecord.getAnyID()
             val theParentArchive: Archive = theArchiveMap[idx.first] ?: error("[Error]<runOnce>: No such Archive ${idx.first}")
             val anArchivePath = theItemList[idx.second]!!.path.last()
@@ -192,7 +193,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             Extract( theParentArchive.realArchivePaths.last().last(), rootOutputDirectory, false, null)
                 .extractSomething(theParentArchive.ans.inArchive, iidsList)
 
-            var anANS = openArchive(anArchiveRealPath)
+            val anANS = openArchive(anArchiveRealPath)
             if (anANS != null) {
                 if (theItemRecord.isArchive == null) {
                     val newKey = theKey.copy(isArchive = true)
@@ -207,7 +208,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                     theItemTable[anKey]!!.isExtracted = true
                 }
 
-                var anArchive = Archive(jointPaths.toTypedArray(),anANS, idx.second, theParentArchive.archiveSetID)
+                val anArchive = Archive(jointPaths.toTypedArray(),anANS, idx.second, theParentArchive.archiveSetID)
                 theArchiveMap[anArchive.archiveID] = anArchive
                 theArchiveSets[anArchive.archiveSetID].addNewArchive(anArchive)
 

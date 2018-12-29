@@ -1,16 +1,13 @@
 package archive
 
-import RealPath
-import java.io.IOException
-import java.io.RandomAccessFile
-import java.io.FileNotFoundException
+import java.io.*
 import java.util.HashMap
 
 import net.sf.sevenzipjbinding.*
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream
 
 import util.*
-import java.io.File
+import RealPath
 
 
 class ArchiveAndStream (val inArchive: IInArchive, var randomAccess: RandomAccessFile?, var archiveCallback: ArchiveOpenVolumeCallback?) {
@@ -59,9 +56,9 @@ fun openArchive(aFilePath: RealPath): ArchiveAndStream? {
 private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
     println("Open single volume with $aFilePath")
 
-    var randomAccessFile: RandomAccessFile
-    var inArchive: IInArchive
-    var inStream: IInStream?
+    val randomAccessFile: RandomAccessFile
+    val inArchive: IInArchive
+    val inStream: IInStream?
     try {
         randomAccessFile = RandomAccessFile(aFilePath, "r")
         inStream = RandomAccessFileInStream(randomAccessFile)
@@ -89,8 +86,8 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
 private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
     println("Open multi-volume with $aFilePath")
 
-    var archiveOpenVolumeCallback: ArchiveOpenVolumeCallback
-    var inArchive: IInArchive
+    val archiveOpenVolumeCallback: ArchiveOpenVolumeCallback
+    val inArchive: IInArchive
     val inStream: IInStream?
     try {
         archiveOpenVolumeCallback = ArchiveOpenVolumeCallback()

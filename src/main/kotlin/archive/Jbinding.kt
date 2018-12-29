@@ -1,7 +1,6 @@
 package archive
 
-import net.sf.sevenzipjbinding.SevenZip
-import net.sf.sevenzipjbinding.SevenZipNativeInitializationException
+import net.sf.sevenzipjbinding.*
 
 
 fun jBindingChecker(): Boolean{

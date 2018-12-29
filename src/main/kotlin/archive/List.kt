@@ -1,13 +1,12 @@
 package archive
 
 import net.sf.sevenzipjbinding.IInArchive
-import util.dateFormatter
 
-import util.isArchive
+import util.*
 
 
 fun printItemList(inArchive: IInArchive) {
-    val simpleInArchive = inArchive.getSimpleInterface()
+    val simpleInArchive = inArchive.simpleInterface
     val theSize = simpleInArchive.archiveItems.size
 
     println("Archive item size: $theSize")
@@ -35,7 +34,7 @@ fun printItemList(inArchive: IInArchive) {
 
 fun printItemListByIDs(inArchive: IInArchive, ids: IntArray) {
     if ( !ids.isEmpty() ) {
-        val simpleInArchive = inArchive.getSimpleInterface()
+        val simpleInArchive = inArchive.simpleInterface
 
         println("  ID  |   CRC    |     Size     |   Compr.Sz.  |    Modified Date    | Filename")
         println("-----------------+--------------+--------------+---------------------+---------")
@@ -60,8 +59,8 @@ fun printItemListByIDs(inArchive: IInArchive, ids: IntArray) {
 }
 
 fun getNestedArchivesIDArray(inArchive: IInArchive): IntArray {
-    val simpleInArchive = inArchive.getSimpleInterface()
-    var idList = mutableListOf<Int>()
+    val simpleInArchive = inArchive.simpleInterface
+    val idList = mutableListOf<Int>()
 
     for (item in simpleInArchive.archiveItems) {
         if (item.path.toString().isArchive()) {

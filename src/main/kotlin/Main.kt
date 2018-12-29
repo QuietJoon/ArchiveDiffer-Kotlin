@@ -2,6 +2,7 @@ import javafx.application.Application
 
 import archive.*
 
+
 fun main(args : Array<String>) {
     println("ArchiveDiffer-Kotlin")
     if (!jBindingChecker()) error("Fail to initialize 7Zip-JBinding")

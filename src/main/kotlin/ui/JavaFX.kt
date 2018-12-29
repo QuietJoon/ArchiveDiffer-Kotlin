@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent
 
 import GroupedFile
 
+
 class CheckBoxColumn : TableColumn<GroupedFile, Boolean>() {
     init {
         this.cellValueFactory = PropertyValueFactory<GroupedFile, Boolean>("select")

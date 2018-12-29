@@ -1,3 +1,4 @@
+import java.util.*
 import javafx.application.Application
 import javafx.collections.FXCollections
 import javafx.event.EventHandler
@@ -16,7 +17,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.*
 
 import util.*
-import java.util.*
 
 
 class GUI : Application() {
@@ -117,23 +117,21 @@ class GUI : Application() {
 
                     theTable!!.prepareWorkingDirectory()
 
-                    printStatus(theTable!!)
-
-                    printResult(theTable!!)
+                    theTable!!.printStatus()
+                    theTable!!.printResult()
 
                     var runCount = 1
                     while (true) {
                         println("Phase #$runCount")
                         if (theTable!!.runOnce()) break
 
-                        printStatus(theTable!!)
-
-                        printResult(theTable!!)
+                        theTable!!.printStatus()
+                        theTable!!.printResult()
 
                         runCount++
                     }
 
-                    val result = printFinalResult(theTable!!)
+                    val result = theTable!!.printFinalResult()
                     val count = result.first
                     val resultList = result.second
 
@@ -232,7 +230,7 @@ class GUI : Application() {
 
                 val fileList = db.files.map {
                     val anGroupingFile = GroupedFile(false, 0, it.toString())
-                    anGroupingFile.select.addListener { ov, old_val, new_val ->
+                    anGroupingFile.select.addListener { _, old_val, new_val ->
                         println(
                             anGroupingFile.getPath() + "'s CB status changed from '"
                                     + old_val + "' to '" + new_val + "'."
@@ -288,23 +286,21 @@ class GUI : Application() {
 
                     theTable!!.prepareWorkingDirectory()
 
-                    printStatus(theTable!!)
-
-                    printResult(theTable!!)
+                    theTable!!.printStatus()
+                    theTable!!.printResult()
 
                     var runCount = 1
                     while (true) {
                         println("Phase #$runCount")
                         if (theTable!!.runOnce()) break
 
-                        printStatus(theTable!!)
-
-                        printResult(theTable!!)
+                        theTable!!.printStatus()
+                        theTable!!.printResult()
 
                         runCount++
                     }
 
-                    val result = printFinalResult(theTable!!)
+                    val result = theTable!!.printFinalResult()
                     val count = result.first
                     val resultList = result.second
 
@@ -342,7 +338,7 @@ class GUI : Application() {
             event.consume()
         }
 
-        newButton.setOnAction { event ->
+        newButton.setOnAction {
             val groupIDSet: SortedSet<Int> = sortedSetOf()
 
             for (anItem in fileTable.items) {
@@ -367,13 +363,13 @@ class GUI : Application() {
             fileTable.refresh()
         }
 
-        goButton.setOnAction { event ->
+        goButton.setOnAction {
             if (isGroupingMode) {
                 if (fileTable.items.isNotEmpty()) {
                     val groupIDSet: SortedSet<Int> = sortedSetOf()
-                    fileTable.items.forEach {
-                        if (it != null)
-                            groupIDSet.add(it.getGroupID())
+                    fileTable.items.forEach { groupedFile ->
+                        if (groupedFile != null)
+                            groupIDSet.add(groupedFile.getGroupID())
                     }
 
                     while (groupIDSet.last() != groupIDSet.size - 1) {
@@ -382,7 +378,6 @@ class GUI : Application() {
                             if (smallestGroupID < idx) break
                             smallestGroupID++
                         }
-                        val finding = groupIDSet.last()
                         for (anItem in fileTable.items) {
                             anItem.setGroupID(smallestGroupID)
                         }

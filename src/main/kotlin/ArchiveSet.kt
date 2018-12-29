@@ -62,7 +62,7 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
     }
 
     fun getInArchive(archiveID: ArchiveID): IInArchive {
-        val anArchive: Archive = archiveMap[archiveID] ?: error("[ERROR]<getInArchive>: No such archive ${archiveID}")
+        val anArchive: Archive = archiveMap[archiveID] ?: error("[ERROR]<getInArchive>: No such archive $archiveID")
         return anArchive.ans.inArchive
     }
 

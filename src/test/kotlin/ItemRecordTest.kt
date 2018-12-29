@@ -21,7 +21,7 @@ fun main (args: Array<String>) {
 
     val theIgnoringListPath = "U:\\Kazuki\\AD\\IgnoringList.20181214.txt"
     val theIgnoringList = readIgnoringList(theIgnoringListPath)
-    printIgnoringListWithLevel(theIgnoringList)
+    theIgnoringList.printIgnoringListWithLevel()
 
     for ( anArchiveSet in archiveSetList) {
         for ( anArchive in anArchiveSet.archiveMap) {

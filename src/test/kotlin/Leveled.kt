@@ -11,7 +11,7 @@ fun main (args: Array<String>) {
         rawIgnoringList.add(makeItemFromRawItem(item))
     }
     val ignoringList = IgnoringList(rawIgnoringList.toList())
-    printIgnoringList(ignoringList)
+    ignoringList.printIgnoringList()
 
     val outputPath = "R:\\TestArchives\\IgnoringList.txt"
     writeIgnoringList(ignoringList, outputPath)
@@ -19,10 +19,10 @@ fun main (args: Array<String>) {
 
     val newIgnoringList = readIgnoringList(outputPath)
 
-    printIgnoringListWithLevel(newIgnoringList)
+    newIgnoringList.printIgnoringListWithLevel()
 
     println("Modified")
     val modifiedPath = "R:\\TestArchives\\ModifiedIgnoringList.txt"
     val modifiedIgnoringList = readIgnoringList(modifiedPath)
-    printIgnoringListWithLevel(modifiedIgnoringList)
+    modifiedIgnoringList.printIgnoringListWithLevel()
 }

@@ -7,6 +7,11 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.5.3.1  -- 2018/12/29
+
+### Changed
+* Clean up warnings
+
 ## 0.5.3.0  -- 2018/12/29
 
 ### Fixed

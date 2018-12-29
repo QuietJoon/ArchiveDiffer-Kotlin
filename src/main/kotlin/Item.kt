@@ -47,9 +47,11 @@ class Item (
     }
 
     private fun checkArchiveName(fullName: String): Boolean? =
-        if ( fullName.getExtension() == "exe" ) null // Make more logic
-        else if ( fullName.isArchive() ) true
-        else false
+        when {
+            fullName.getExtension() == "exe" -> null // Make more logic
+            fullName.isArchive() -> true
+            else -> false
+        }
 
     override fun equals(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
