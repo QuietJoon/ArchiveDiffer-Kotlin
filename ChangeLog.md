@@ -3,9 +3,18 @@
 ## Unreleased changes
 
 ### Change
-* Add space holder for missing Item's full-name for `differencesLabel`
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
+
+## 0.5.4.0  -- 2018/12/30
+
+### Added
+* Add progress messages
+
+### Changed
+* Change non-existence file displaying
+* Change `filePathsLabel` font bolder
+* Show whether the file names are same or not
 
 ## 0.5.3.1  -- 2018/12/29
 
