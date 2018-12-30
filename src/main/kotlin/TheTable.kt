@@ -40,7 +40,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
 
             val theParentArchiveID = theItem.parentArchiveID
             val theArchiveSetID = anArchiveSet.archiveSetID
-            var theKey = theItem.generateItemKey()
+            var theKey = anItem.key
             val queryResult = queryInsensitive(theKey)
             theKey = queryResult.first
             val queryItemRecord: ItemRecord? = queryResult.second
@@ -71,7 +71,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
 
         val theParentArchiveID = theItem.parentArchiveID
         val theArchiveSetID = anArchiveSet.archiveSetID
-        var theKey = theItem.generateItemKey()
+        var theKey = key
         val queryResult = queryInsensitive(theKey)
         theKey = queryResult.first
         val queryItemRecord: ItemRecord? = queryResult.second
