@@ -85,16 +85,6 @@ class GUI : Application() {
                 val str = sb.toString()
                 filePathsLabel.text = str
 
-                for ( archiveSetPaths in packagedFilePaths) {
-                    println("ArchiveSet")
-                    for ( archivePaths in archiveSetPaths ) {
-                        println("\tArchive")
-                        for (aPath in archivePaths) {
-                            println("\t\t" + aPath.last())
-                        }
-                    }
-                }
-
                 GlobalScope.launch {
                     for ( i in 0..10 ) {
                         fileIndicator.fill = Paint.valueOf(if (fileSwitch) "Blue" else "White")
@@ -191,6 +181,8 @@ class GUI : Application() {
         val goButton = root.lookup("#GoButton$sessionID") as Button
 
         var isGroupingMode = true
+
+        filePathsLabel.font = Font.font(null,FontWeight.BOLD,12.0)
 
         fun switchMode() {
             fileIndicator.isVisible = !fileIndicator.isVisible
