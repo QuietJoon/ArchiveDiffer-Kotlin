@@ -67,6 +67,7 @@ class GUI : Application() {
 
                 statusIndicator.fill = Paint.valueOf("DODGERBLUE")
                 analyzedIndicator.fill = Paint.valueOf("#eeff99")
+                differencesLabel.text = "Start"
 
                 val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
 
@@ -117,6 +118,7 @@ class GUI : Application() {
                     var runCount = 1
                     while (true) {
                         println("Phase #$runCount")
+                        differencesLabel.text = "Phase #$runCount"
                         if (theTable!!.runOnce()) break
 
                         theTable!!.printStatus()
@@ -148,15 +150,6 @@ class GUI : Application() {
 
                     println("End a phase")
                 }
-
-                GlobalScope.launch {
-                    while (!isJobFinished) {
-                        if (doesTheTableExist)
-                            differencesLabel.text = "Now analyzing"
-                        delay(31L)
-                    }
-                }
-
             } else {
                 filePathsLabel.text = "No File"
                 statusIndicator.fill = Paint.valueOf("Pink")
@@ -220,6 +213,7 @@ class GUI : Application() {
 
                 statusIndicator.fill = Paint.valueOf("DODGERBLUE")
                 analyzedIndicator.fill = Paint.valueOf("#eeff99")
+                differencesLabel.text = "Start"
 
                 if ( packagedFilePaths != null)
                     switchMode()
@@ -288,6 +282,7 @@ class GUI : Application() {
                     var runCount = 1
                     while (true) {
                         println("Phase #$runCount")
+                        differencesLabel.text = "Phase #$runCount"
                         if (theTable!!.runOnce()) break
 
                         theTable!!.printStatus()
@@ -317,14 +312,6 @@ class GUI : Application() {
                     theTable!!.removeAllArchiveSets()
 
                     println("End a phase")
-                }
-
-                GlobalScope.launch(Dispatchers.JavaFx) {
-                    while (!isJobFinished) {
-                        if (doesTheTableExist)
-                            differencesLabel.text = "Now analyzing"
-                        delay(31L)
-                    }
                 }
             } else {
                 filePathsLabel.text = "No File"
