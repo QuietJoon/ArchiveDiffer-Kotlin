@@ -310,8 +310,9 @@ data class ItemRecord (
         stringBuilder.append(if (isArchive == true) (if (isExtracted) "E " else "N ") else "- ")
         stringBuilder.append(if (isArchive==null) "? " else if (isArchive!!) "A " else "F ")
         stringBuilder.append(if (isArchive==false) "  " else if (isFirstOrSingle) "S " else "M ")
-        for(i in existence)
-            stringBuilder.append(if (i==null) "    -     " else String.format(" %3d-%-5d",i.first,i.second))
+        existence.forEachIndexed { i, em ->
+            stringBuilder.append(if (em == null) "    $i     " else String.format(" %3d-%-5d", em.first, em.second))
+        }
         stringBuilder.append(" | ")
         stringBuilder.append(String.format("%08X", this.dataCRC))
         stringBuilder.append("  ")
@@ -329,8 +330,9 @@ data class ItemRecord (
         stringBuilder.append(if (isArchive == true) (if (isExtracted) "E " else "N ") else "- ")
         stringBuilder.append(if (isArchive==null) "? " else if (isArchive!!) "A " else "F ")
         stringBuilder.append(if (isArchive==false) "  " else if (isFirstOrSingle) "S " else "M ")
-        for(i in existence)
-            stringBuilder.append(if (i==null) "    -     " else String.format(" %3d-%-5d",i.first,i.second))
+        existence.forEachIndexed { i, em ->
+            stringBuilder.append(if (em == null) "    $i     " else String.format(" %3d-%-5d", em.first, em.second))
+        }
         for(i in existence) {
             if (i != null) {
                 stringBuilder.append(" || ")
