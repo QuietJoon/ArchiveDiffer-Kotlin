@@ -140,13 +140,42 @@ fun String.trimming(width: Int, suffix: String, suffixLength: Int): String {
     error("[ERROR]<trimming>: Can't be reached")
 }
 
+fun String.trimmingFromEnd(width: Int, suffix: String, suffixLength: Int): String {
+    var result = ""
+    var currWidth= 0
+    var idx = this.length
+    while (idx != 0) {
+        idx--
+        val chr = this[idx]
+        val chrWidth = chr.getCharWidth()
+        when {
+            currWidth+chrWidth == width-suffixLength -> return suffix.repeat(suffixLength) + chr + result
+            currWidth+chrWidth >  width-suffixLength -> return suffix.repeat(suffixLength+1) + result
+        }
+        result = chr + result
+        currWidth += chrWidth
+    }
+    error("[ERROR]<trimmingFromEnd>: Can't be reached")
+}
+
 fun String.regulating(width: Int): String {
     val suffix="."
     val prefix=" "
     val thisWidth = this.getWidth()
     return when {
-        thisWidth < width -> prefix.repeat(width-thisWidth)+this
+        thisWidth < width -> this+prefix.repeat(width-thisWidth)
         thisWidth > width -> this.trimming(width,suffix,2)
+        else -> this
+    }
+}
+
+fun String.regulatingFromEnd(width: Int): String {
+    val suffix="."
+    val prefix=" "
+    val thisWidth = this.getWidth()
+    return when {
+        thisWidth < width -> prefix.repeat(width-thisWidth)+this
+        thisWidth > width -> this.trimmingFromEnd(width,suffix,2)
         else -> this
     }
 }
@@ -173,4 +202,16 @@ fun Char.getCharWidth(): Int {
 
 fun Long.dateFormatter(): String {
     return dateFormat.format(java.util.Date(this))
+}
+
+fun MutableList<String>.getSame(): Pair<Boolean,List<Pair<String,String>>> {
+    val pairList = mutableListOf<Pair<String,String>>()
+    for (str in this)
+        // TODO: Want to do more efficiently, but I couldn't find something like `splitAt` or `breakOnEnd` in Haskell
+        pairList.add(Pair(str.getDirectory(),str.getFullName()))
+    val head = pairList[0].second
+    for (strPair in pairList.drop(1)) {
+        if (head != strPair.second) return Pair(false, pairList)
+    }
+    return Pair(true, pairList)
 }

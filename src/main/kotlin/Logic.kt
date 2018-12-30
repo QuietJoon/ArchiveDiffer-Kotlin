@@ -42,8 +42,7 @@ fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
         if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
             count++
             val stringBuilder = StringBuilder()
-            stringBuilder.append(anItemEntry.key.toString())
-            stringBuilder.append(anItemEntry.value.simpleString(theItemList))
+            stringBuilder.append(anItemEntry.value.managedString(theItemList))
             val theString = stringBuilder.toString()
             resultList.add(theString)
             println(theString)
@@ -54,8 +53,7 @@ fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
     for (anItemEntry in theItemTable) {
         if (anItemEntry.value.isFilled || anItemEntry.value.isExtracted) {
             val stringBuilder = StringBuilder()
-            stringBuilder.append(anItemEntry.key.toString())
-            stringBuilder.append(anItemEntry.value.simpleString(theItemList))
+            stringBuilder.append(anItemEntry.value.managedString(theItemList))
             val theString = stringBuilder.toString()
             resultList.add(theString)
             println(theString)

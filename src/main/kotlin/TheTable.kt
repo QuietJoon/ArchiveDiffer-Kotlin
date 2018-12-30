@@ -342,6 +342,49 @@ data class ItemRecord (
         return stringBuilder.toString()
     }
 
+    fun managedString(theItemList: ItemList): String {
+        val dirLen = 16
+        val nameLen = 64
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(String.format("%08X", this.dataCRC))
+        stringBuilder.append("  ")
+        stringBuilder.append(String.format("%10d", this.dataSize))
+        stringBuilder.append("  ")
+        stringBuilder.append(if (isFilled) "O " else "X ")
+        stringBuilder.append(if (isArchive == true) (if (isExtracted) "E " else "N ") else "- ")
+        stringBuilder.append(if (isArchive==null) "? " else if (isArchive!!) "A " else "F ")
+        stringBuilder.append(if (isArchive==false) "  " else if (isFirstOrSingle) "S " else "M ")
+
+        existence.forEachIndexed { i, em ->
+            stringBuilder.append(if (em == null) " - " else " $i ")
+        }
+        val pathList = mutableListOf<String>()
+        for(i in existence) {
+            if (i == null)
+                pathList.add("")
+            else
+                pathList.add(theItemList[i.second]!!.path.last())
+        }
+        val result = pathList.getSame()
+        if (result.first) {
+            stringBuilder.append(" <> ")
+            stringBuilder.append(result.second[0].second.regulating(nameLen*2))
+            stringBuilder.append(" <> ")
+            result.second.forEach { pairStr ->
+                stringBuilder.append(pairStr.first.regulating(dirLen))
+                stringBuilder.append(" || ")
+            }
+        } else {
+            result.second.forEach { pairStr ->
+                stringBuilder.append(" || ")
+                stringBuilder.append(pairStr.first.regulatingFromEnd(dirLen))
+                stringBuilder.append(directoryDelimiter)
+                stringBuilder.append(pairStr.second.regulating(nameLen))
+            }
+        }
+        return stringBuilder.toString()
+    }
+
     fun getAnyID(): ExistanceMark {
         existence.forEach {
             if (it != null) return it
