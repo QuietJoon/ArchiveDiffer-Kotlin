@@ -6,6 +6,12 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.5.4.1  -- 2018/12/30
+
+### Fixed
+* No more lost duplicated files in TheTable
+* Now `getDirectory` returns empty string when there is no directory in given path
+
 ## 0.5.4.0  -- 2018/12/30
 
 ### Added
@@ -80,7 +86,7 @@ Fork ArchiveDiffer from StudyKotlin-JBinding
 ## 0.3.2.0  -- 2018/12/27
 
 ### Changed
-* Make UI reatively
+* Make UI reactively
 
 ## 0.3.1.0  -- 2018/12/25
 
