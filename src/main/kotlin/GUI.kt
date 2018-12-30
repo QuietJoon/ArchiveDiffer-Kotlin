@@ -12,6 +12,8 @@ import javafx.scene.control.TextArea
 import javafx.scene.input.TransferMode
 import javafx.scene.paint.Paint
 import javafx.scene.shape.Rectangle
+import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import javafx.stage.Stage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.*
@@ -45,6 +47,8 @@ class GUI : Application() {
         val differencesLabel = root.lookup("#DifferencesLabel$sessionID") as TextArea
         val analyzedIndicator = root.lookup("#AnalyzedIndicator$sessionID") as Rectangle // Show final result
         var fileSwitch = true
+
+        filePathsLabel.font = Font.font(null,FontWeight.BOLD,12.0)
 
         tab.onDragOver = EventHandler { event ->
             val db = event.dragboard
