@@ -83,7 +83,7 @@ fun String.getExtension(): String =
     this.substringAfterLast(directoryDelimiter).substringAfterLast(".","")
 
 fun String.getDirectory(): String =
-    this.substringBeforeLast(directoryDelimiter)
+    this.substringBeforeLast(directoryDelimiter,"")
 
 fun String.isArchive(): Boolean {
     val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "exe")
