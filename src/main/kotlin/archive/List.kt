@@ -9,17 +9,17 @@ fun printItemList(inArchive: IInArchive) {
     val simpleInArchive = inArchive.simpleInterface
     val theSize = simpleInArchive.archiveItems.size
 
-    println("Archive item size: $theSize")
+    print("Archive item size: $theSize\n")
 
-    println(String.format("Archive Format: %s", inArchive.archiveFormat.toString()))
+    print(String.format("Archive Format: %s\n", inArchive.archiveFormat.toString()))
 
-    println("  ID  |   CRC    |     Size     |   Compr.Sz.  |    Modified Date    | Filename")
-    println("-----------------+--------------+--------------+---------------------+---------")
+    print("  ID  |   CRC    |     Size     |   Compr.Sz.  |    Modified Date    | Filename\n")
+    print("-----------------+--------------+--------------+---------------------+---------\n")
 
     for (item in simpleInArchive.archiveItems) {
-        println(
+        print(
             String.format(
-                " %4d | %08X | %12s | %12s | %19s | %s",
+                " %4d | %08X | %12s | %12s | %19s | %s\n",
                 item.itemIndex,
                 item.crc,
                 item.size,
@@ -36,14 +36,14 @@ fun printItemListByIDs(inArchive: IInArchive, ids: IntArray) {
     if ( !ids.isEmpty() ) {
         val simpleInArchive = inArchive.simpleInterface
 
-        println("  ID  |   CRC    |     Size     |   Compr.Sz.  |    Modified Date    | Filename")
-        println("-----------------+--------------+--------------+---------------------+---------")
+        print("  ID  |   CRC    |     Size     |   Compr.Sz.  |    Modified Date    | Filename\n")
+        print("-----------------+--------------+--------------+---------------------+---------\n")
 
         for (idx in ids) {
             val item = simpleInArchive.getArchiveItem(idx)
-            println(
+            print(
                 String.format(
-                    " %4d | %08X | %12s | %12s | %19s | %s",
+                    " %4d | %08X | %12s | %12s | %19s | %s\n",
                     item.itemIndex,
                     item.crc,
                     item.size,
@@ -54,7 +54,7 @@ fun printItemListByIDs(inArchive: IInArchive, ids: IntArray) {
             )
         }
     } else {
-        println("No Item for listing")
+        print("No Item for listing\n")
     }
 }
 

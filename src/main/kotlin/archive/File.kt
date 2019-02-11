@@ -45,7 +45,7 @@ fun openArchive(aFilePath: RealPath): ArchiveAndStream? {
         throw ExtractionException("Archive file not found: $aFilePath")
     }
     if (!File(aFilePath).canRead()) {
-        println("Can't read archive file: $aFilePath")
+        print("Can't read archive file: $aFilePath\n")
     }
 
     return if (aFilePath.isSingleVolume())
@@ -54,7 +54,7 @@ fun openArchive(aFilePath: RealPath): ArchiveAndStream? {
 }
 
 private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
-    println("Open single volume with $aFilePath")
+    print("Open single volume with $aFilePath\n")
 
     val randomAccessFile: RandomAccessFile
     val inArchive: IInArchive
@@ -84,7 +84,7 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
 
 
 private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
-    println("Open multi-volume with $aFilePath")
+    print("Open multi-volume with $aFilePath\n")
 
     val archiveOpenVolumeCallback: ArchiveOpenVolumeCallback
     val inArchive: IInArchive

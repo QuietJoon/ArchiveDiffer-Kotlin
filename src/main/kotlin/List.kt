@@ -5,13 +5,13 @@ import util.dateFormatter
 
 fun IgnoringList.printIgnoringList() {
 
-    println("   CRC    |    Size    |     Modified Date   | Filename")
-    println("----------+------------+---------------------+---------")
+    print("   CRC    |    Size    |     Modified Date   | Filename\n")
+    print("----------+------------+---------------------+---------\n")
 
     for (item in ignoringList) {
-        println(
+        print(
             String.format(
-                " %08X | %10s | %19s | %s",
+                " %08X | %10s | %19s | %s\n",
                 item.itemCRC.datum,
                 item.itemSize.datum,
                 item.itemModifiedDate.datum.dateFormatter(),
@@ -23,13 +23,13 @@ fun IgnoringList.printIgnoringList() {
 
 fun IgnoringList.printIgnoringListWithLevel() {
 
-    println("     CRC     |      Size     |       Modified Date    |  Filename")
-    println("-------------+---------------+------------------------+----------")
+    print("     CRC     |      Size     |       Modified Date    |  Filename\n")
+    print("-------------+---------------+------------------------+----------\n")
 
     for (item in ignoringList) {
-        println(
+        print(
             String.format(
-                " %s %08X | %s %10s | %s %19s | %s %s",
+                " %s %08X | %s %10s | %s %19s | %s %s\n",
                 item.itemCRC.level.toShortString(),
                 item.itemCRC.datum,
                 item.itemSize.level.toShortString(),

@@ -30,7 +30,7 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
     fun addNewItem(parentPath: JointPath, itemID: ItemID, archiveID: ArchiveID, sItem: ISimpleInArchiveItem) {
         val anItem = sItem.makeItemFromArchiveItem(parentPath, itemID, archiveID, archiveSetID)
         if (theIgnoringList.match(anItem)) {
-            println("Skip: ${anItem.path.last()}")
+            print("Skip: ${anItem.path.last()}\n")
             return
         }
         var aKey = anItem.generateItemKey()
@@ -41,7 +41,7 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
                 break
             // This condition never satisfied
             } else if (queryItem.equalsWithoutRealPath(anItem)) {
-                println("[ERROR]<ArchiveSet.addNewItem>: Skip because completely same item: ${anItem.path.last()}")
+                print("[ERROR]<ArchiveSet.addNewItem>: Skip because completely same item: ${anItem.path.last()}\n")
                 itemMap[aKey] = anItem
                 break
             } else {

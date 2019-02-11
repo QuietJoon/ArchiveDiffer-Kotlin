@@ -37,7 +37,7 @@ class Archive (
             , archiveSetID
         )
         if (theIgnoringList.match(anItem)) {
-            println("Skip: ${anItem.path.last()}")
+            print("Skip: ${anItem.path.last()}\n")
             return
         }
         var aKey = anItem.generateItemKey()
@@ -48,7 +48,7 @@ class Archive (
                 break
                 // This condition never satisfied
             } else if (queryItem.equalsWithoutRealPath(anItem)) {
-                println("[ERROR]<Archive.addNewItem>: Skip because completely same item: ${anItem.path.last()}")
+                print("[ERROR]<Archive.addNewItem>: Skip because completely same item: ${anItem.path.last()}\n")
                 itemMap[aKey] = anItem
                 break
             } else {

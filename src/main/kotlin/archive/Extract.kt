@@ -119,9 +119,9 @@ class Extract internal constructor(
 
             if (!isFolder) {
                 when (extractAskMode) {
-                    ExtractAskMode.EXTRACT -> println("Extracted $path")
-                    ExtractAskMode.TEST -> println("Tested $path")
-                    else -> println("Unknown mode $path")
+                    ExtractAskMode.EXTRACT -> print("Extracted $path\n")
+                    ExtractAskMode.TEST -> print("Tested $path\n")
+                    else -> print("Unknown mode $path\n")
                 }
             }
         }

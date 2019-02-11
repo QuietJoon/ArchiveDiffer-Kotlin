@@ -4,31 +4,31 @@ fun TheTable.printStatus() {
 
     for (anItemRecord in theItemTable) {
         print(anItemRecord.key.toString())
-        println(anItemRecord.value.toString())
+        print(anItemRecord.value.toString().plus("\n"))
     }
 }
 
 fun TheTable.printResult() {
 
-    println("Difference only")
+    print("Difference only\n")
     for (anItemEntry in theItemTable) {
         if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
             val stringBuilder = StringBuilder()
             stringBuilder.append(anItemEntry.key.toString())
             stringBuilder.append(anItemEntry.value.toString())
             val theString = stringBuilder.toString()
-            println(theString)
+            print(theString.plus("\n"))
         }
     }
 
-    println("Same")
+    print("Same\n")
     for (anItemEntry in theItemTable) {
         if (anItemEntry.value.isFilled || anItemEntry.value.isExtracted) {
             val stringBuilder = StringBuilder()
             stringBuilder.append(anItemEntry.key.toString())
             stringBuilder.append(anItemEntry.value.toString())
             val theString = stringBuilder.toString()
-            println(theString)
+            print(theString.plus("\n"))
         }
     }
 }
@@ -37,7 +37,7 @@ fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
     var count = 0
     val resultList = mutableListOf<String>()
 
-    println("Difference only")
+    print("Difference only\n")
     for (anItemEntry in theItemTable) {
         if (!anItemEntry.value.isFilled && !anItemEntry.value.isExtracted) {
             count++
@@ -45,10 +45,10 @@ fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
             stringBuilder.append(anItemEntry.value.managedString(theItemList))
             val theString = stringBuilder.toString()
             resultList.add(theString)
-            println(theString)
+            print(theString.plus("\n"))
         }
     }
-    println("Same")
+    print("Same\n")
     resultList.add("--------------------------------    Same    --------------------------------")
     for (anItemEntry in theItemTable) {
         if (anItemEntry.value.isFilled || anItemEntry.value.isExtracted) {
@@ -56,7 +56,7 @@ fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
             stringBuilder.append(anItemEntry.value.managedString(theItemList))
             val theString = stringBuilder.toString()
             resultList.add(theString)
-            println(theString)
+            print(theString.plus("\n"))
         }
     }
     return Pair(count,resultList)

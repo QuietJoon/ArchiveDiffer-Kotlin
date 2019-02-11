@@ -73,12 +73,12 @@ class GUI : Application() {
 
                 val sb = StringBuilder()
                 packagedFilePaths.forEachIndexed { sIdx, archiveSetPaths ->
-                    println("ArchiveSet $sIdx")
+                    print("ArchiveSet $sIdx\n")
                     archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
-                        println("\tArchive $aIdx")
+                        print("\tArchive $aIdx\n")
                         sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
                         for (aPath in archivePaths) {
-                            println("\t\t" + aPath.last())
+                            print("\t\t" + aPath.last() + "\n")
 
                         }
                     }
@@ -96,7 +96,7 @@ class GUI : Application() {
 
                 var theTable: TheTable? = null
                 var doesTheTableExist = false
-                println("Make the table")
+                print("Make the table\n")
                 GlobalScope.launch {
                     theTable = makeTheTable(packagedFilePaths, theDebugDirectory)
                     doesTheTableExist = true
@@ -117,7 +117,7 @@ class GUI : Application() {
 
                     var runCount = 1
                     while (true) {
-                        println("Phase #$runCount")
+                        print("Phase #$runCount\n")
                         differencesLabel.text = "Phase #$runCount"
                         if (theTable!!.runOnce()) break
 
@@ -132,7 +132,7 @@ class GUI : Application() {
                     val resultList = result.second
 
                     if (count == 0) {
-                        println("Have no different files in the ArchiveSets")
+                        print("Have no different files in the ArchiveSets\n")
                         resultList.add(0,"Have no different files in the ArchiveSets")
                     }
 
@@ -188,7 +188,7 @@ class GUI : Application() {
             newButton.isVisible = !newButton.isVisible
 
             isGroupingMode = !isGroupingMode
-            println("Is grouping mode: $isGroupingMode")
+            print("Is grouping mode: $isGroupingMode\n")
         }
 
         fileTable.columns[1].style = "-fx-alignment: CENTER-RIGHT;"
@@ -221,9 +221,9 @@ class GUI : Application() {
                 val fileList = db.files.map {
                     val anGroupingFile = GroupedFile(false, 0, it.toString())
                     anGroupingFile.select.addListener { _, old_val, new_val ->
-                        println(
+                        print(
                             anGroupingFile.getPath() + "'s CB status changed from '"
-                                    + old_val + "' to '" + new_val + "'."
+                                    + old_val + "' to '" + new_val + "'.\n"
                         )
                     }
                     anGroupingFile
@@ -241,19 +241,19 @@ class GUI : Application() {
 
                     val sb = StringBuilder()
                     packagedFilePaths!!.forEachIndexed { sIdx, archiveSetPaths ->
-                        println("ArchiveSet $sIdx")
+                        print("ArchiveSet $sIdx\n")
                         archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
-                            println("\tArchive $aIdx")
+                            print("\tArchive $aIdx\n")
                             sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
                             for (aPath in archivePaths) {
-                                println("\t\t" + aPath.last())
+                                print("\t\t" + aPath.last() + "\n")
 
                             }
                         }
                     }
                     val str = sb.toString()
                     filePathsLabel.text = str
-                    println(str)
+                    print(str.plus("\n"))
                     doesLabelSet = true
                 }
 
@@ -261,7 +261,7 @@ class GUI : Application() {
                 var doesTheTableExist = false
                 GlobalScope.launch(Dispatchers.JavaFx) {
                     while (!doesLabelSet) delay(100L)
-                    println("Make the table")
+                    print("Make the table\n")
                     theTable = makeTheTable(packagedFilePaths!!, theDebugDirectory)
                     doesTheTableExist = true
                 }
@@ -281,7 +281,7 @@ class GUI : Application() {
 
                     var runCount = 1
                     while (true) {
-                        println("Phase #$runCount")
+                        print("Phase #$runCount\n")
                         differencesLabel.text = "Phase #$runCount"
                         if (theTable!!.runOnce()) break
 
@@ -296,7 +296,7 @@ class GUI : Application() {
                     val resultList = result.second
 
                     if (count == 0) {
-                        println("Have no different files in the ArchiveSets")
+                        print("Have no different files in the ArchiveSets\n")
                         resultList.add(0,"Have no different files in the ArchiveSets")
                     }
 
@@ -326,7 +326,7 @@ class GUI : Application() {
 
             for (anItem in fileTable.items) {
                 if (anItem.isSelected)
-                    println(anItem.getPath())
+                    print(anItem.getPath().plus("\n"))
                 else
                     groupIDSet.add(anItem.getGroupID())
             }

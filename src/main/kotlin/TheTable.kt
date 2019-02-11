@@ -52,7 +52,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 newExistance[theArchiveSetID] = Pair(theParentArchiveID, theItem.id)
                 theItemTable[theKey]!!.existence = newExistance
             } else {
-                println("[WARN]<registerAnItemRecord>: add again ${theItem.path.last()}")
+                print("[WARN]<registerAnItemRecord>: add again ${theItem.path.last()}\n")
             }
 
             if (theItemTable[theKey]!!.existence.isFilled())
@@ -65,7 +65,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     private fun registerAnItemRecordWithExistance(anArchiveSet: ArchiveSet, key: ItemKey, archiveSetIDs: MutableList<Int>) {
         val theItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecordWithExistance>: No such item by $key")
         if (theIgnoringList.match(theItem)) {
-            println("Skip: ${theItem.path.last()}")
+            print("Skip: ${theItem.path.last()}\n")
             return
         }
 
@@ -142,7 +142,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     fun printSameItemTable(len: Int, fullNameOnly: Boolean, relativePathOnly: Boolean) {
         for ( itemEntry in theItemTable ) {
             if (itemEntry.value.isFilled) {
-                println(itemEntry.key)
+                print(itemEntry.key.toString().plus("\n"))
                 itemEntry.value.existence.forEach {
                     if (it == null) error("[Error]<printSameItemTable>: No item when `isFilled = true`")
                     else {
@@ -156,7 +156,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                         print(regulatedPath + " | ")
                     }
                 }
-                println()
+                print("\n")
             }
         }
     }
