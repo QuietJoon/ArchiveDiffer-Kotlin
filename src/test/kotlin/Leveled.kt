@@ -1,7 +1,7 @@
 import archive.openArchive
 
 fun main (args: Array<String>) {
-    val ans = openArchive("R:\\TestArchives\\BadPattern.2018.12.18.rar") ?: error("[Error]<Leveled>: Fail to open")
+    val ans = openArchive("U:\\Kazuki\\BadPattern\\BadPattern.rar") ?: error("[Error]<Leveled>: Fail to open")
 
     var rawIgnoringList: MutableList<IgnoringItem> = mutableListOf()
 
@@ -13,7 +13,7 @@ fun main (args: Array<String>) {
     val ignoringList = IgnoringList(rawIgnoringList.toList())
     ignoringList.printIgnoringList()
 
-    val outputPath = "R:\\TestArchives\\IgnoringList.txt"
+    val outputPath = "U:\\Kazuki\\BadPattern\\IgnoringList.txt"
     writeIgnoringList(ignoringList, outputPath)
 
 
