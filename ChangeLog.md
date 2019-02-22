@@ -6,6 +6,14 @@
 * Make more pretty columned text output
 * Extract archives only when other file Items is not full-filled
 
+## 0.5.4.2  -- 2019/02/22
+
+### Changed
+* No more hard-coded configuration
+
+### Added
+* Add argument parser to generalize configuration
+
 ## 0.5.4.1  -- 2018/12/30
 
 ### Fixed
