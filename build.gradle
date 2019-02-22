@@ -21,7 +21,7 @@ ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'wi
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    def coroutines_version = '1.0.1'
+    def coroutines_version = '1.1.1'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$coroutines_version"
     compile "org.openjfx:javafx-base:11.0.1:$platform"
@@ -34,6 +34,8 @@ dependencies {
     compile files("JAVALIB_LOCAL/sevenzipjbinding-16.02-2.01beta-20170914-Windows-amd64/lib/sevenzipjbinding.jar")
     compile files("JAVALIB_LOCAL/sevenzipjbinding-16.02-2.01beta-20170914-Windows-amd64/lib/sevenzipjbinding-Windows-amd64.jar")
     compile "com.ibm.icu:icu4j:63.1"
+    compile group: 'com.xenomachina', name: 'kotlin-argparser', version: '2.0.7'
+
 }
 
 compileKotlin {
