@@ -98,7 +98,7 @@ class GUI : Application() {
                 var doesTheTableExist = false
                 print("Make the table\n")
                 GlobalScope.launch {
-                    theTable = makeTheTable(packagedFilePaths, theDebugDirectory)
+                    theTable = makeTheTable(packagedFilePaths, theWorkingDirectory)
                     doesTheTableExist = true
                 }
 
@@ -262,7 +262,7 @@ class GUI : Application() {
                 GlobalScope.launch(Dispatchers.JavaFx) {
                     while (!doesLabelSet) delay(100L)
                     print("Make the table\n")
-                    theTable = makeTheTable(packagedFilePaths!!, theDebugDirectory)
+                    theTable = makeTheTable(packagedFilePaths!!, theWorkingDirectory)
                     doesTheTableExist = true
                 }
 
