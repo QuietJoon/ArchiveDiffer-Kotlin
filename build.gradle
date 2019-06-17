@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
 }
 
 version '1.0-SNAPSHOT'
@@ -24,10 +24,10 @@ dependencies {
     def coroutines_version = '1.1.1'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$coroutines_version"
-    compile "org.openjfx:javafx-base:11.0.1:$platform"
-    compile "org.openjfx:javafx-graphics:11.0.1:$platform"
-    compile "org.openjfx:javafx-controls:11.0.1:$platform"
-    compile "org.openjfx:javafx-fxml:11.0.1:$platform"
+    compile "org.openjfx:javafx-base:11.0.2:$platform"
+    compile "org.openjfx:javafx-graphics:11.0.2:$platform"
+    compile "org.openjfx:javafx-controls:11.0.2:$platform"
+    compile "org.openjfx:javafx-fxml:11.0.2:$platform"
     // Does not work with 16.02
     //compile "net.sf.sevenzipjbinding:sevenzipjbinding:9.20-2.00beta"
     //compile "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms:9.20-2.00beta"
