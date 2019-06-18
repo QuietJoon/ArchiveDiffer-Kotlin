@@ -21,7 +21,7 @@ ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'wi
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    def coroutines_version = '1.1.1'
+    def coroutines_version = '1.2.1'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$coroutines_version"
     compile "org.openjfx:javafx-base:11.0.2:$platform"
