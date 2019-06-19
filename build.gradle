@@ -25,10 +25,6 @@ dependencies {
     def coroutines_version = '1.2.1'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$coroutines_version"
-    compile "org.openjfx:javafx-base:11.0.2:$platform"
-    compile "org.openjfx:javafx-graphics:11.0.2:$platform"
-    compile "org.openjfx:javafx-controls:11.0.2:$platform"
-    compile "org.openjfx:javafx-fxml:11.0.2:$platform"
     // Version 16.02 does not work with Maven(?) style. Rewrite with file style
     //compile "net.sf.sevenzipjbinding:sevenzipjbinding:9.20-2.00beta"
     //compile "net.sf.sevenzipjbinding:sevenzipjbinding-all-platforms:9.20-2.00beta"
@@ -36,12 +32,17 @@ dependencies {
     compile files("JAVALIB_LOCAL/sevenzipjbinding-16.02-2.01beta-20170914-Windows-amd64/lib/sevenzipjbinding-Windows-amd64.jar")
     compile "com.ibm.icu:icu4j:63.1"
     compile group: 'com.xenomachina', name: 'kotlin-argparser', version: '2.0.7'
+    // Seems to be needed to avoid `Exception in thread "main" java.lang.NoClassDefFoundError: javafx/application/Application`
+    compile "org.openjfx:javafx-base:11.0.2:$platform"
+    compile "org.openjfx:javafx-graphics:11.0.2:$platform"
+    compile "org.openjfx:javafx-controls:11.0.2:$platform"
+    compile "org.openjfx:javafx-fxml:11.0.2:$platform"
 
 }
 
 javafx {
     version = "11.0.2"
-    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
+    modules = [ 'javafx.base', 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
 }
 
 compileKotlin {
