@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.31'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.40'
     id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
@@ -22,7 +22,7 @@ ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'wi
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    def coroutines_version = '1.2.1'
+    def coroutines_version = '1.2.2'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$coroutines_version"
     // Version 16.02 does not work with Maven(?) style. Rewrite with file style
@@ -46,6 +46,9 @@ javafx {
 }
 
 compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
