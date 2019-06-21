@@ -5,6 +5,9 @@ Kotlin implement of ArchiveDiffer
 
 ## Feature
 
-* Open Archives
-  * Open multi-volume archives
-* Extract files in an archive
+* Diff files in each given ArchiveSet and report the differences
+* Ignores files on the list
+
+## Upcoming features
+
+* Find archives from inside of the program
