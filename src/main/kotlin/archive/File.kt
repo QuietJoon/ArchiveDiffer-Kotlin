@@ -1,3 +1,5 @@
+// Originally comes from example code for SevenZip-JBindings
+
 package archive
 
 import java.io.*
