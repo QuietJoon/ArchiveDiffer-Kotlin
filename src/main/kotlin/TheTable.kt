@@ -48,9 +48,9 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 val anItemRecord = theItem.makeItemRecordFromItem(archiveSetNum, theParentArchiveID, theArchiveSetID)
                 theItemTable[theKey] = anItemRecord
             } else if (queryItemRecord.existence[theArchiveSetID] == null) {
-                val newExistance = queryItemRecord.existence
-                newExistance[theArchiveSetID] = Pair(theParentArchiveID, theItem.id)
-                theItemTable[theKey]!!.existence = newExistance
+                val newExistence = queryItemRecord.existence
+                newExistence[theArchiveSetID] = Pair(theParentArchiveID, theItem.id)
+                theItemTable[theKey]!!.existence = newExistence
             } else {
                 print("[WARN]<registerAnItemRecord>: add again ${theItem.path.last()}\n")
             }
@@ -62,8 +62,8 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         }
     }
 
-    private fun registerAnItemRecordWithExistance(anArchiveSet: ArchiveSet, key: ItemKey, archiveSetIDs: MutableList<Int>) {
-        val theItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecordWithExistance>: No such item by $key")
+    private fun registerAnItemRecordWithExistence(anArchiveSet: ArchiveSet, key: ItemKey, archiveSetIDs: MutableList<Int>) {
+        val theItem: Item = anArchiveSet.itemMap[key] ?: error("[Error]<registerAnItemRecordWithExistence>: No such item by $key")
         if (theIgnoringList.match(theItem)) {
             print("Skip: ${theItem.path.last()}\n")
             return
@@ -113,7 +113,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 else Pair(newKey, newRecord)
     }
 
-    private fun ExistanceBoard.isFilled(): Boolean {
+    private fun ExistenceBoard.isFilled(): Boolean {
         this.forEach{ if(it==null) return false }
         return true
     }
@@ -212,11 +212,11 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                 theArchiveMap[anArchive.archiveID] = anArchive
                 theArchiveSets[anArchive.archiveSetID].addNewArchive(anArchive)
 
-                val aExistance = mutableListOf<Int>()
-                theItemRecord.existence.forEachIndexed{ eIdx, eV -> if (eV != null) aExistance.add(eIdx) }
+                val aExistence = mutableListOf<Int>()
+                theItemRecord.existence.forEachIndexed{ eIdx, eV -> if (eV != null) aExistence.add(eIdx) }
 
                 for ( anIdx in anArchive.itemMap.keys)
-                    registerAnItemRecordWithExistance(theArchiveSets[anArchive.archiveSetID],anIdx,aExistance)
+                    registerAnItemRecordWithExistence(theArchiveSets[anArchive.archiveSetID],anIdx,aExistence)
 
             } else {
                 if (theItemRecord.isArchive == null) {
@@ -296,7 +296,7 @@ data class ItemRecord (
     , val dataSize: DataSize
     , val modifiedDate: Date
     , val path: RelativePath
-    , var existence: ExistanceBoard
+    , var existence: ExistenceBoard
     , var isFilled: Boolean
     , var isArchive: Boolean? // null when exe is not sure
     , var isExtracted: Boolean
@@ -385,7 +385,7 @@ data class ItemRecord (
         return stringBuilder.toString()
     }
 
-    fun getAnyID(): ExistanceMark {
+    fun getAnyID(): ExistenceMark {
         existence.forEach {
             if (it != null) return it
         }
@@ -396,5 +396,5 @@ data class ItemRecord (
 typealias ItemRecordTable = SortedMap<ItemKey, ItemRecord>
 typealias ItemList = MutableMap<ItemID,Item>
 typealias ArchiveMap = MutableMap<Int,Archive>
-typealias ExistanceMark = Pair<ArchiveID,ItemID>
-typealias ExistanceBoard = Array<ExistanceMark?>
+typealias ExistenceMark = Pair<ArchiveID,ItemID>
+typealias ExistenceBoard = Array<ExistenceMark?>

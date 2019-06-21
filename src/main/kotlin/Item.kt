@@ -31,7 +31,7 @@ class Item (
 
 
     fun makeItemRecordFromItem(archiveSetNum: Int, theArchiveID: ArchiveID, archiveSetID: ArchiveSetID): ItemRecord {
-        val existence = arrayOfNulls<ExistanceMark>(archiveSetNum)
+        val existence = arrayOfNulls<ExistenceMark>(archiveSetNum)
         existence[archiveSetID]=Pair(theArchiveID,id)
         return ItemRecord(
             dataCRC = dataCRC
