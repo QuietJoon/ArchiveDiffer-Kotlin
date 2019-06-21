@@ -5,11 +5,11 @@
 
    The licenses for codes are:
 
-    1) ArchiveDiffer: the "GNU LGPL"
-    2) 7z:
-         - The "GNU LGPL", "unRAR license restriction", and  "BSD 3-clause License"
+    1) ArchiveDiffer: the "GNU LGPL 3.0"
+    2) 7-Zip:
+         - The "GNU LGPL 3.0", "unRAR license restriction", and  "BSD 3-clause License"
          according to the "7-Zip license"
-    3) SevenZip-JBinding: the "GNU LGPL".
+    3) SevenZip-JBinding: the "GNU LGPL 3.0"
 
 
   GNU LGPL information
