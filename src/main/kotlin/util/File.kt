@@ -40,5 +40,5 @@ fun writeFileDirectlyAsBytes(fileName: String, fileContent: String) =
 
 // TODO: Not yet implemented
 fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Pair<MessageType,String> {
-    return Pair(MessageType.NoProblem, "")
+    return Pair(MessageType.NoProblem, "\n")
 }

@@ -32,8 +32,10 @@ fun main(args : Array<String>) {
 class EntryPoint : Application() {
 
     private var tabCount = 0
-    private val defaultWhiteMessageLabelStyle = "-fx-stroke: white; -fx-padding: 4 4 4 4; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
-    private val defaultBlackMessageLabelStyle = "-fx-stroke: white; -fx-padding: 4 4 4 4; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: Black;"
+    private val defaultWhiteMessageLabelStyle = "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
+    private val defaultBlackMessageLabelStyle = "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: Black;"
+    private val defaultWhiteTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-base-color: white;"
+    private val defaultBlackTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-base-color: Black;"
 
     private fun generateAnalyzeTab (packagedFilePaths: Array<ArchiveSetPaths>): Tab {
         val tab = Tab()
@@ -54,9 +56,9 @@ class EntryPoint : Application() {
         // Step: Check archive existence
         var rASV: Pair<MessageType, String>
         rASV = checkArchiveExistence(packagedFilePaths)
-        if (rASV.first != MessageType.NoProblem) addMessageLabel(messageBox, rASV.first, rASV.second)
+        addMessageLabel(messageBox, rASV.first, rASV.second)
         rASV = checkArchiveVolume(packagedFilePaths)
-        if (rASV.first != MessageType.NoProblem) addMessageLabel(messageBox, rASV.first, rASV.second)
+        addMessageLabel(messageBox, rASV.first, rASV.second)
 
         // TODO: Not implemented yet
         val titleFromFileName = ""
@@ -65,6 +67,7 @@ class EntryPoint : Application() {
         var doesTheTableExist = false
         print("Make the table for $titleFromFileName\n")
         tab.text = "Table Making: $titleFromFileName"
+        tab.style = defaultBlackTabStyle
 
         GlobalScope.launch {
             theTable = makeTheTable(packagedFilePaths, theWorkingDirectory)
@@ -106,9 +109,32 @@ class EntryPoint : Application() {
             theTable!!.removeAllArchiveSets()
 
             Platform.runLater {
+                val diffResult = TextArea()
+                val sameResult = TextArea()
+
+                resultBox.children.add(diffResult)
+                resultBox.children.add(sameResult)
+
+                diffResult.setMaxSize(2000.0,2000.0)
+                diffResult.setPrefSize(2000.0,400.0)
+                sameResult.setMaxSize(2000.0,2000.0)
+                sameResult.setPrefSize(2000.0,0.0)
+
+                // TODO: Get same/diff ratio, and apply it against height
+                aTabPane.heightProperty().addListener{ _, _, newVal ->
+                    val height = newVal.toDouble()-240.0
+                    diffResult.setPrefSize(0.0, height)
+                    sameResult.setPrefSize(0.0, 0.0)
+                }
+
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
                 //Paint.valueOf(if (count == 0) "Green" else "Red")
-                tab.style = "-fx-background-color: ".plus(if (count == 0) "green;" else "red;")
+                tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus(if (count == 0) "green;" else "red;")
+                if (count == 0)
+                    addMessageLabel(messageBox,MessageType.NoProblem,"No\nProblem")
+                else
+                    addMessageLabel(messageBox,MessageType.Critical,"Have\nDiff")
+                diffResult.text = resultList.joinToString(separator = "\n")
             }
 
             println("End a phase")
@@ -125,7 +151,7 @@ class EntryPoint : Application() {
             MessageType.Warning -> defaultWhiteMessageLabelStyle.plus("-fx-background-color: blue")
             MessageType.NoProblem -> defaultWhiteMessageLabelStyle.plus("-fx-background-color: green")
         }
-        mb.children.add(messageLabel)
+        mb.children.add(0, messageLabel)
     }
 
     private fun openMASGrouper (tabPane: TabPane, unpackagedFilePaths: List<Path>) {
