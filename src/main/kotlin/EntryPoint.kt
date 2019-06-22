@@ -16,7 +16,6 @@ import util.packageFilePathsWithoutGuide
 import archive.checkArchiveVolume
 import javafx.collections.FXCollections
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import util.packageFilePathsForGrouped
 import java.util.*
@@ -44,8 +43,9 @@ class EntryPoint : Application() {
         val fxml = javaClass.getResource("fxml/Tab.fxml")
         val aTabPane: Pane = FXMLLoader.load(fxml)
         val filePathArea= aTabPane.lookup("#FilePaths") as TextArea // FilePaths TextArea
-        val messageBox= aTabPane.lookup("#MessageBox") as HBox // MessageBox HBox
-        val resultBox= aTabPane.lookup("#ResultBox") as VBox // ResultBox VBox
+        val messageBox= aTabPane.lookup("#MessageBox") as HBox
+        val resultBox= aTabPane.lookup("#ResultBox") as VBox
+        val cancelButton= aTabPane.lookup("#CancelButton") as Button
 
         messageBox.border = Border(BorderStroke(Paint.valueOf("Red"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
         resultBox.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
@@ -64,14 +64,13 @@ class EntryPoint : Application() {
         val titleFromFileName = ""
 
         var theTable: TheTable? = null
-        var doesTheTableExist = false
+
         print("Make the table for $titleFromFileName\n")
         tab.text = "Table Making: $titleFromFileName"
         tab.style = defaultBlackTabStyle
 
-        GlobalScope.launch {
+        val task = GlobalScope.launch {
             theTable = makeTheTable(packagedFilePaths, theWorkingDirectory)
-            doesTheTableExist = true
 
             Platform.runLater {
                 tab.text = "Analyzing: $titleFromFileName"
@@ -107,6 +106,7 @@ class EntryPoint : Application() {
 
             theTable!!.closeAllArchiveSets()
             theTable!!.removeAllArchiveSets()
+            theTable = null
 
             Platform.runLater {
                 val diffResult = TextArea()
@@ -138,6 +138,15 @@ class EntryPoint : Application() {
             }
 
             println("End a phase")
+        }
+
+        cancelButton.setOnAction {
+            task.cancel()
+            if (theTable != null) {
+                println("Cancel job ${theTable!!.tableInstance}")
+                theTable!!.closeAllArchiveSets()
+                theTable!!.removeAllArchiveSets()
+            }
         }
 
         return tab
