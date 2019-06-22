@@ -1,4 +1,5 @@
 import javafx.application.Application
+import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
@@ -14,6 +15,9 @@ import util.generatePackagedFilePaths
 import util.packageFilePathsWithoutGuide
 import archive.checkArchiveVolume
 import javafx.collections.FXCollections
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import util.packageFilePathsForGrouped
 import java.util.*
 
@@ -53,6 +57,62 @@ class EntryPoint : Application() {
         if (rASV.first != MessageType.NoProblem) addMessageLabel(messageBox, rASV.first, rASV.second)
         rASV = checkArchiveVolume(packagedFilePaths)
         if (rASV.first != MessageType.NoProblem) addMessageLabel(messageBox, rASV.first, rASV.second)
+
+        // TODO: Not implemented yet
+        val titleFromFileName = ""
+
+        var theTable: TheTable? = null
+        var doesTheTableExist = false
+        print("Make the table for $titleFromFileName\n")
+        tab.text = "Table Making: $titleFromFileName"
+
+        GlobalScope.launch {
+            theTable = makeTheTable(packagedFilePaths, theWorkingDirectory)
+            doesTheTableExist = true
+
+            Platform.runLater {
+                tab.text = "Analyzing: $titleFromFileName"
+            }
+
+            theTable!!.prepareWorkingDirectory()
+
+            theTable!!.printStatus()
+            theTable!!.printResult()
+
+            var runCount = 1
+            while (true) {
+                print("Phase #$runCount: $titleFromFileName\n")
+                Platform.runLater {
+                    tab.text = "Phase #$runCount - $titleFromFileName"
+                }
+                if (theTable!!.runOnce()) break
+
+                theTable!!.printStatus()
+                theTable!!.printResult()
+
+                runCount++
+            }
+
+            val result = theTable!!.printFinalResult()
+            var count = result.first
+            val resultList = result.second
+
+            if (count == 0) {
+                print("Have no different files in the ArchiveSets\n")
+                resultList.add(0,"Have no different files in the ArchiveSets")
+            }
+
+            theTable!!.closeAllArchiveSets()
+            theTable!!.removeAllArchiveSets()
+
+            Platform.runLater {
+                tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
+                //Paint.valueOf(if (count == 0) "Green" else "Red")
+                tab.style = "-fx-background-color: ".plus(if (count == 0) "green;" else "red;")
+            }
+
+            println("End a phase")
+        }
 
         return tab
     }

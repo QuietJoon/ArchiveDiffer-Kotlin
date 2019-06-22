@@ -19,7 +19,7 @@ fun main(args : Array<String>) {
 
         theWorkingDirectory = aWorkingDirectory
 
-        Application.launch(GUI().javaClass, *args)
+        Application.launch(EntryPoint().javaClass, *args)
     }
 
 }
