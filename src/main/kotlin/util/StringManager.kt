@@ -11,6 +11,22 @@ import JointPath
 import Path
 
 
+// TODO: Mixed with CLI printing code
+fun generatePackagedFilePaths (packagedFilePaths: Array<ArchiveSetPaths>): String {
+    val sb = StringBuilder()
+    packagedFilePaths.forEachIndexed { sIdx, archiveSetPaths ->
+        print("ArchiveSet $sIdx\n")
+        archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
+            print("\tArchive $aIdx\n")
+            sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
+            for (aPath in archivePaths) {
+                print("\t\t" + aPath.last() + "\n")
+            }
+        }
+    }
+    return sb.toString()
+}
+
 fun generateStringFromFileList (strings : List<File>): String {
     val internalString = strings.map{it.toString().getFullName()}.joinToString(separator = "\n")
     return arrayOf("<\n", internalString, "\n>").joinToString(separator = "")

@@ -71,20 +71,7 @@ class GUI : Application() {
 
                 val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
 
-                val sb = StringBuilder()
-                packagedFilePaths.forEachIndexed { sIdx, archiveSetPaths ->
-                    print("ArchiveSet $sIdx\n")
-                    archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
-                        print("\tArchive $aIdx\n")
-                        sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
-                        for (aPath in archivePaths) {
-                            print("\t\t" + aPath.last() + "\n")
-
-                        }
-                    }
-                }
-                val str = sb.toString()
-                filePathsLabel.text = str
+                filePathsLabel.text = generatePackagedFilePaths(packagedFilePaths)
 
                 GlobalScope.launch {
                     for ( i in 0..10 ) {
@@ -239,19 +226,7 @@ class GUI : Application() {
                     statusIndicator.fill = Paint.valueOf("Black")
                     analyzedIndicator.fill = Paint.valueOf("GRAY")
 
-                    val sb = StringBuilder()
-                    packagedFilePaths!!.forEachIndexed { sIdx, archiveSetPaths ->
-                        print("ArchiveSet $sIdx\n")
-                        archiveSetPaths.forEachIndexed { aIdx, archivePaths ->
-                            print("\tArchive $aIdx\n")
-                            sb.append(String.format("%4s %4s %s\n", sIdx, aIdx, archivePaths[0].last()))
-                            for (aPath in archivePaths) {
-                                print("\t\t" + aPath.last() + "\n")
-
-                            }
-                        }
-                    }
-                    val str = sb.toString()
+                    val str = generatePackagedFilePaths(packagedFilePaths!!)
                     filePathsLabel.text = str
                     print(str.plus("\n"))
                     doesLabelSet = true
