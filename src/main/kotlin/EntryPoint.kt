@@ -37,7 +37,7 @@ class EntryPoint : Application() {
     private val defaultWhiteTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-base-color: white;"
     private val defaultBlackTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-base-color: Black;"
 
-    private fun generateAnalyzeTab (packagedFilePaths: Array<ArchiveSetPaths>): Tab {
+    private fun generateAnalyzeTab (tabPane: TabPane, packagedFilePaths: Array<ArchiveSetPaths>): Tab {
         val tab = Tab()
         tabCount += 1
         tab.text = "Tab$tabCount"
@@ -137,6 +137,7 @@ class EntryPoint : Application() {
                 else
                     addMessageLabel(messageBox,MessageType.Critical,"Have\nDiff")
                 diffResult.text = resultList.joinToString(separator = "\n")
+                tabPane.selectionModel.select(tab)
             }
 
             println("End a phase")
@@ -230,7 +231,7 @@ class EntryPoint : Application() {
                 packagedFilePaths = packagedFilePathList.toTypedArray()
             }
 
-            val newAnalyzeTab = generateAnalyzeTab(packagedFilePaths!!)
+            val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths!!)
             tabPane.tabs.add(newAnalyzeTab)
             tabPane.selectionModel.select(newAnalyzeTab)
             masgStage.close()
@@ -304,7 +305,7 @@ class EntryPoint : Application() {
         singleDropPoint.onDragDropped = EventHandler { event ->
             val db = event.dragboard
             val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
-            val newAnalyzeTab = generateAnalyzeTab(packagedFilePaths)
+            val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
             event.consume()
 
             tabPane.tabs.add(newAnalyzeTab)
