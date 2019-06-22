@@ -8,3 +8,12 @@ fun Level.toShortString() = when (this) {
     Level.IGNORE -> "IG"
     Level.NOTYET -> "NY"
 }
+
+enum class MessageType { NoProblem, Warning, Bad, Critical }
+
+fun MessageType.toShortString() = when (this) {
+    MessageType.NoProblem -> "NP"
+    MessageType.Warning -> "WN"
+    MessageType.Bad -> "BD"
+    MessageType.Critical -> "CR"
+}

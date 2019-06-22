@@ -6,6 +6,9 @@ Copy from https://github.com/eugenp/tutorials/tree/master/core-kotlin/src/main/k
 
 import java.io.File
 
+import ArchiveSetPaths
+import MessageType
+
 
 fun readFileLineByLineUsingForEachLine(fileName: String) = File(fileName).forEachLine { println(it) }
 
@@ -33,3 +36,9 @@ fun writeFileDirectly(fileName: String, fileContent: String) =
 
 fun writeFileDirectlyAsBytes(fileName: String, fileContent: String) =
     File(fileName).writeBytes(fileContent.toByteArray())
+
+
+// TODO: Not yet implemented
+fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Pair<MessageType,String> {
+    return Pair(MessageType.NoProblem, "")
+}
