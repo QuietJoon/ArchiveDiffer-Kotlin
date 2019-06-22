@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane fx:id="EPPane" prefHeight="640.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<children>
+    <TabPane fx:id="TabPane" prefHeight="640.0" prefWidth="1152.0" tabClosingPolicy="ALL_TABS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="128.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    </TabPane>
+    <AnchorPane fx:id="DropPane" layoutY="128.0" maxWidth="128.0" minWidth="128.0" prefWidth="128.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Rectangle fx:id="ForSingle" arcHeight="16.0" arcWidth="16.0" fill="DODGERBLUE" height="360.0" width="120.0" stroke="#1100ff" strokeType="INSIDE" strokeWidth="8.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0"/>
+            <Rectangle fx:id="ForMulti" arcHeight="16.0" arcWidth="16.0" fill="#ff9d1f" height="240.0" width="120.0" stroke="#ff8800" strokeType="INSIDE" strokeWidth="8.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.bottomAnchor="4.0"/>
+         </children>
+    </AnchorPane>
+</children>
+</AnchorPane>
