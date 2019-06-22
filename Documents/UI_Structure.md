@@ -1,13 +1,21 @@
 UI Structure
 ====
 
-## Comparing Set Generating Spot
+## Comparing Set Drop Point
 
-Prepares at Right Space
+* Prepares at Left Space
+* Highlight hovering region
+* 
+
+### Multi ArchiveSet
 
 ## Dynamic Tab
 
+A dynamic tab invoke a task
+
 ### Actions
+
+#### Generate Tab after 
 
 #### Drop on Dynamic Tab
 

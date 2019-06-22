@@ -17,3 +17,11 @@ Kotlin implement of ArchiveDiffer
 ## Upcoming features
 
 * Find archives from inside of the program
+
+## Tested Environment
+
+May works with Windows/Linux/macOS, but not tested yet.
+
+* Windows
+  * Windows 10: Heavily tested (3~4 hours per week)
+ 

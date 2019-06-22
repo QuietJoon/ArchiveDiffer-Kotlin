@@ -1,5 +1,9 @@
-Note
+Issues
 ====
+
+## Trouble with Full-width character
+
+Even I use ICU4J, I couldn't resolve Full-width character viewing problem.
 
 ## Serial numbers
 
