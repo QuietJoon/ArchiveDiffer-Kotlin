@@ -5,9 +5,10 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.*
 import javafx.scene.control.*
 import javafx.scene.input.*
+import javafx.scene.layout.*
 import javafx.scene.paint.*
 import javafx.scene.shape.*
-import javafx.scene.layout.*
+import javafx.scene.text.*
 import javafx.stage.*
 
 import util.checkArchiveExistence
@@ -52,6 +53,7 @@ class EntryPoint : Application() {
         tab.content = aTabPane
 
         filePathArea.text = generatePackagedFilePaths(packagedFilePaths)
+        filePathArea.font = Font.font(null,FontWeight.NORMAL,14.0)
 
         // Step: Check archive existence
         var rASV: Pair<MessageType, String>
