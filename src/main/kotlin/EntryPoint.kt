@@ -297,6 +297,7 @@ class EntryPoint : Application() {
         val tabPane= root.lookup("#TabPane") as TabPane // Tab Pane
         val singleDropPoint= root.lookup("#ForSingle") as Rectangle // Single-ArchiveSet drop point
         val multiDropPoint = root.lookup("#ForMulti") as Rectangle // Multi-ArchiveSet drop point
+        val closeAllButton = root.lookup("#CloseAllButton") as Button
 
         tabPane.tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS // or SELECTED_TAB, UNAVAILABLE
 
@@ -357,6 +358,11 @@ class EntryPoint : Application() {
         multiDropPoint.onDragExited = EventHandler { event ->
             multiDropPoint.fill = multiColor
             event.consume()
+        }
+
+        closeAllButton.setOnAction {
+            tabPane.tabs.last().style = ""
+            tabPane.tabs.clear()
         }
 
         if (!File(theWorkingDirectory).exists()) {
