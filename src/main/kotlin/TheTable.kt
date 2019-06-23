@@ -257,6 +257,17 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
     }
 }
 
+fun makeTheTable(theArchiveSetPaths: Array<ArchiveSetPaths>, rootOutputDirectory: String): TheTable {
+    val archiveSetList = mutableListOf<ArchiveSet>()
+    theArchiveSetPaths.forEachIndexed { idx, anArchiveSetPaths ->
+        val anArchiveSet = ArchiveSet(idx, anArchiveSetPaths)
+
+        archiveSetList.add(anArchiveSet)
+    }
+
+    return TheTable(archiveSetList.toTypedArray(), rootOutputDirectory)
+}
+
 data class ItemKey (
       val isArchive: Boolean?
     , val dataCRC: Int

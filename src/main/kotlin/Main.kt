@@ -6,8 +6,8 @@ import util.*
 
 fun main(args : Array<String>) {
     println("ArchiveDiffer-Kotlin")
-    if (!jBindingChecker()) error("Fail to initialize 7Zip-JBinding")
 
+    if (!jBindingChecker()) error("Fail to initialize 7Zip-JBinding")
 
     ArgParser(args).parseInto(::Config).run {
         try {
@@ -16,10 +16,13 @@ fun main(args : Array<String>) {
             println("Fail to load IgnoringList")
             return
         }
-
         theWorkingDirectory = aWorkingDirectory
-
         Application.launch(EntryPoint().javaClass, *args)
     }
 
+}
+
+fun initialize(ignoringListConfigPath: RealPath) {
+    // Set IgnoringList
+    theIgnoringList = readIgnoringList(ignoringListConfigPath)
 }
