@@ -1,5 +1,9 @@
+import java.io.File
+import java.util.*
+
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
@@ -11,15 +15,11 @@ import javafx.scene.shape.*
 import javafx.scene.text.*
 import javafx.stage.*
 
-import util.checkArchiveExistence
-import util.generatePackagedFilePaths
-import util.packageFilePathsWithoutGuide
-import archive.checkArchiveVolume
-import javafx.collections.FXCollections
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import util.packageFilePathsForGrouped
-import java.util.*
+
+import archive.*
+import util.*
 
 
 fun main(args : Array<String>) {
@@ -132,6 +132,7 @@ class EntryPoint : Application() {
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
                 //Paint.valueOf(if (count == 0) "Green" else "Red")
                 tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus(if (count == 0) "green;" else "red;")
+                tabPane.style = "-fx-background-color: ".plus(if (count == 0) "greenyellow;" else "lightcoral;")
                 if (count == 0)
                     addMessageLabel(messageBox,MessageType.NoProblem,"No\nProblem")
                 else
@@ -355,5 +356,15 @@ class EntryPoint : Application() {
             multiDropPoint.fill = multiColor
             event.consume()
         }
+
+        if (!File(theWorkingDirectory).exists()) {
+            val alert = Alert(Alert.AlertType.WARNING)
+            alert.title = "Working directory is missing"
+            alert.contentText = "Working directory $theWorkingDirectory is missing"
+            alert.initOwner(primaryStage)
+            alert.graphic = null
+            alert.show()
+        }
+
     }
 }
