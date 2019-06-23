@@ -44,15 +44,15 @@ class EntryPoint : Application() {
         tabCount += 1
         tab.text = "Tab$tabCount"
         val fxml = javaClass.getResource("fxml/Tab.fxml")
-        val aTabPane: Pane = FXMLLoader.load(fxml)
-        val filePathArea= aTabPane.lookup("#FilePaths") as TextArea // FilePaths TextArea
-        val messageBox= aTabPane.lookup("#MessageBox") as HBox
-        val resultBox= aTabPane.lookup("#ResultBox") as VBox
-        val cancelButton= aTabPane.lookup("#CancelButton") as Button
+        val aTabSpace: Pane = FXMLLoader.load(fxml)
+        val filePathArea= aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
+        val messageBox= aTabSpace.lookup("#MessageBox") as HBox
+        val resultBox= aTabSpace.lookup("#ResultBox") as VBox
+        val cancelButton= aTabSpace.lookup("#CancelButton") as Button
 
         messageBox.border = Border(BorderStroke(Paint.valueOf("Red"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
         resultBox.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
-        tab.content = aTabPane
+        tab.content = aTabSpace
 
         filePathArea.text = generatePackagedFilePaths(packagedFilePaths)
         filePathArea.font = Font.font(null,FontWeight.NORMAL,14.0)
@@ -125,7 +125,7 @@ class EntryPoint : Application() {
                 sameResult.setPrefSize(2000.0,0.0)
 
                 // TODO: Get same/diff ratio, and apply it against height
-                aTabPane.heightProperty().addListener{ _, _, newVal ->
+                aTabSpace.heightProperty().addListener{ _, _, newVal ->
                     val height = newVal.toDouble()-240.0
                     diffResult.setPrefSize(0.0, height)
                     sameResult.setPrefSize(0.0, 0.0)
@@ -134,7 +134,7 @@ class EntryPoint : Application() {
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
                 //Paint.valueOf(if (count == 0) "Green" else "Red")
                 tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus(if (count == 0) "green;" else "red;")
-                tabPane.style = "-fx-background-color: ".plus(if (count == 0) "greenyellow;" else "lightcoral;")
+                aTabSpace.style = "-fx-background-color: ".plus(if (count == 0) "greenyellow;" else "lightcoral;")
                 if (count == 0)
                     addMessageLabel(messageBox,MessageType.NoProblem,"No\nProblem")
                 else
@@ -155,13 +155,13 @@ class EntryPoint : Application() {
             }
         }
 
-        aTabPane.onDragOver = EventHandler { event ->
+        aTabSpace.onDragOver = EventHandler { event ->
             val db = event.dragboard
             if (db.hasFiles())
                 event.acceptTransferModes(TransferMode.COPY)
             event.consume()
         }
-        aTabPane.onDragDropped = EventHandler { event ->
+        aTabSpace.onDragDropped = EventHandler { event ->
             val db = event.dragboard
             val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
             val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
