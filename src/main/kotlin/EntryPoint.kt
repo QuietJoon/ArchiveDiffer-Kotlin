@@ -152,6 +152,23 @@ class EntryPoint : Application() {
             }
         }
 
+        aTabPane.onDragOver = EventHandler { event ->
+            val db = event.dragboard
+            if (db.hasFiles())
+                event.acceptTransferModes(TransferMode.COPY)
+            event.consume()
+        }
+        aTabPane.onDragDropped = EventHandler { event ->
+            val db = event.dragboard
+            val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
+            event.consume()
+
+            tabPane.tabs.add(newAnalyzeTab)
+            tabPane.selectionModel.select(newAnalyzeTab)
+            event.isDropCompleted = true
+        }
+
         return tab
     }
 
