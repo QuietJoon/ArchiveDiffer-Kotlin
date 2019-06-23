@@ -32,10 +32,12 @@ fun main(args : Array<String>) {
 class EntryPoint : Application() {
 
     private var tabCount = 0
-    private val defaultWhiteMessageLabelStyle = "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
-    private val defaultBlackMessageLabelStyle = "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: Black;"
-    private val defaultWhiteTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-base-color: white;"
-    private val defaultBlackTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-base-color: Black;"
+    private val defaultMessageLabelStyle = "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold;"
+    private val defaultWhiteMessageLabelStyle = defaultMessageLabelStyle.plus(" -fx-text-fill: white;")
+    private val defaultBlackMessageLabelStyle = defaultMessageLabelStyle.plus(" -fx-text-fill: Black;")
+    private val defaultTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-focus-color: yellow; -fx-faint-focus-color: transparent;"
+    private val defaultWhiteTabStyle = defaultTabStyle.plus(" -fx-text-base-color: white;")
+    private val defaultBlackTabStyle = defaultTabStyle.plus(" -fx-text-base-color: Black;")
 
     private fun generateAnalyzeTab (tabPane: TabPane, packagedFilePaths: Array<ArchiveSetPaths>): Tab {
         val tab = Tab()
