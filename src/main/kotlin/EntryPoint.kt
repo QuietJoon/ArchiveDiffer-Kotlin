@@ -57,6 +57,23 @@ class EntryPoint : Application() {
         filePathArea.text = generatePackagedFilePaths(packagedFilePaths)
         filePathArea.font = Font.font(null,FontWeight.NORMAL,14.0)
 
+        aTabSpace.onDragOver = EventHandler { event ->
+            val db = event.dragboard
+            if (db.hasFiles())
+                event.acceptTransferModes(TransferMode.COPY)
+            event.consume()
+        }
+        aTabSpace.onDragDropped = EventHandler { event ->
+            val db = event.dragboard
+            val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
+            event.consume()
+
+            tabPane.tabs.add(newAnalyzeTab)
+            tabPane.selectionModel.select(newAnalyzeTab)
+            event.isDropCompleted = true
+        }
+
         // Step: Check archive existence
         var rASV: Pair<MessageType, String>
         rASV = checkArchiveExistence(packagedFilePaths)
@@ -174,23 +191,6 @@ class EntryPoint : Application() {
                 theTable!!.closeAllArchiveSets()
                 theTable!!.removeAllArchiveSets()
             }
-        }
-
-        aTabSpace.onDragOver = EventHandler { event ->
-            val db = event.dragboard
-            if (db.hasFiles())
-                event.acceptTransferModes(TransferMode.COPY)
-            event.consume()
-        }
-        aTabSpace.onDragDropped = EventHandler { event ->
-            val db = event.dragboard
-            val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
-            val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
-            event.consume()
-
-            tabPane.tabs.add(newAnalyzeTab)
-            tabPane.selectionModel.select(newAnalyzeTab)
-            event.isDropCompleted = true
         }
 
         return tab
