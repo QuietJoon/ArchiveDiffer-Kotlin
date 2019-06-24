@@ -12,9 +12,19 @@
 * Real Report filter - now exist, but not work
 
 
+## [0.6.0.6]  -- 2019/06/24
+
+### Added
+* Add messages with archive pre-checking
+
+### Fixed
+* Reallocate drag & drop EventHandler code
+
+
 ## [0.6.0.5]  -- 2019/06/23
 
-## Add close all tab button
+### Added
+* Add close all tab button
 
 ### Changed
 * Correct confused variable name
