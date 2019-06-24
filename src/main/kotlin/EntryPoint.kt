@@ -61,8 +61,29 @@ class EntryPoint : Application() {
         var rASV: Pair<MessageType, String>
         rASV = checkArchiveExistence(packagedFilePaths)
         addMessageLabel(messageBox, rASV.first, rASV.second)
+        if (rASV.first != MessageType.NoProblem) {
+            tab.text =  "No Archive"
+            tab.style = defaultBlackTabStyle.plus("-fx-background-color: yellow")
+            aTabSpace.style = "-fx-background-color: yellow"
+            return tab
+        }
+
         rASV = checkArchiveVolume(packagedFilePaths)
         addMessageLabel(messageBox, rASV.first, rASV.second)
+        when(rASV.first) {
+            MessageType.Warning -> {
+                tab.text = "Only One"
+                tab.style = defaultBlackTabStyle.plus("-fx-background-color: LightSkyBlue")
+                aTabSpace.style = "-fx-background-color: CornflowerBlue"
+                return tab
+                }
+            MessageType.Critical -> {
+                tab.text = "Missing"
+                tab.style = defaultBlackTabStyle.plus("-fx-background-color: yellow")
+                aTabSpace.style = "-fx-background-color: yellow"
+                return tab
+            }
+        }
 
         // TODO: Not implemented yet
         val titleFromFileName = ""

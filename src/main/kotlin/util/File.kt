@@ -8,6 +8,7 @@ import java.io.File
 
 import ArchiveSetPaths
 import MessageType
+import directoryDelimiter
 
 
 fun readFileLineByLineUsingForEachLine(fileName: String) = File(fileName).forEachLine { println(it) }
@@ -40,5 +41,17 @@ fun writeFileDirectlyAsBytes(fileName: String, fileContent: String) =
 
 // TODO: Not yet implemented
 fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Pair<MessageType,String> {
+
+    packagedFilePaths.forEach { archiveSetPaths ->
+        archiveSetPaths.forEach { archivePaths ->
+            for (aPath in archivePaths) {
+                val thePath = aPath.joinToString(separator = directoryDelimiter)
+                if (!File(thePath).exists())
+                    return Pair(MessageType.Bad,"Can't access\n${aPath.last()}")
+                else
+                    println("Exist: $thePath")
+            }
+        }
+    }
     return Pair(MessageType.NoProblem, "\n")
 }
