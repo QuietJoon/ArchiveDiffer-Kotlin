@@ -12,6 +12,23 @@
 * Real Report filter - now exist, but not work
 
 
+## [0.7.0.0]  -- 2019/06/28
+
+### Added
+* Add new ResultView - as List<String> type TableView
+
+### Changed
+* Use VBox for allocating components in Tab
+* Move some functions to List
+* Correct function name `queryInsensitive` to `queryInsensitively`
+
+### Fixed
+* Reallocate drag & drop EventHandler code
+
+### Deprecated
+* Move Tester.kt out
+
+
 ## [0.6.0.6]  -- 2019/06/24
 
 ### Added
