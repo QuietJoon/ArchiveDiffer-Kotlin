@@ -35,6 +35,7 @@
                   <RadioButton mnemonicParsing="false" text="+Directory" toggleGroup="$ComparingMethod" />
                   <CheckBox fx:id="ShowIgnored" mnemonicParsing="false" selected="true" text="Show Ig." />
                   <CheckBox fx:id="ShowExtracted" mnemonicParsing="false" text="Show Ex.ed" />
+                  <CheckBox fx:id="ShowDirectory" mnemonicParsing="false" selected="true" text="Show Directory" />
                </children>
                <padding>
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />

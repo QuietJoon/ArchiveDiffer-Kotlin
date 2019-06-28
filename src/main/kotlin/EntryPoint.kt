@@ -55,6 +55,7 @@ class EntryPoint : Application() {
         val cancelButton= aTabSpace.lookup("#CancelButton") as Button
         val showIgnrBox = aTabSpace.lookup("#ShowIgnored") as CheckBox
         val showExedBox = aTabSpace.lookup("#ShowExtracted") as CheckBox
+        val showDirBox = aTabSpace.lookup("#ShowDirectory") as CheckBox
 
         messageBox.border = Border(BorderStroke(Paint.valueOf("Red"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
         resultTabPane.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
@@ -205,6 +206,17 @@ class EntryPoint : Application() {
                 if (diffTab != null) {
                     showExedBox.setOnMouseClicked {
                         diffTab.content = if (showExedBox.isSelected) diffTable else noExTable
+                    }
+                }
+                showDirBox.setOnMouseClicked {
+                    for (c in 1..asNum) {
+                        allTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                        if (sameTable.columns.size != 0)
+                            sameTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                        if (diffTable.columns.size != 0)
+                            diffTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                        if (noExTable.columns.size != 0)
+                            noExTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
                     }
                 }
             }
