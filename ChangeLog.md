@@ -3,7 +3,6 @@
 ## [Unreleased]
 
 ### Change
-* Result with TableView
 * Extract archives only when other file Items is not full-filled
 
 ### Add
