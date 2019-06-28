@@ -234,6 +234,14 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             }
         }
     }
+
+    fun generateResultStringArray(): Array<ResultRow> {
+        val aResult = mutableListOf<ResultRow>()
+        for ( aItemEntry in theItemTable) {
+            aResult.add(aItemEntry.value.generateResultRow(theItemList))
+        }
+        return aResult.toTypedArray()
+    }
 }
 
 fun makeTheTable(theArchiveSetPaths: Array<ArchiveSetPaths>, rootOutputDirectory: String): TheTable {
@@ -375,6 +383,69 @@ data class ItemRecord (
         return stringBuilder.toString()
     }
 
+    fun generateResultRow(theItemList: ItemList): ResultRow {
+        val aRow = mutableListOf<String>()
+        aRow.add(String.format("%08X", this.dataCRC))
+        aRow.add(String.format("%10d", this.dataSize))
+        aRow.add(if (isFilled) "O" else "X")
+        aRow.add(if (isArchive == true) (if (isExtracted) "E" else "N") else "-")
+        aRow.add(if (isArchive==null) "?" else if (isArchive!!) "A" else "F")
+        aRow.add(if (isArchive==false) "" else if (isFirstOrSingle) "S" else "M")
+
+        existence.forEachIndexed { i, em ->
+            aRow.add(if (em == null) "-" else "$i")
+        }
+        val indexBuilder = StringBuilder()
+        existence.forEachIndexed { i, em ->
+            indexBuilder.append(if (em == null) " -" else " $i")
+        }
+        aRow.add(indexBuilder.toString())
+        var areSameFullName = true
+        val defaultFullName =
+            if (existence[0] != null)
+                theItemList[existence[0]!!.second]!!.path.last().getFullName()
+            else ""
+        for(i in existence) {
+            if (i == null) {
+                areSameFullName = false
+                break
+            }
+            if (defaultFullName != theItemList[i.second]!!.path.last().getFullName()) {
+                areSameFullName = false
+                break
+            }
+        }
+        aRow.add(defaultFullName)
+        /*
+        var areSameDirectory = true
+        val defaultDirectory =
+            if (existence[0] != null)
+                theItemList[existence[0]!!.second]!!.path.last().getDirectory()
+            else ""
+        for(i in existence) {
+            if (i == null) {
+                areSameDirectory = false
+                break
+            }
+            if (defaultFullName != theItemList[i.second]!!.path.last().getDirectory()) {
+                areSameDirectory = false
+                break
+            }
+        }
+        */
+        for(i in existence) {
+            if (i == null) {
+                aRow.add("\\/\\/\\/\\/\\/")
+                aRow.add("\\/\\/\\/\\/\\/")
+            }
+            else {
+                aRow.add(theItemList[i.second]!!.path.last().getDirectory())
+                aRow.add(if (areSameFullName) "====" else theItemList[i.second]!!.path.last().getFullName())
+            }
+        }
+        return aRow.toTypedArray()
+    }
+
     fun getAnyID(): ExistenceMark {
         existence.forEach {
             if (it != null) return it
@@ -388,3 +459,4 @@ typealias ItemList = MutableMap<ItemID,Item>
 typealias ArchiveMap = MutableMap<Int,Archive>
 typealias ExistenceMark = Pair<ArchiveID,ItemID>
 typealias ExistenceBoard = Array<ExistenceMark?>
+typealias ResultRow = Array<String>
