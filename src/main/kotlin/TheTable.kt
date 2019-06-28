@@ -435,8 +435,8 @@ data class ItemRecord (
         */
         for(i in existence) {
             if (i == null) {
-                aRow.add("\\/\\/\\/\\/\\/")
-                aRow.add("\\/\\/\\/\\/\\/")
+                aRow.add("--")
+                aRow.add("--")
             }
             else {
                 aRow.add(theItemList[i.second]!!.path.last().getDirectory())
