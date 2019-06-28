@@ -181,7 +181,7 @@ class EntryPoint : Application() {
                 tabPane.selectionModel.select(tab)
             }
 
-            println("End a phase")
+            println("End a analysis")
         }
 
         cancelButton.setOnAction {
