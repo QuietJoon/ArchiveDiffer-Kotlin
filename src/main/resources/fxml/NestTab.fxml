@@ -31,8 +31,8 @@
                         <ToggleGroup fx:id="ComparingMethod" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" text="+FileName" />
-                  <RadioButton mnemonicParsing="false" text="+Directory" />
+                  <RadioButton mnemonicParsing="false" text="+FileName" toggleGroup="$ComparingMethod" />
+                  <RadioButton mnemonicParsing="false" text="+Directory" toggleGroup="$ComparingMethod" />
                   <CheckBox mnemonicParsing="false" selected="true" text="Show Diff" />
                   <CheckBox mnemonicParsing="false" selected="true" text="Show Same" />
                   <CheckBox mnemonicParsing="false" selected="true" text="Show Ig." />
