@@ -11,6 +11,21 @@
 * Real Report filter - now exist, but not work
 
 
+## [0.7.1.0]  -- 2019/06/28
+
+### Added
+* Implement **Show Directory** and **Show Extracted** function
+
+### Changed
+* Adjust GUI component positions
+
+### Fixed
+* Add missing ToggleGroup of RadioButton
+
+### Deprecated
+* Remove useless GUI component
+
+
 ## [0.7.0.0]  -- 2019/06/28
 
 ### Added
