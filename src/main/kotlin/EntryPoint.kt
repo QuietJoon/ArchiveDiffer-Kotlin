@@ -150,6 +150,7 @@ class EntryPoint : Application() {
                 resultList.add(0,"Have no different files in the ArchiveSets")
             }
 
+            val asNum = theTable!!.archiveSetNum
             val theResult = theTable!!.generateResultStringList()
             val theSameResult = theResult.filter{it[0] == "O"}
             val theDiffResult = theResult.filter{it[0] == "X"}
@@ -164,9 +165,9 @@ class EntryPoint : Application() {
                 val allTable = TableView<ObservableList<StringProperty>>()
                 val diffTable = TableView<ObservableList<StringProperty>>()
                 val sameTable = TableView<ObservableList<StringProperty>>()
-                makeResultTable(allTable, theResult)
-                makeResultTable(diffTable, theDiffResult)
-                makeResultTable(sameTable, theSameResult)
+                makeResultTable(allTable, theResult, asNum)
+                makeResultTable(diffTable, theDiffResult, asNum)
+                makeResultTable(sameTable, theSameResult, asNum)
                 // TODO: IgnoredResult
 
                 if (!(theSameResult.isEmpty() || theDiffResult.isEmpty()))
@@ -216,7 +217,8 @@ class EntryPoint : Application() {
 
     private fun makeResultTable(
         tableView: TableView<ObservableList<StringProperty>>,
-        inputData: List<ResultRow>
+        inputData: List<ResultRow>,
+        asNum: Int
     ) {
         Platform.runLater {
             tableView.placeholder = Label("Loading....")
@@ -231,6 +233,31 @@ class EntryPoint : Application() {
                     }
                     tableView.items.add(data)
                 }
+                var index = 0
+                // Matching Result
+                tableView.columns[index++].text = "Match"
+                // Hash
+                tableView.columns[index++].text = "CRC32"
+                // File size
+                tableView.columns[index].style = "-fx-alignment: CENTER-RIGHT;"
+                tableView.columns[index++].text = "Size"
+                // Extracted or not
+                tableView.columns[index++].text = "Ex"
+                // File Type
+                tableView.columns[index++].text = "FT"
+                // Archive Type
+                tableView.columns[index++].text = "Sv/Mv"
+                // Existance
+                for (i in 0.until(asNum))
+                    tableView.columns[index++].text = "AS$i"
+                tableView.columns[index++].text = "Existence"
+                // Common Name
+                tableView.columns[index++].text = "C. Name"
+                for (i in 0.until(asNum)) {
+                    tableView.columns[index++].text = "AS$i-Directory"
+                    tableView.columns[index++].text = "AS$i-FileName"
+                }
+
             } else {
                 tableView.placeholder = Label("No result")
             }
