@@ -53,6 +53,8 @@ class EntryPoint : Application() {
         val messageBox= aTabSpace.lookup("#MessageBox") as HBox
         val resultTabPane= aTabSpace.lookup("#ResultTab") as TabPane
         val cancelButton= aTabSpace.lookup("#CancelButton") as Button
+        val showIgnrBox = aTabSpace.lookup("#ShowIgnored") as CheckBox
+        val showExedBox = aTabSpace.lookup("#ShowExtracted") as CheckBox
 
         messageBox.border = Border(BorderStroke(Paint.valueOf("Red"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
         resultTabPane.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
@@ -154,6 +156,8 @@ class EntryPoint : Application() {
             val theResult = theTable!!.generateResultStringList()
             val theSameResult = theResult.filter{it[0] == "O"}
             val theDiffResult = theResult.filter{it[0] == "X"}
+            // TODO: Hard coded index
+            val noExedResult = theDiffResult.filter{it[3] != "E"}
             // TODO: IgnoredResult
 
             theTable!!.closeAllArchiveSets()
@@ -165,21 +169,30 @@ class EntryPoint : Application() {
                 val allTable = TableView<ObservableList<StringProperty>>()
                 val diffTable = TableView<ObservableList<StringProperty>>()
                 val sameTable = TableView<ObservableList<StringProperty>>()
-                makeResultTable(allTable, theResult, asNum)
-                makeResultTable(diffTable, theDiffResult, asNum)
-                makeResultTable(sameTable, theSameResult, asNum)
+                val noExTable = TableView<ObservableList<StringProperty>>()
+
+                makeResultTable(allTable, theResult, asNum, listOf())
+                makeResultTable(diffTable, theDiffResult, asNum, listOf(7+asNum))
+                makeResultTable(sameTable, theSameResult, asNum, listOf())
+                makeResultTable(noExTable, noExedResult, asNum, listOf(7+asNum))
                 // TODO: IgnoredResult
 
+                var diffTab: Tab? = null
                 if (!(theSameResult.isEmpty() || theDiffResult.isEmpty()))
                     generateResultTab(resultTabPane, ResultType.All, allTable)
                 if (theSameResult.isNotEmpty())
                     resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Same, sameTable))
-                if (theDiffResult.isNotEmpty())
-                    resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Diff, diffTable))
+                if (theDiffResult.isNotEmpty()) {
+                    diffTab =
+                        if (showExedBox.isSelected)
+                            generateResultTab(resultTabPane, ResultType.Diff, diffTable)
+                        else
+                            generateResultTab(resultTabPane, ResultType.Diff, noExTable)
+                    resultTabPane.selectionModel.select(diffTab)
+                }
                 // TODO: IgnoredResult
 
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
-                //Paint.valueOf(if (count == 0) "Green" else "Red")
                 tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus(if (count == 0) "green;" else "red;")
                 aTabSpace.style = "-fx-background-color: ".plus(if (count == 0) "greenyellow;" else "lightcoral;")
                 if (count == 0)
@@ -188,6 +201,12 @@ class EntryPoint : Application() {
                     addMessageLabel(messageBox,MessageType.Critical,"Have\nDiff")
 
                 tabPane.selectionModel.select(tab)
+
+                if (diffTab != null) {
+                    showExedBox.setOnMouseClicked {
+                        diffTab.content = if (showExedBox.isSelected) diffTable else noExTable
+                    }
+                }
             }
 
             println("End a analysis")
@@ -218,7 +237,8 @@ class EntryPoint : Application() {
     private fun makeResultTable(
         tableView: TableView<ObservableList<StringProperty>>,
         inputData: List<ResultRow>,
-        asNum: Int
+        asNum: Int,
+        invisibleList: List<Int>
     ) {
         Platform.runLater {
             tableView.placeholder = Label("Loading....")
@@ -257,7 +277,8 @@ class EntryPoint : Application() {
                     tableView.columns[index++].text = "AS$i-Directory"
                     tableView.columns[index++].text = "AS$i-FileName"
                 }
-
+                for (i in invisibleList)
+                    tableView.columns[i].isVisible = false
             } else {
                 tableView.placeholder = Label("No result")
             }
