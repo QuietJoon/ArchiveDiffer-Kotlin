@@ -173,9 +173,9 @@ class EntryPoint : Application() {
                 if (!(theSameResult.isEmpty() || theDiffResult.isEmpty()))
                     generateResultTab(resultTabPane, ResultType.All, allTable)
                 if (theSameResult.isNotEmpty())
-                    generateResultTab(resultTabPane, ResultType.Same, sameTable)
+                    resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Same, sameTable))
                 if (theDiffResult.isNotEmpty())
-                    generateResultTab(resultTabPane, ResultType.Diff, diffTable)
+                    resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Diff, diffTable))
                 // TODO: IgnoredResult
 
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
