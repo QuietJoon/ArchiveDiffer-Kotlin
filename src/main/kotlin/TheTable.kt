@@ -385,9 +385,9 @@ data class ItemRecord (
 
     fun generateResultRow(theItemList: ItemList): ResultRow {
         val aRow = mutableListOf<String>()
+        aRow.add(if (isFilled) "O" else "X")
         aRow.add(String.format("%08X", this.dataCRC))
         aRow.add(String.format("%10d", this.dataSize))
-        aRow.add(if (isFilled) "O" else "X")
         aRow.add(if (isArchive == true) (if (isExtracted) "E" else "N") else "-")
         aRow.add(if (isArchive==null) "?" else if (isArchive!!) "A" else "F")
         aRow.add(if (isArchive==false) "" else if (isFirstOrSingle) "S" else "M")
