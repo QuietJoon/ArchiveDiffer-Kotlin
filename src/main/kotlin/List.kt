@@ -1,6 +1,8 @@
 import archive.printItemListByIDs
 import net.sf.sevenzipjbinding.IInArchive
 import util.dateFormatter
+import util.getFullName
+import util.regulating
 
 
 fun IgnoringList.printIgnoringList() {
@@ -93,6 +95,29 @@ fun TheTable.printStatus() {
     for (anItemRecord in theItemTable) {
         print(anItemRecord.key.toString())
         print(anItemRecord.value.toString().plus("\n"))
+    }
+}
+
+
+fun TheTable.printSameItemTable(len: Int, fullNameOnly: Boolean, relativePathOnly: Boolean) {
+    for ( itemEntry in theItemTable ) {
+        if (itemEntry.value.isFilled) {
+            print(itemEntry.key.toString().plus("\n"))
+            itemEntry.value.existence.forEach {
+                if (it == null) error("[Error]<printSameItemTable>: No item when `isFilled = true`")
+                else {
+                    val theItem = theItemList[it.second] ?: error("[Error]<printSameItemTable>: No queried item from the key in existence: $itemEntry.key")
+                    val thePath = when {
+                        fullNameOnly -> theItem.path.last().getFullName()
+                        relativePathOnly -> theItem.path.last()
+                        else -> theItem.path.joinToString(separator = "|")
+                    }
+                    val regulatedPath = thePath.regulating(len)
+                    print(regulatedPath + " | ")
+                }
+            }
+            print("\n")
+        }
     }
 }
 
