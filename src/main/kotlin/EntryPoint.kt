@@ -3,17 +3,21 @@ import java.util.*
 
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.beans.property.*
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
 import javafx.scene.control.*
+import javafx.scene.control.cell.TextFieldTableCell
 import javafx.scene.input.*
 import javafx.scene.layout.*
 import javafx.scene.paint.*
 import javafx.scene.shape.*
 import javafx.scene.text.*
 import javafx.stage.*
+import javafx.util.Callback
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -146,27 +150,42 @@ class EntryPoint : Application() {
                 resultList.add(0,"Have no different files in the ArchiveSets")
             }
 
+            val theResult = theTable!!.generateResultStringArray()
+            val theSameResult = theResult.filter{it[0] == "O"}
+            val theDiffResult = theResult.filter{it[0] == "X"}
+            val theSameRatio = theSameResult.size.toDouble() / theResult.size.toDouble()
+            val theDiffRatio = theDiffResult.size.toDouble() / theResult.size.toDouble()
+            // TODO: IgnoredResult
+
             theTable!!.closeAllArchiveSets()
             theTable!!.removeAllArchiveSets()
             theTable = null
 
             Platform.runLater {
-                val diffResult = TextArea()
-                val sameResult = TextArea()
 
-                resultBox.children.add(diffResult)
-                resultBox.children.add(sameResult)
+                val diffTable = TableView<ObservableList<StringProperty>>()
+                val sameTable = TableView<ObservableList<StringProperty>>()
+                makeResultTable(diffTable, theDiffResult)
+                makeResultTable(sameTable, theSameResult)
+                // TODO: IgnoredResult
 
-                diffResult.setMaxSize(2000.0,2000.0)
-                diffResult.setPrefSize(2000.0,400.0)
-                sameResult.setMaxSize(2000.0,2000.0)
-                sameResult.setPrefSize(2000.0,0.0)
+                resultBox.children.add(diffTable)
+                resultBox.children.add(sameTable)
+
+                diffTable.setMinSize(0.0,64.0)
+                diffTable.setMaxSize(2000.0,2000.0)
+                diffTable.setPrefSize(2000.0,600.0 * theDiffRatio)
+                sameTable.setMinSize(0.0,64.0)
+                sameTable.setMaxSize(2000.0,2000.0)
+                sameTable.setPrefSize(2000.0,600.0 * theSameRatio)
 
                 // TODO: Get same/diff ratio, and apply it against height
                 aTabSpace.heightProperty().addListener{ _, _, newVal ->
                     val height = newVal.toDouble()-240.0
-                    diffResult.setPrefSize(0.0, height)
-                    sameResult.setPrefSize(0.0, 0.0)
+                    diffTable.setPrefSize(0.0, height * theDiffRatio)
+                    println("D: ${height * theDiffRatio}")
+                    sameTable.setPrefSize(0.0, height * theSameRatio)
+                    println("S: ${height * theSameRatio}")
                 }
 
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
@@ -177,7 +196,7 @@ class EntryPoint : Application() {
                     addMessageLabel(messageBox,MessageType.NoProblem,"No\nProblem")
                 else
                     addMessageLabel(messageBox,MessageType.Critical,"Have\nDiff")
-                diffResult.text = resultList.joinToString(separator = "\n")
+
                 tabPane.selectionModel.select(tab)
             }
 
@@ -194,6 +213,41 @@ class EntryPoint : Application() {
         }
 
         return tab
+    }
+
+    private fun makeResultTable(
+        tableView: TableView<ObservableList<StringProperty>>,
+        inputData: List<ResultRow>
+    ) {
+        Platform.runLater {
+            tableView.placeholder = Label("Loading....")
+            if ( inputData.isNotEmpty()) {
+                for (loopIndex in 0.until(inputData[0].size)) {
+                    tableView.columns.add(createColumn(loopIndex, "C-$loopIndex"))
+                }
+                for (aRow in inputData) {
+                    val data = FXCollections.observableArrayList<StringProperty>()
+                    for (value in aRow) {
+                        data.add(SimpleStringProperty(value))
+                    }
+                    tableView.items.add(data)
+                }
+            } else {
+                tableView.placeholder = Label("No result")
+            }
+        }
+    }
+
+    private fun createColumn(columnIndex: Int, columnTitle: String
+    ): TableColumn<ObservableList<StringProperty>, String> {
+        val column = TableColumn<ObservableList<StringProperty>, String>()
+        column.text = columnTitle
+        column.cellValueFactory =
+            Callback { cellDataFeatures ->
+                cellDataFeatures.value[columnIndex]
+            }
+        column.cellFactory = TextFieldTableCell.forTableColumn()
+        return column
     }
 
     private fun addMessageLabel (mb: HBox, mt: MessageType, msg: String) {
