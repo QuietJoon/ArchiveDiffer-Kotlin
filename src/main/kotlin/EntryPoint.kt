@@ -47,15 +47,15 @@ class EntryPoint : Application() {
         val tab = Tab()
         tabCount += 1
         tab.text = "Tab$tabCount"
-        val fxml = javaClass.getResource("fxml/Tab.fxml")
+        val fxml = javaClass.getResource("fxml/NestTab.fxml")
         val aTabSpace: Pane = FXMLLoader.load(fxml)
         val filePathArea= aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
         val messageBox= aTabSpace.lookup("#MessageBox") as HBox
-        val resultBox= aTabSpace.lookup("#ResultBox") as VBox
+        val resultTabPane= aTabSpace.lookup("#ResultTab") as TabPane
         val cancelButton= aTabSpace.lookup("#CancelButton") as Button
 
         messageBox.border = Border(BorderStroke(Paint.valueOf("Red"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
-        resultBox.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
+        resultTabPane.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
         tab.content = aTabSpace
 
         filePathArea.text = generatePackagedFilePaths(packagedFilePaths)
@@ -150,11 +150,9 @@ class EntryPoint : Application() {
                 resultList.add(0,"Have no different files in the ArchiveSets")
             }
 
-            val theResult = theTable!!.generateResultStringArray()
+            val theResult = theTable!!.generateResultStringList()
             val theSameResult = theResult.filter{it[0] == "O"}
             val theDiffResult = theResult.filter{it[0] == "X"}
-            val theSameRatio = theSameResult.size.toDouble() / theResult.size.toDouble()
-            val theDiffRatio = theDiffResult.size.toDouble() / theResult.size.toDouble()
             // TODO: IgnoredResult
 
             theTable!!.closeAllArchiveSets()
@@ -163,30 +161,21 @@ class EntryPoint : Application() {
 
             Platform.runLater {
 
+                val allTable = TableView<ObservableList<StringProperty>>()
                 val diffTable = TableView<ObservableList<StringProperty>>()
                 val sameTable = TableView<ObservableList<StringProperty>>()
+                makeResultTable(allTable, theResult)
                 makeResultTable(diffTable, theDiffResult)
                 makeResultTable(sameTable, theSameResult)
                 // TODO: IgnoredResult
 
-                resultBox.children.add(diffTable)
-                resultBox.children.add(sameTable)
-
-                diffTable.setMinSize(0.0,64.0)
-                diffTable.setMaxSize(2000.0,2000.0)
-                diffTable.setPrefSize(2000.0,600.0 * theDiffRatio)
-                sameTable.setMinSize(0.0,64.0)
-                sameTable.setMaxSize(2000.0,2000.0)
-                sameTable.setPrefSize(2000.0,600.0 * theSameRatio)
-
-                // TODO: Get same/diff ratio, and apply it against height
-                aTabSpace.heightProperty().addListener{ _, _, newVal ->
-                    val height = newVal.toDouble()-240.0
-                    diffTable.setPrefSize(0.0, height * theDiffRatio)
-                    println("D: ${height * theDiffRatio}")
-                    sameTable.setPrefSize(0.0, height * theSameRatio)
-                    println("S: ${height * theSameRatio}")
-                }
+                if (!(theSameResult.isEmpty() || theDiffResult.isEmpty()))
+                    generateResultTab(resultTabPane, ResultType.All, allTable)
+                if (theSameResult.isNotEmpty())
+                    generateResultTab(resultTabPane, ResultType.Same, sameTable)
+                if (theDiffResult.isNotEmpty())
+                    generateResultTab(resultTabPane, ResultType.Diff, diffTable)
+                // TODO: IgnoredResult
 
                 tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
                 //Paint.valueOf(if (count == 0) "Green" else "Red")
@@ -212,6 +201,16 @@ class EntryPoint : Application() {
             }
         }
 
+        return tab
+    }
+
+
+    private fun generateResultTab (resultTabPane: TabPane, resultType: ResultType, aTable: TableView<ObservableList<StringProperty>>): Tab {
+        val tab = Tab()
+        tab.text = resultType.toString()
+        tab.content = aTable
+
+        resultTabPane.tabs.add(tab)
         return tab
     }
 

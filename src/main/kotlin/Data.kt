@@ -17,3 +17,5 @@ fun MessageType.toShortString() = when (this) {
     MessageType.Bad -> "BD"
     MessageType.Critical -> "CR"
 }
+
+enum class ResultType { All, Same, Diff, Ignored }

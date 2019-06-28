@@ -235,12 +235,12 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         }
     }
 
-    fun generateResultStringArray(): Array<ResultRow> {
+    fun generateResultStringList(): List<ResultRow> {
         val aResult = mutableListOf<ResultRow>()
         for ( aItemEntry in theItemTable) {
             aResult.add(aItemEntry.value.generateResultRow(theItemList))
         }
-        return aResult.toTypedArray()
+        return aResult.toList()
     }
 }
 
