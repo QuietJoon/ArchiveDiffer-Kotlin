@@ -41,7 +41,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             val theParentArchiveID = theItem.parentArchiveID
             val theArchiveSetID = anArchiveSet.archiveSetID
             var theKey = anItem.key
-            val queryResult = queryInsensitive(theKey)
+            val queryResult = queryInsensitively(theKey)
             theKey = queryResult.first
             val queryItemRecord: ItemRecord? = queryResult.second
             if (queryItemRecord == null) {
@@ -72,7 +72,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         val theParentArchiveID = theItem.parentArchiveID
         val theArchiveSetID = anArchiveSet.archiveSetID
         var theKey = key
-        val queryResult = queryInsensitive(theKey)
+        val queryResult = queryInsensitively(theKey)
         theKey = queryResult.first
         val queryItemRecord: ItemRecord? = queryResult.second
         if (queryItemRecord == null) {
@@ -91,7 +91,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         theItemList[theItem.id] = theItem
     }
 
-    private fun queryInsensitive(aKey: ItemKey): Pair<ItemKey,ItemRecord?> {
+    private fun queryInsensitively(aKey: ItemKey): Pair<ItemKey,ItemRecord?> {
         val aRecord = theItemTable[aKey]
         if (aRecord != null) return Pair(aKey,aRecord)
 
