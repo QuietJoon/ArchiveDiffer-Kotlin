@@ -211,13 +211,13 @@ class EntryPoint : Application() {
                 }
                 showDirBox.setOnMouseClicked {
                     for (c in 1..asNum) {
-                        allTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                        allTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
                         if (sameTable.columns.size != 0)
-                            sameTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                            sameTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
                         if (diffTable.columns.size != 0)
-                            diffTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                            diffTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
                         if (noExTable.columns.size != 0)
-                            noExTable.columns[6+asNum+asNum*c].isVisible = showDirBox.isSelected
+                            noExTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
                     }
                 }
             }
