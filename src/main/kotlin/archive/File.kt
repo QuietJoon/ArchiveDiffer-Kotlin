@@ -65,7 +65,8 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
         randomAccessFile = RandomAccessFile(aFilePath, "r")
         inStream = RandomAccessFileInStream(randomAccessFile)
     } catch (e: Exception) {
-        System.err.println(String.format("[Error]<openArchive>: Fail to open RandomAccessFile with $aFilePath\n%s", e.toString()))
+        System.err.println("[Error]<openArchive>: Fail to open RandomAccessFile with $aFilePath")
+        System.err.println(e.toString())
         throw e
     }
     try {
@@ -75,7 +76,8 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
         )
     } catch (e: Exception) {
         randomAccessFile.close()
-        println(String.format("[Error]<openArchive>: Fail to open InArchive with $aFilePath\n%s", e.toString()))
+        System.err.println("[Error]<openArchive>: Fail to open InArchive with $aFilePath")
+        System.err.println(e.toString())
         return null
     }
 
@@ -95,7 +97,8 @@ private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
         archiveOpenVolumeCallback = ArchiveOpenVolumeCallback()
         inStream = archiveOpenVolumeCallback.getStream(aFilePath)
     } catch (e: Exception) {
-        System.err.println(String.format("[Error]<openMultiVolumeArchive>: Fail to open IInStream with $aFilePath\n%s", e.toString()))
+        System.err.println("[Error]<openMultiVolumeArchive>: Fail to open IInStream with $aFilePath")
+        System.err.println(e.toString())
         throw e
     }
     try {
@@ -105,7 +108,8 @@ private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
         )
     } catch (e: Exception) {
         archiveOpenVolumeCallback.close()
-        println(String.format("[Error]<openArchive>: Fail to open InArchive with $aFilePath\n%s", e.toString()))
+        System.err.println("[Error]<openArchive>: Fail to open InArchive with $aFilePath")
+        System.err.println(e.toString())
         return null
     }
 
