@@ -226,7 +226,7 @@ class EntryPoint : Application() {
             var doesAllFileHaveSameName = true
             if (theSameResult.isNotEmpty() && noExedResult.isEmpty()) {
                 for (aRow in theSameResult) {
-                    if (aRow[6+asNum+1] != "====") {
+                    if (aRow[6+asNum+3] != "====") {
                         doesAllFileHaveSameName = false
                         break
                     }
