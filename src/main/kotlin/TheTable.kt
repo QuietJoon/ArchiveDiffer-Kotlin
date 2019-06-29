@@ -416,7 +416,6 @@ data class ItemRecord (
             }
         }
         aRow.add(defaultFullName)
-        /*
         var areSameDirectory = true
         val defaultDirectory =
             if (existence[0] != null)
@@ -427,19 +426,18 @@ data class ItemRecord (
                 areSameDirectory = false
                 break
             }
-            if (defaultFullName != theItemList[i.second]!!.path.last().getDirectory()) {
+            if (defaultDirectory != theItemList[i.second]!!.path.last().getDirectory()) {
                 areSameDirectory = false
                 break
             }
         }
-        */
         for(i in existence) {
             if (i == null) {
                 aRow.add("--")
                 aRow.add("--")
             }
             else {
-                aRow.add(theItemList[i.second]!!.path.last().getDirectory())
+                aRow.add(if (areSameDirectory) "====" else theItemList[i.second]!!.path.last().getDirectory())
                 aRow.add(if (areSameFullName) "====" else theItemList[i.second]!!.path.last().getFullName())
             }
         }
