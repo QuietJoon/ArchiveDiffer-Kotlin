@@ -72,8 +72,8 @@ class EntryPoint : Application() {
         }
         aTabSpace.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
-            val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
+            val newPackagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val newAnalyzeTab = generateAnalyzeTab(tabPane, newPackagedFilePaths)
             event.consume()
 
             tabPane.tabs.add(newAnalyzeTab)
@@ -107,6 +107,7 @@ class EntryPoint : Application() {
                 aTabSpace.style = "-fx-background-color: yellow"
                 return tab
             }
+            else -> {}
         }
 
         // TODO: Not implemented yet
