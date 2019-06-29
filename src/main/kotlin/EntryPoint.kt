@@ -222,6 +222,23 @@ class EntryPoint : Application() {
                 }
             }
 
+            var doesAllFileHaveSameName = true
+            if (theSameResult.isNotEmpty() && noExedResult.isEmpty()) {
+                for (aRow in theSameResult) {
+                    if (aRow[6+asNum+1] != "====") {
+                        doesAllFileHaveSameName = false
+                        break
+                    }
+                }
+                if (!doesAllFileHaveSameName) {
+                    Platform.runLater {
+                        addMessageLabel(messageBox,MessageType.Warning,"Same, but\nDifferent Name")
+                        tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus("blue;")
+                        aTabSpace.style = "-fx-background-color: ".plus("LightSkyBlue;")
+                    }
+                }
+            }
+
             println("End a analysis")
         }
 
