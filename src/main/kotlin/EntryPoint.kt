@@ -272,6 +272,7 @@ class EntryPoint : Application() {
         invisibleList: List<Int>
     ) {
         Platform.runLater {
+            tableView.isEditable = true
             tableView.placeholder = Label("Loading....")
             if ( inputData.isNotEmpty()) {
                 for (loopIndex in 0.until(inputData[0].size)) {
