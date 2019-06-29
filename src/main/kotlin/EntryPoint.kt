@@ -183,7 +183,8 @@ class EntryPoint : Application() {
                     generateResultTab(resultTabPane, ResultType.All, allTable)
                 if (theSameResult.isNotEmpty())
                     resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Same, sameTable))
-                if (theDiffResult.isNotEmpty()) {
+                // Do not use `theDiffResult.isNotEmpty()`, Refer T144
+                if (noExedResult.isNotEmpty()) {
                     diffTab =
                         if (showExedBox.isSelected)
                             generateResultTab(resultTabPane, ResultType.Diff, diffTable)
