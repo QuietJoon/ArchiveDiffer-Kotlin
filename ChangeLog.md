@@ -8,7 +8,13 @@
 ### Add
 * Real `CANCEL` button - now exist, but not work
 * Real Report type changer - now exist, but not work
-* Real Report filter - now exist, but not work
+* Real Report filter - some are implemented, but others not yet
+
+
+## [0.7.2.0]  -- 2019/08/05
+
+### Added
+* Indicate an extracting error on tab by color
 
 
 ## [0.7.1.0]  -- 2019/06/28
