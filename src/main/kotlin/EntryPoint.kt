@@ -119,6 +119,8 @@ class EntryPoint : Application() {
         tab.text = "Table Making: $titleFromFileName"
         tab.style = defaultBlackTabStyle
 
+        var noError = true
+
         val task = GlobalScope.launch {
             theTable = makeTheTable(packagedFilePaths, theWorkingDirectory)
 
@@ -137,7 +139,18 @@ class EntryPoint : Application() {
                 Platform.runLater {
                     tab.text = "Phase #$runCount - $titleFromFileName"
                 }
-                if (theTable!!.runOnce()) break
+                try {
+                    if (theTable!!.runOnce()) break
+                } catch (e: ExtractionException) {
+                    noError = false
+                    print(e)
+                    Platform.runLater {
+                        tab.text = "FileError"
+                        tab.style = defaultWhiteTabStyle.plus("-fx-background-color: red;")
+                        aTabSpace.style = "-fx-background-color: lightcoral;"
+                    }
+                    break
+                }
 
                 theTable!!.printStatus()
                 theTable!!.printResult()
@@ -151,95 +164,97 @@ class EntryPoint : Application() {
 
             if (count == 0) {
                 print("Have no different files in the ArchiveSets\n")
-                resultList.add(0,"Have no different files in the ArchiveSets")
+                resultList.add(0, "Have no different files in the ArchiveSets")
             }
 
             val asNum = theTable!!.archiveSetNum
             val theResult = theTable!!.generateResultStringList()
-            val theSameResult = theResult.filter{it[0] == "O"}
-            val theDiffResult = theResult.filter{it[0] == "X"}
+            val theSameResult = theResult.filter { it[0] == "O" }
+            val theDiffResult = theResult.filter { it[0] == "X" }
             // TODO: Hard coded index
-            val noExedResult = theDiffResult.filter{it[3] != "E"}
+            val noExedResult = theDiffResult.filter { it[3] != "E" }
             // TODO: IgnoredResult
 
             theTable!!.closeAllArchiveSets()
             theTable!!.removeAllArchiveSets()
             theTable = null
 
-            Platform.runLater {
+            if (noError) {
+                Platform.runLater {
 
-                val allTable = TableView<ObservableList<StringProperty>>()
-                val diffTable = TableView<ObservableList<StringProperty>>()
-                val sameTable = TableView<ObservableList<StringProperty>>()
-                val noExTable = TableView<ObservableList<StringProperty>>()
+                    val allTable = TableView<ObservableList<StringProperty>>()
+                    val diffTable = TableView<ObservableList<StringProperty>>()
+                    val sameTable = TableView<ObservableList<StringProperty>>()
+                    val noExTable = TableView<ObservableList<StringProperty>>()
 
-                makeResultTable(allTable, theResult, asNum, listOf())
-                makeResultTable(diffTable, theDiffResult, asNum, listOf(7+asNum))
-                makeResultTable(sameTable, theSameResult, asNum, listOf())
-                makeResultTable(noExTable, noExedResult, asNum, listOf(7+asNum))
-                // TODO: IgnoredResult
+                    makeResultTable(allTable, theResult, asNum, listOf())
+                    makeResultTable(diffTable, theDiffResult, asNum, listOf(7 + asNum))
+                    makeResultTable(sameTable, theSameResult, asNum, listOf())
+                    makeResultTable(noExTable, noExedResult, asNum, listOf(7 + asNum))
+                    // TODO: IgnoredResult
 
-                var diffTab: Tab? = null
-                if (!(theSameResult.isEmpty() || theDiffResult.isEmpty()))
-                    generateResultTab(resultTabPane, ResultType.All, allTable)
-                if (theSameResult.isNotEmpty())
-                    resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Same, sameTable))
-                // Do not use `theDiffResult.isNotEmpty()`, Refer T144
-                if (noExedResult.isNotEmpty()) {
-                    diffTab =
-                        if (showExedBox.isSelected)
-                            generateResultTab(resultTabPane, ResultType.Diff, diffTable)
-                        else
-                            generateResultTab(resultTabPane, ResultType.Diff, noExTable)
-                    resultTabPane.selectionModel.select(diffTab)
-                }
-                // TODO: IgnoredResult
+                    var diffTab: Tab? = null
+                    if (!(theSameResult.isEmpty() || theDiffResult.isEmpty()))
+                        generateResultTab(resultTabPane, ResultType.All, allTable)
+                    if (theSameResult.isNotEmpty())
+                        resultTabPane.selectionModel.select(generateResultTab(resultTabPane, ResultType.Same, sameTable))
+                    // Do not use `theDiffResult.isNotEmpty()`, Refer T144
+                    if (noExedResult.isNotEmpty()) {
+                        diffTab =
+                            if (showExedBox.isSelected)
+                                generateResultTab(resultTabPane, ResultType.Diff, diffTable)
+                            else
+                                generateResultTab(resultTabPane, ResultType.Diff, noExTable)
+                        resultTabPane.selectionModel.select(diffTab)
+                    }
+                    // TODO: IgnoredResult
 
-                tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
-                tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus(if (count == 0) "green;" else "red;")
-                aTabSpace.style = "-fx-background-color: ".plus(if (count == 0) "greenyellow;" else "lightcoral;")
-                if (count == 0)
-                    addMessageLabel(messageBox,MessageType.NoProblem,"No\nProblem")
-                else
-                    addMessageLabel(messageBox,MessageType.Critical,"Have\nDiff")
+                    tab.text = if (count == 0) "Done: $titleFromFileName" else "Diff: $titleFromFileName"
+                    tab.style =
+                        defaultWhiteTabStyle.plus("-fx-background-color: ").plus(if (count == 0) "green;" else "red;")
+                    aTabSpace.style = "-fx-background-color: ".plus(if (count == 0) "greenyellow;" else "lightcoral;")
+                    if (count == 0)
+                        addMessageLabel(messageBox, MessageType.NoProblem, "No\nProblem")
+                    else
+                        addMessageLabel(messageBox, MessageType.Critical, "Have\nDiff")
 
-                tabPane.selectionModel.select(tab)
+                    tabPane.selectionModel.select(tab)
 
-                if (diffTab != null) {
-                    showExedBox.setOnMouseClicked {
-                        diffTab.content = if (showExedBox.isSelected) diffTable else noExTable
+                    if (diffTab != null) {
+                        showExedBox.setOnMouseClicked {
+                            diffTab.content = if (showExedBox.isSelected) diffTable else noExTable
+                        }
+                    }
+                    showDirBox.setOnMouseClicked {
+                        for (c in 1..asNum) {
+                            allTable.columns[6 + asNum + 2 * c].isVisible = showDirBox.isSelected
+                            if (sameTable.columns.size != 0)
+                                sameTable.columns[6 + asNum + 2 * c].isVisible = showDirBox.isSelected
+                            if (diffTable.columns.size != 0)
+                                diffTable.columns[6 + asNum + 2 * c].isVisible = showDirBox.isSelected
+                            if (noExTable.columns.size != 0)
+                                noExTable.columns[6 + asNum + 2 * c].isVisible = showDirBox.isSelected
+                        }
                     }
                 }
-                showDirBox.setOnMouseClicked {
-                    for (c in 1..asNum) {
-                        allTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
-                        if (sameTable.columns.size != 0)
-                            sameTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
-                        if (diffTable.columns.size != 0)
-                            diffTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
-                        if (noExTable.columns.size != 0)
-                            noExTable.columns[6+asNum+2*c].isVisible = showDirBox.isSelected
+
+                var doesAllFileHaveSameName = true
+                if (theSameResult.isNotEmpty() && noExedResult.isEmpty()) {
+                    for (aRow in theSameResult) {
+                        if (aRow[6 + asNum + 3] != "====") {
+                            doesAllFileHaveSameName = false
+                            break
+                        }
+                    }
+                    if (!doesAllFileHaveSameName) {
+                        Platform.runLater {
+                            addMessageLabel(messageBox, MessageType.Warning, "Same, but\nDifferent Name")
+                            tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus("blue;")
+                            aTabSpace.style = "-fx-background-color: ".plus("LightSkyBlue;")
+                        }
                     }
                 }
             }
-
-            var doesAllFileHaveSameName = true
-            if (theSameResult.isNotEmpty() && noExedResult.isEmpty()) {
-                for (aRow in theSameResult) {
-                    if (aRow[6+asNum+3] != "====") {
-                        doesAllFileHaveSameName = false
-                        break
-                    }
-                }
-                if (!doesAllFileHaveSameName) {
-                    Platform.runLater {
-                        addMessageLabel(messageBox,MessageType.Warning,"Same, but\nDifferent Name")
-                        tab.style = defaultWhiteTabStyle.plus("-fx-background-color: ").plus("blue;")
-                        aTabSpace.style = "-fx-background-color: ".plus("LightSkyBlue;")
-                    }
-                }
-            }
-
             println("End a analysis")
         }
 
