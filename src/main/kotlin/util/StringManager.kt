@@ -102,7 +102,7 @@ fun String.getDirectory(): String =
     this.substringBeforeLast(directoryDelimiter,"")
 
 fun String.isArchive(): Boolean {
-    val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "exe")
+    val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "exe", "Rar", "Zip", "Exe", "RAR", "ZIP", "7Z", "EXE")
     for ( aExt in archiveExts ) {
         if ( this.getExtension() == aExt ) {
             return true
@@ -112,7 +112,7 @@ fun String.isArchive(): Boolean {
 }
 
 fun String.isArchiveSensitively(): Boolean? {
-    val archiveExts: Array<String> = arrayOf("rar", "zip", "7z")
+    val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "Rar", "Zip", "RAR", "ZIP", "7Z")
     for ( aExt in archiveExts ) {
         if ( this.getExtension() == aExt ) {
             return true
