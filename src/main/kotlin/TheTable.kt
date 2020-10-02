@@ -257,7 +257,7 @@ fun makeTheTable(theArchiveSetPaths: Array<ArchiveSetPaths>, rootOutputDirectory
 
 data class ItemKey (
       val isArchive: Boolean?
-    , val dataCRC: Int
+    , val dataCRC: Int?
     , val dataSize: DataSize
     , val dupCount: Int
 ) : Comparable<ItemKey> {
@@ -290,7 +290,7 @@ data class ItemKey (
 }
 
 data class ItemRecord (
-      val dataCRC: Int
+      val dataCRC: Int?
     , val dataSize: DataSize
     , val modifiedDate: Date
     , val path: RelativePath

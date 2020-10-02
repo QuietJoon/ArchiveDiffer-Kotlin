@@ -4,7 +4,7 @@ import util.*
 
 
 class Item (
-      val dataCRC: Int
+      val dataCRC: Int?
     , val dataSize: DataSize
     , val modifiedDate: Date
     , val path: JointPath
