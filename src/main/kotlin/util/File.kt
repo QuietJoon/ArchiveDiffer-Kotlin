@@ -4,13 +4,39 @@ package util
 Copy from https://github.com/eugenp/tutorials/tree/master/core-kotlin/src/main/kotlin/com/baeldung/filesystem
  */
 
+import java.io.BufferedInputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.util.zip.CRC32
+import kotlin.system.exitProcess
 
 import ArchiveSetPaths
 import Message
 import MessageType
 import directoryDelimiter
 
+
+//FIXME: Not sure do I need to declare variables{crc,in,buffer} as val or var
+fun getCRC32Value(filename:String):Int {
+    val crc = CRC32()
+    try
+    {
+        val `in` = BufferedInputStream(FileInputStream(filename))
+        val buffer = ByteArray(32768)
+        var length = `in`.read(buffer)
+        while (length >= 0) {
+            crc.update(buffer, 0, length)
+            length = `in`.read(buffer)
+        }
+        `in`.close()
+    }
+    catch (e: IOException) {
+        System.err.println(e)
+        exitProcess(2)
+    }
+    return crc.value.toInt()
+}
 
 fun readFileLineByLineUsingForEachLine(fileName: String) = File(fileName).forEachLine { println(it) }
 
