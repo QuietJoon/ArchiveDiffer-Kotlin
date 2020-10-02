@@ -214,7 +214,7 @@ class Extract internal constructor(
     private fun filterIds(inArchive: IInArchive, regex: String): IntArray {
         val idList = ArrayList<Int>()
 
-        val numberOfItems = inArchive.getNumberOfItems()
+        val numberOfItems = inArchive.numberOfItems
 
         val pattern = Pattern.compile(regex)
         for (i in 0 until numberOfItems) {

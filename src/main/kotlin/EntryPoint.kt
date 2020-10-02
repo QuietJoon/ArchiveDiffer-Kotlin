@@ -82,8 +82,7 @@ class EntryPoint : Application() {
         }
 
         // Step: Check archive existence
-        var rASV: Pair<MessageType, String>
-        rASV = checkArchiveExistence(packagedFilePaths)
+        var rASV: Pair<MessageType, String> = checkArchiveExistence(packagedFilePaths)
         addMessageLabel(messageBox, rASV.first, rASV.second)
         if (rASV.first != MessageType.NoProblem) {
             tab.text =  "No Archive"
@@ -159,7 +158,7 @@ class EntryPoint : Application() {
             }
 
             val result = theTable!!.printFinalResult()
-            var count = result.first
+            val count = result.first
             val resultList = result.second
 
             if (count == 0) {
@@ -373,7 +372,7 @@ class EntryPoint : Application() {
         val groupingButton= root.lookup("#MakeGroupButton") as Button
         val goButton= root.lookup("#GoButton") as Button
 
-        goButton.setDisable(true)
+        goButton.isDisable = true
 
         candidateTable.columns[1].style = "-fx-alignment: CENTER-RIGHT;"
 
@@ -447,7 +446,7 @@ class EntryPoint : Application() {
                 anItem.isSelected = false
             }
 
-            goButton.setDisable(groupIDSet.size == 0)
+            goButton.isDisable = groupIDSet.size == 0
 
             // TODO: Too bad solution, but works...
             candidateTable.refresh()

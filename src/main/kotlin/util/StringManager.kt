@@ -28,12 +28,12 @@ fun generatePackagedFilePaths (packagedFilePaths: Array<ArchiveSetPaths>): Strin
 }
 
 fun generateStringFromFileList (strings : List<File>): String {
-    val internalString = strings.map{it.toString().getFullName()}.joinToString(separator = "\n")
+    val internalString = strings.joinToString(separator = "\n") { it.toString().getFullName() }
     return arrayOf("<\n", internalString, "\n>").joinToString(separator = "")
 }
 
 fun getFirstOrSingleArchivePaths(paths: Array<Path>) : Array<Path> {
-    var firstOrSingle: MutableList<String> = mutableListOf()
+    val firstOrSingle: MutableList<String> = mutableListOf()
     for ( aPath in paths ) {
         if ( aPath.isArchive() ) {
             // I knew this can be replaced by single if by using `maybePartNumber`

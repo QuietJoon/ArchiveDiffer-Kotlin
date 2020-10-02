@@ -12,8 +12,8 @@ import util.*
 import RealPath
 
 
-class ArchiveAndStream (val inArchive: IInArchive, var randomAccess: RandomAccessFile?, var archiveCallback: ArchiveOpenVolumeCallback?) {
-    fun isSingle() = randomAccess != null
+class ArchiveAndStream (val inArchive: IInArchive, private var randomAccess: RandomAccessFile?, private var archiveCallback: ArchiveOpenVolumeCallback?) {
+    private fun isSingle() = randomAccess != null
     fun isMulti() = archiveCallback != null
 
     fun close() {

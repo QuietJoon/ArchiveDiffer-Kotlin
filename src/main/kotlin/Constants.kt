@@ -1,2 +1,2 @@
-val hashPrime = 31
+const val hashPrime = 31
 lateinit var theIgnoringList: IgnoringList

@@ -44,15 +44,19 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             val queryResult = queryInsensitively(theKey)
             theKey = queryResult.first
             val queryItemRecord: ItemRecord? = queryResult.second
-            if (queryItemRecord == null) {
-                val anItemRecord = theItem.makeItemRecordFromItem(archiveSetNum, theParentArchiveID, theArchiveSetID)
-                theItemTable[theKey] = anItemRecord
-            } else if (queryItemRecord.existence[theArchiveSetID] == null) {
-                val newExistence = queryItemRecord.existence
-                newExistence[theArchiveSetID] = Pair(theParentArchiveID, theItem.id)
-                theItemTable[theKey]!!.existence = newExistence
-            } else {
-                print("[WARN]<registerAnItemRecord>: add again ${theItem.path.last()}\n")
+            when {
+                queryItemRecord == null -> {
+                    val anItemRecord = theItem.makeItemRecordFromItem(archiveSetNum, theParentArchiveID, theArchiveSetID)
+                    theItemTable[theKey] = anItemRecord
+                }
+                queryItemRecord.existence[theArchiveSetID] == null -> {
+                    val newExistence = queryItemRecord.existence
+                    newExistence[theArchiveSetID] = Pair(theParentArchiveID, theItem.id)
+                    theItemTable[theKey]!!.existence = newExistence
+                }
+                else -> {
+                    print("[WARN]<registerAnItemRecord>: add again ${theItem.path.last()}\n")
+                }
             }
 
             if (theItemTable[theKey]!!.existence.isFilled())
@@ -135,7 +139,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
             error("[ERROR]<modifyKey>: No such ItemRecord with $oldKey")
         } else {
             theItemTable.remove(oldKey)
-            theItemTable.put(newKey,queriedValue)
+            theItemTable[newKey] = queriedValue
         }
     }
 

@@ -78,7 +78,7 @@ class IgnoringList (
 }
 
 fun ignoringListFromString(content: List<String>): IgnoringList {
-    var rawIgnoringList = mutableListOf<IgnoringItem>()
+    val rawIgnoringList = mutableListOf<IgnoringItem>()
     for (line in content) {
         val tokens = line.split("|")
 

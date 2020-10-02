@@ -113,7 +113,7 @@ fun TheTable.printSameItemTable(len: Int, fullNameOnly: Boolean, relativePathOnl
                         else -> theItem.path.joinToString(separator = "|")
                     }
                     val regulatedPath = thePath.regulating(len)
-                    print(regulatedPath + " | ")
+                    print("$regulatedPath | ")
                 }
             }
             print("\n")

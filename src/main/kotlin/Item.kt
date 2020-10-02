@@ -59,7 +59,7 @@ class Item (
         return dataCRC == that.dataCRC &&
                 dataSize == that.dataSize &&
                 modifiedDate == that.modifiedDate &&
-                path == that.path
+                path.contentEquals(that.path)
     }
 
     fun equalsWithoutRealPath(other: Any?): Boolean {
