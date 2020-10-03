@@ -158,7 +158,7 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
         return idList
     }
 
-    fun runOnce(): Boolean {
+    fun runOnce(): Pair<Boolean,Path> {
         var theKey = getFirstItemKey()
         if (theKey != null) {
             val theItemRecord = theItemTable[theKey] ?: error("[Error]<runOnce>: No such item by $theKey")
@@ -209,9 +209,9 @@ class TheTable constructor (archiveSets: Array<ArchiveSet>, defaultOutputDirecto
                     error("[ERROR]<runOnce>: Fail to open an Archive ${theItemRecord.path}")
                 }
             }
-            return false
+            return Pair(false,anArchiveRealPath)
         }
-        else return true
+        else return Pair(true,"")
     }
 
     fun closeAllArchiveSets() {
