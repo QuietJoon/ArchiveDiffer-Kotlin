@@ -106,10 +106,6 @@ fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID
 
 fun Item.fixCRC(ans: ArchiveAndStream?, archivePath: Path) {
     if (this.dataCRC == null) {
-        /*
-        if (ans == null && archivePath == null)
-            error("[ERROR]<fixCRC>: Both arguments can't be null")
-         */
         val theANS = ans ?: openArchive(archivePath)
         val tempDirectoryPath = theWorkingDirectory+directoryDelimiter+"temp"
         val extract = Extract(archivePath, tempDirectoryPath, false, null)
