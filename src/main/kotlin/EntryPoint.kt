@@ -82,7 +82,7 @@ class EntryPoint : Application() {
         }
 
         // Step: Check archive existence
-        var rASV: Pair<MessageType, String> = checkArchiveExistence(packagedFilePaths)
+        var rASV: Message = checkArchiveExistence(packagedFilePaths)
         addMessageLabel(messageBox, rASV.first, rASV.second)
         if (rASV.first != MessageType.NoProblem) {
             tab.text =  "No Archive"

@@ -7,6 +7,7 @@ Copy from https://github.com/eugenp/tutorials/tree/master/core-kotlin/src/main/k
 import java.io.File
 
 import ArchiveSetPaths
+import Message
 import MessageType
 import directoryDelimiter
 
@@ -40,7 +41,7 @@ fun writeFileDirectlyAsBytes(fileName: String, fileContent: String) =
 
 
 // TODO: Not yet implemented
-fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Pair<MessageType,String> {
+fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Message {
 
     packagedFilePaths.forEach { archiveSetPaths ->
         archiveSetPaths.forEach { archivePaths ->
