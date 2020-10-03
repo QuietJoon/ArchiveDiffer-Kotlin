@@ -591,7 +591,7 @@ class EntryPoint : Application() {
 
         closeSameOnlyButton.setOnAction {
             val tabList = mutableListOf<Tab>()
-            tabPane.tabs.forEach { if (it.style.endsWith("green;")) tabList.add(it) }
+            tabPane.tabs.forEach { if (it.style.endsWith("green;")||it.style.endsWith("blue;")) tabList.add(it) }
             tabList.reverse()
             for (aTab in tabList) {
                 tabPane.tabs.remove(aTab)
