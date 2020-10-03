@@ -2,6 +2,8 @@ package util
 
 import java.io.File
 import com.ibm.icu.lang.*
+import com.googlecode.concurrenttrees.solver.LCSubstringSolver
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory
 
 import ArchivePaths
 import ArchiveSetPaths
@@ -250,22 +252,13 @@ fun Array<ArchiveSetPaths>.getCommonFileName(): String {
     for (path in this) {
         firstPaths.add(path[0][0][0].getFileName().dropMultiVolumeSuffix())
     }
-    var theLCS = firstPaths[0]
-    for (firstPath in firstPaths) {
-        val newLCS = lcs(theLCS,firstPath)
-        if (newLCS.length >= minimumLCSLength) {
-            theLCS = newLCS
-        }
-    }
-    return theLCS
+    val theLCS = getLCS(firstPaths)
+    return if (theLCS.length >= minimumLCSLength) theLCS else ""
 }
 
-fun lcs(x: String, y: String): String {
-    if (x.isEmpty() || y.isEmpty()) return ""
-    val x1 = x.dropLast(1)
-    val y1 = y.dropLast(1)
-    if (x.last() == y.last()) return lcs(x1, y1) + x.last()
-    val x2 = lcs(x, y1)
-    val y2 = lcs(x1, y)
-    return if (x2.length > y2.length) x2 else y2
+fun getLCS(strings: List<String>):String {
+    val solver = LCSubstringSolver(DefaultCharSequenceNodeFactory())
+    for (s in strings)
+        solver.add(s)
+    return solver.longestCommonSubstring.toString()
 }

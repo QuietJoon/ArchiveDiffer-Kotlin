@@ -41,7 +41,7 @@ dependencies {
     compile files("JAVALIB_LOCAL/sevenzipjbinding-16.02-2.01-Windows-amd64/lib/sevenzipjbinding-Windows-amd64.jar")
     compile "com.ibm.icu:icu4j:67.1"
     compile group: 'com.xenomachina', name: 'kotlin-argparser', version: '2.0.7'
-
+    compile group: 'com.googlecode.concurrent-trees', name: 'concurrent-trees', version: '2.6.1'
 }
 
 javafx {
