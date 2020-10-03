@@ -255,7 +255,7 @@ fun Array<ArchiveSetPaths>.getCommonFileName(): String {
     for (path in this) {
         firstPaths.add(path[0][0][0].getFileName().dropMultiVolumeSuffix())
     }
-    val theLCS = getLCS(firstPaths)
+    val theLCS = getLCS(firstPaths).trim()
     return if (theLCS.length >= minimumLCSLength) theLCS else ""
 }
 
