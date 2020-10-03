@@ -110,7 +110,7 @@ class EntryPoint : Application() {
         }
 
         // TODO: Not implemented yet
-        val titleFromFileName = ""
+        val titleFromFileName = packagedFilePaths.getCommonFileName()
 
         var theTable: TheTable? = null
 

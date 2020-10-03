@@ -5,10 +5,11 @@ import com.ibm.icu.lang.*
 
 import ArchivePaths
 import ArchiveSetPaths
-import dateFormat
-import directoryDelimiter
 import JointPath
 import Path
+import dateFormat
+import directoryDelimiter
+import minimumLCSLength
 
 
 // TODO: Mixed with CLI printing code
@@ -100,6 +101,18 @@ fun String.getExtension(): String =
 
 fun String.getDirectory(): String =
     this.substringBeforeLast(directoryDelimiter,"")
+
+fun String.dropMultiVolumeSuffix(): String {
+    if (this.last().isDigit()) {
+        if (this.dropLast(1).endsWith(".part")) {
+            return this.dropLast(6)
+        }
+        else if (this.dropLast(2).endsWith(".part")) {
+            return this.dropLast(7)
+        }
+    }
+    return this
+}
 
 fun String.isArchive(): Boolean {
     val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "exe", "Rar", "Zip", "Exe", "RAR", "ZIP", "7Z", "EXE")
@@ -230,4 +243,29 @@ fun MutableList<String>.getSame(): Pair<Boolean,List<Pair<String,String>>> {
         if (head != strPair.second) return Pair(false, pairList)
     }
     return Pair(true, pairList)
+}
+
+fun Array<ArchiveSetPaths>.getCommonFileName(): String {
+    val firstPaths = mutableListOf<String>()
+    for (path in this) {
+        firstPaths.add(path[0][0][0].getFileName().dropMultiVolumeSuffix())
+    }
+    var theLCS = firstPaths[0]
+    for (firstPath in firstPaths) {
+        val newLCS = lcs(theLCS,firstPath)
+        if (newLCS.length >= minimumLCSLength) {
+            theLCS = newLCS
+        }
+    }
+    return theLCS
+}
+
+fun lcs(x: String, y: String): String {
+    if (x.isEmpty() || y.isEmpty()) return ""
+    val x1 = x.dropLast(1)
+    val y1 = y.dropLast(1)
+    if (x.last() == y.last()) return lcs(x1, y1) + x.last()
+    val x2 = lcs(x, y1)
+    val y2 = lcs(x1, y)
+    return if (x2.length > y2.length) x2 else y2
 }
