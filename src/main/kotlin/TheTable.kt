@@ -296,7 +296,7 @@ data class ItemKey (
 data class ItemRecord (
       val dataCRC: Int?
     , val dataSize: DataSize
-    , val modifiedDate: Date
+    , val modifiedDate: Date?
     , val path: RelativePath
     , var existence: ExistenceBoard
     , var isFilled: Boolean
@@ -320,7 +320,7 @@ data class ItemRecord (
         stringBuilder.append("  ")
         stringBuilder.append(String.format("%10d", this.dataSize))
         stringBuilder.append("  ")
-        stringBuilder.append(this.modifiedDate.dateFormatter())
+        stringBuilder.append(this.modifiedDate?.dateFormatter())
         stringBuilder.append("  ")
         stringBuilder.append(path)
         return stringBuilder.toString()

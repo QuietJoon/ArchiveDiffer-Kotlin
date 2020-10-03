@@ -6,7 +6,7 @@ import util.*
 class Item (
       val dataCRC: Int?
     , val dataSize: DataSize
-    , val modifiedDate: Date
+    , val modifiedDate: Date?
     , val path: JointPath
     , val parentID: ItemID // Real parentArchiveID
     , val idInArchive: ItemIndex
@@ -92,7 +92,7 @@ fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID
     return Item (
           dataCRC = this.crc
         , dataSize = this.size
-        , modifiedDate = this.lastWriteTime.time
+        , modifiedDate = this.lastWriteTime?.time
         , path = newPath
         , parentID = parentID
         , idInArchive = this.itemIndex

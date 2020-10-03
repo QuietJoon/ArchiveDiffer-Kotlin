@@ -231,8 +231,11 @@ fun Char.getCharWidth(): Int {
     }
 }
 
-fun Long.dateFormatter(): String {
-    return dateFormat.format(java.util.Date(this))
+fun Long?.dateFormatter(): String {
+    return if (this == null)
+        "yyyy/MM/dd HH:mm:ss"
+    else
+        dateFormat.format(java.util.Date(this))
 }
 
 fun MutableList<String>.getSame(): Pair<Boolean,List<Pair<String,String>>> {

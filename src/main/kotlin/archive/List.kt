@@ -48,7 +48,7 @@ fun printItemListByIDs(inArchive: IInArchive, ids: IntArray) {
                     item.crc,
                     item.size,
                     item.packedSize,
-                    item.lastWriteTime.time.dateFormatter(),
+                    item.lastWriteTime?.time.dateFormatter(),
                     item.path
                 )
             )
