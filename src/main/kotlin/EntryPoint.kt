@@ -503,6 +503,7 @@ class EntryPoint : Application() {
         val tabPane= root.lookup("#TabPane") as TabPane // Tab Pane
         val singleDropPoint= root.lookup("#ForSingle") as Rectangle // Single-ArchiveSet drop point
         val multiDropPoint = root.lookup("#ForMulti") as Rectangle // Multi-ArchiveSet drop point
+        val closeSameOnlyButton = root.lookup("#CloseSameOnlyButton") as Button
         val closeAllButton = root.lookup("#CloseAllButton") as Button
 
         tabPane.tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS // or SELECTED_TAB, UNAVAILABLE
@@ -586,6 +587,15 @@ class EntryPoint : Application() {
         closeAllButton.setOnAction {
             tabPane.tabs.last().style = ""
             tabPane.tabs.clear()
+        }
+
+        closeSameOnlyButton.setOnAction {
+            val tabList = mutableListOf<Tab>()
+            tabPane.tabs.forEach { if (it.style.endsWith("green;")) tabList.add(it) }
+            tabList.reverse()
+            for (aTab in tabList) {
+                tabPane.tabs.remove(aTab)
+            }
         }
 
         if (!File(theWorkingDirectory).exists()) {
