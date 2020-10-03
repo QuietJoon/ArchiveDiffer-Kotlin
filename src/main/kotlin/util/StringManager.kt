@@ -115,6 +115,14 @@ fun String.dropMultiVolumeSuffix(): String {
     }
     return this
 }
+fun String.dropPrefixes(): String {
+    var theStr = this
+    if (theStr.startsWith("HaveDiff."))
+        theStr = theStr.drop(9)
+    if (theStr.startsWith("Maybe."))
+        theStr = theStr.drop(6)
+    return theStr
+}
 
 fun String.isArchive(): Boolean {
     val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "exe", "Rar", "Zip", "Exe", "RAR", "ZIP", "7Z", "EXE")
@@ -253,7 +261,7 @@ fun MutableList<String>.getSame(): Pair<Boolean,List<Pair<String,String>>> {
 fun Array<ArchiveSetPaths>.getCommonFileName(): String {
     val firstPaths = mutableListOf<String>()
     for (path in this) {
-        firstPaths.add(path[0][0][0].getFileName().dropMultiVolumeSuffix())
+        firstPaths.add(path[0][0][0].getFileName().dropMultiVolumeSuffix().dropPrefixes())
     }
     val theLCS = getLCS(firstPaths).trim()
     return if (theLCS.length >= minimumLCSLength) theLCS else ""
