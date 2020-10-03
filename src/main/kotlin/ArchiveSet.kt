@@ -29,6 +29,7 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
 
     fun addNewItem(parentPath: JointPath, itemID: ItemID, archiveID: ArchiveID, sItem: ISimpleInArchiveItem) {
         val anItem = sItem.makeItemFromArchiveItem(parentPath, itemID, archiveID, archiveSetID)
+        anItem.fixCRC(null,parentPath.toString())
         if (theIgnoringList.match(anItem)) {
             print("Skip: ${anItem.path.last()}\n")
             return

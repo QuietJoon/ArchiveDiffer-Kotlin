@@ -1,10 +1,13 @@
+import archive.ArchiveAndStream
+import archive.Extract
+import archive.openArchive
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem
 
 import util.*
 
 
 class Item (
-      val dataCRC: Int?
+      var dataCRC: Int?
     , val dataSize: DataSize
     , val modifiedDate: Date?
     , val path: JointPath
@@ -99,6 +102,26 @@ fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID
         , parentArchiveID = parentArchiveID
         , archiveSetID = archiveSetID
     )
+}
+
+fun Item.fixCRC(ans: ArchiveAndStream?, archivePath: Path) {
+    if (this.dataCRC == null) {
+        /*
+        if (ans == null && archivePath == null)
+            error("[ERROR]<fixCRC>: Both arguments can't be null")
+         */
+        val theANS = ans ?: openArchive(archivePath)
+        val tempDirectoryPath = theWorkingDirectory+directoryDelimiter+"temp"
+        val extract = Extract(archivePath, tempDirectoryPath, false, null)
+        extract.prepareOutputDirectory()
+        val ids = IntArray(this.idInArchive)
+        extract.extractSomething(theANS!!.inArchive, ids)
+        val extractedFilePath = tempDirectoryPath+directoryDelimiter+theANS.inArchive.simpleInterface.getArchiveItem(this.idInArchive).path
+        println("<<<<>>>> $extractedFilePath")
+
+        this.dataCRC = getCRC32Value(extractedFilePath)
+        if (ans == null) theANS.close()
+    }
 }
 
 typealias ItemIndex = Int

@@ -36,6 +36,7 @@ class Archive (
             , archiveID
             , archiveSetID
         )
+        anItem.fixCRC(ans,realArchivePaths[0].toString())
         if (theIgnoringList.match(anItem)) {
             print("Skip: ${anItem.path.last()}\n")
             return
