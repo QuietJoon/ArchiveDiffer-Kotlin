@@ -30,7 +30,6 @@ fun main(args : Array<String>) {
     println("EntryPoint")
 
     Application.launch(EntryPoint().javaClass, *args)
-
 }
 
 class EntryPoint : Application() {
