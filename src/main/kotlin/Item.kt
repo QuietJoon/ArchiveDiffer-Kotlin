@@ -59,6 +59,7 @@ class Item (
     override fun equals(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
         val that = other as Item
+        if (dataCRC == null || other.dataCRC == null) return false
         return dataCRC == that.dataCRC &&
                 dataSize == that.dataSize &&
                 modifiedDate == that.modifiedDate &&
@@ -68,6 +69,7 @@ class Item (
     fun equalsWithoutRealPath(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
         val that = other as Item
+        if (dataCRC == null || other.dataCRC == null) return false
         return dataCRC == that.dataCRC &&
                 dataSize == that.dataSize &&
                 modifiedDate == that.modifiedDate &&
