@@ -1,3 +1,2 @@
-// TODO: Checking OS is not yet implemented
-const val isWindows : Boolean = true
+val isWindows : Boolean = System.getProperty("os.name").startsWith("Windows")
 val directoryDelimiter = if (isWindows) { "\\"} else { "/" }
