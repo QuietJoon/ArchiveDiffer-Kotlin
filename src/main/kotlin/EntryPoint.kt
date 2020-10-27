@@ -142,8 +142,8 @@ class EntryPoint : Application() {
 
                 theTable!!.prepareWorkingDirectory()
 
-                theTable!!.printStatus()
-                theTable!!.printResult()
+                //theTable!!.printStatus()
+                //theTable!!.printResult()
 
                 var runCount = 1
                 while (true) {
@@ -179,8 +179,8 @@ class EntryPoint : Application() {
                         break
                     }
 
-                    theTable!!.printStatus()
-                    theTable!!.printResult()
+                    //theTable!!.printStatus()
+                    //theTable!!.printResult()
 
                     runCount++
                 }
