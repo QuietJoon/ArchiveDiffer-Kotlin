@@ -17,6 +17,53 @@ import MessageType
 import directoryDelimiter
 
 
+fun getCRC32OfZipArchive(filename:String):Int? {
+    val buffer = ByteArray(18)
+    try
+    {
+        val `in` = BufferedInputStream(FileInputStream(filename))
+        var length = `in`.read(buffer)
+        if (length < 18) {
+            return null
+        }
+    }
+    catch (e: IOException) {
+        System.err.println(e)
+        exitProcess(2)
+    }
+    val crcList = buffer.drop(14)
+    println(crcList)
+    for (byte in crcList) {
+        println(String.format("%02X",byte))
+    }
+    val crc = byteToInt(crcList)
+    println(String.format( "%08X\n", crc))
+    return crc
+}
+
+private fun byteToInt(byteList: List<Byte>): Int {
+    var result = 0
+    var shift = 1
+    var unit = 256
+    for (byte in byteList) {
+        result += (byte.toInt() * shift)
+        shift *= unit
+    }
+    return result
+}
+
+// FIXME: I'm not sure why, but `or` operation does not work
+private fun byteToIntOriginal(byteList: List<Byte>): Int {
+    var result = 0
+    var shift = 0
+    for (byte in byteList) {
+        result = result or (byte.toInt() shl shift)
+        shift += 8
+    }
+    return result
+}
+
+
 //FIXME: Not sure do I need to declare variables{crc,in,buffer} as val or var
 fun getCRC32Value(filename:String):Int {
     val crc = CRC32()
