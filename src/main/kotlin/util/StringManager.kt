@@ -117,6 +117,8 @@ fun String.dropMultiVolumeSuffix(): String {
 }
 fun String.dropPrefixes(): String {
     var theStr = this
+    if (theStr.startsWith("Maybe."))
+        theStr = theStr.drop(6)
     if (theStr.startsWith("HaveDiff."))
         theStr = theStr.drop(9)
     if (theStr.startsWith("Maybe."))
