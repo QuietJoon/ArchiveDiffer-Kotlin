@@ -419,13 +419,28 @@ class EntryPoint : Application() {
 
         candidateTable.columns[1].style = "-fx-alignment: CENTER-RIGHT;"
 
-        val fileList = unpackagedFilePaths.map {
-            val anGroupingFile = GroupedFile(false, 0, it)
-            anGroupingFile.select.addListener { _, _, new_val ->
-                print("Set " + anGroupingFile.getPath() + " as '" + new_val + "'.\n")
+        // filter unpackagedFilePaths which is isSingleOrFirstArchivePath
+        val filteredFilePaths = unpackagedFilePaths.filter { it.isFirstOrSingleArchivePath() }
+
+        // Grouping file path
+        val groupedFilePaths : Map<Int,List<Path>> = groupingFilePaths(filteredFilePaths)
+
+        goButton.isDisable = groupedFilePaths.size < 2
+
+        val fileLists : Map<Int,List<GroupedFile>> = groupedFilePaths.mapValues { entry ->
+            val key = entry.key
+            val paths : List<GroupedFile> = entry.value.map {
+                val anGroupingFile = GroupedFile(false, key, it)
+                anGroupingFile.select.addListener { _, _, newVal ->
+                    print("Set " + anGroupingFile.getPath() + " as '" + newVal + "'.\n")
+                }
+                anGroupingFile
             }
-            anGroupingFile
+            paths
         }
+
+        // Concat fileLists to fileList
+        val fileList : List<GroupedFile> = fileLists.flatMap { it.value }
 
         candidateTable.items = FXCollections.observableArrayList(fileList)
 

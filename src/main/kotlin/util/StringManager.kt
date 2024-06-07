@@ -12,6 +12,7 @@ import Path
 import dateFormat
 import directoryDelimiter
 import minimumLCSLength
+import java.nio.file.Paths
 
 
 // TODO: Mixed with CLI printing code
@@ -35,20 +36,45 @@ fun generateStringFromFileList (strings : List<File>): String {
     return arrayOf("<\n", internalString, "\n>").joinToString(separator = "")
 }
 
+fun Path.isFirstOrSingleArchivePath() : Boolean {
+    if (this.isArchive()) {
+        if (this.isSingleVolume()) {
+            return true
+        } else if (this.isFirstVolume()) {
+            return true
+        }
+    }
+    return false
+}
+
 fun getFirstOrSingleArchivePaths(paths: Array<Path>) : Array<Path> {
     val firstOrSingle: MutableList<String> = mutableListOf()
     for ( aPath in paths ) {
-        if ( aPath.isArchive() ) {
-            // I knew this can be replaced by single if by using `maybePartNumber`
-            // But I want to leave this structure for easy reading
-            if (aPath.isSingleVolume()) {
-                firstOrSingle.add(aPath)
-            } else if (aPath.isFirstVolume()) {
-                firstOrSingle.add(aPath)
-            }
+        if ( aPath.isFirstOrSingleArchivePath() ) {
+            firstOrSingle.add(aPath)
         }
     }
     return firstOrSingle.toTypedArray()
+}
+
+fun groupingFilePaths(paths : List<Path>) : Map <Int, List<Path>>{
+    val groupByDrive = paths.groupBy { Paths.get(it).root.toString() }
+
+    var drive_count = 0
+
+    val groupedByDrive = mutableMapOf<Int,List<Path>>()
+
+    groupByDrive.forEach { (drive, paths) ->
+        println("Drive: $drive")
+        val aList = mutableListOf<Path>()
+        paths.forEach {
+            println("\t${it}")
+            aList.add(it)
+        }
+        groupedByDrive[drive_count] = aList
+        drive_count++
+    }
+    return groupedByDrive
 }
 
 fun packageFilePathsWithoutGuide(paths: List<String>): Array<ArchiveSetPaths> {
