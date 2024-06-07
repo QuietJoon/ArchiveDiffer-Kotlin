@@ -12,6 +12,61 @@ Changelog for ArchiveDiffer-Kotlin
 * Real Report filter - some are implemented, but others not yet
 
 
+## 0.7.5.0  -- 2024/06/07
+
+### Added
+* Auto grouping by archive path - Drive
+
+
+## 0.7.4.0  -- 2024/06/03
+
+### Change
+* Update dependencies to JVM 17 and JavaFX 21
+
+
+## (0.7.3.2)  -- 2020/10/28
+
+### Added
+* Configurable 7ZipJBinding dll path
+
+
+## 0.7.3.1  -- 2020/10/04
+
+### Added
+* Introduce closeSameOnly button
+* Add dropPrefix function - not yet used
+
+### Improve
+* Introduce linear common name search algorithm
+
+### Fix
+* Fix when lastWriteTime is null
+* Fix when CRC is null
+
+
+## 0.7.3.0  -- 2020/10/03
+
+### Added
+* Indicate an extracting error on tab by color
+* Add more supporting extensions
+* Display common name for tab title
+
+### Fix
+* Prepare to fix error when CRC is null
+
+
+## 0.7.2.1  -- 2020/03/09
+
+### Change
+* Update dependencies
+
+
+## 0.7.2.0  -- 2019/08/05
+
+### Added
+* Indicate an extracting error on tab by color
+
+
 ## 0.7.2.0  -- 2019/08/05
 
 ### Added
