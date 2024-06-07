@@ -23,6 +23,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 import archive.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import util.*
 
 
@@ -42,6 +43,7 @@ class EntryPoint : Application() {
     private val defaultWhiteTabStyle = defaultTabStyle.plus(" -fx-text-base-color: white;")
     private val defaultBlackTabStyle = defaultTabStyle.plus(" -fx-text-base-color: Black;")
 
+    @DelicateCoroutinesApi
     private fun generateAnalyzeTab (tabPane: TabPane, packagedFilePaths: Array<ArchiveSetPaths>): Tab {
         tabCount += 1
 
@@ -391,8 +393,11 @@ class EntryPoint : Application() {
         mb.children.add(0, messageLabel)
     }
 
+    @DelicateCoroutinesApi
     private fun openMASGrouper (tabPane: TabPane, unpackagedFilePaths: List<Path>) {
         var packagedFilePaths: Array<ArchiveSetPaths>? = null
+
+
 
         val masgStage = Stage()
         masgStage.title = "MAS Grouper"
@@ -405,6 +410,7 @@ class EntryPoint : Application() {
         masgStage.scene = scene
         masgStage.show()
 
+        @Suppress("UNCHECKED_CAST")
         val candidateTable = root.lookup("#CandidateTableView") as TableView<GroupedFile>
         val groupingButton= root.lookup("#MakeGroupButton") as Button
         val goButton= root.lookup("#GoButton") as Button
@@ -490,6 +496,7 @@ class EntryPoint : Application() {
         }
     }
 
+    @DelicateCoroutinesApi
     override fun start(primaryStage: Stage) {
         primaryStage.title = "EntryPoint"
         primaryStage.isAlwaysOnTop = true
