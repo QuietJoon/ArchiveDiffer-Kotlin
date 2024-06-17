@@ -14,6 +14,7 @@ import kotlin.system.exitProcess
 import ArchiveSetPaths
 import Message
 import MessageType
+import Path
 import directoryDelimiter
 
 
@@ -113,7 +114,6 @@ fun writeFileDirectlyAsBytes(fileName: String, fileContent: String) =
     File(fileName).writeBytes(fileContent.toByteArray())
 
 
-// TODO: Not yet implemented
 fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Message {
 
     packagedFilePaths.forEach { archiveSetPaths ->
@@ -128,4 +128,78 @@ fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Message {
         }
     }
     return Pair(MessageType.NoProblem, "\n")
+}
+
+
+fun checkMissingMultiArchiveFile(paths: List<Path>): List<ArchiveSetInfo> {
+    println("Checking missing volumes...")
+    var archiveSetInfos = util.checkMissingMultiArchive(paths)
+    // check for each ArchiveSetInfo, if its there exist more than two volume, then check the file size of any other archive of not first volume, and last volume.
+    // If the file size is same, then the last one is not last, otherwise it is OK.
+    for (anArchiveSetInfo in archiveSetInfos) {
+        println("Checking missing volumes for ${anArchiveSetInfo.commonPath}")
+        // print each existVolumes
+        for (existVolume in anArchiveSetInfo.existVolumes) {
+            println("Exist volume: $existVolume")
+        }
+        val firstVolume = anArchiveSetInfo.existVolumes[0]
+        println("First volume: $firstVolume")
+        val lastVolume = anArchiveSetInfo.existVolumes[anArchiveSetInfo.existVolumes.size - 1]
+        println("Last volume: $lastVolume")
+        val firstVolumeSize = File(firstVolume).length()
+        println("First volume size: $firstVolumeSize")
+        val lastVolumeSize = File(lastVolume).length()
+        println("Last volume size: $lastVolumeSize")
+        val newCorruptedVolume = mutableListOf<Int>()
+        if ((firstVolume.getFileName().maybePartNumber() ?: 0) == 1) {
+            if (firstVolumeSize == lastVolumeSize) {
+                anArchiveSetInfo.isMissing = true
+                val volume = lastVolume
+                val name = volume.getDirectory() + "\\" + volume.getFileName()
+                println("Name: $name")
+                // remove last character of the name, and add '2' to the end, and add extension of
+                val volumeNumStr = volume.getFileName().maybePartNumberStr() ?: "0"
+                println("Volume number: $volumeNumStr")
+                val newVolumeNum = volumeNumStr.toInt() + 1
+                println("New volume number: $newVolumeNum")
+                // Format the new volume number to have the same length as the original volume number
+                val newVolumeNumStr = newVolumeNum.toString().padStart(volumeNumStr.length, '0')
+                val newExt = if (volume.getExtension() == "exe") {
+                    "rar"
+                } else volume.getExtension()
+                val newName = name.substring(0, name.length - volumeNumStr.length) + "$newVolumeNumStr." + newExt
+                println("New Volume Name: $newName")
+                anArchiveSetInfo.missingVolumes.add(newName)
+                anArchiveSetInfo.missingVolumes.add("And more...")
+            }
+        }
+        for (i in 1 until anArchiveSetInfo.existVolumes.size - 1) {
+            val volumePath = anArchiveSetInfo.existVolumes[i]
+            val volumeSize = File(volumePath).length()
+            println("Volume $volumePath size: $volumeSize")
+            if (volumeSize != firstVolumeSize) {
+                println("Volume $volumePath is corrupted")
+                anArchiveSetInfo.isMissing = true
+                newCorruptedVolume.add(i)
+                val volumeNumStr = volumePath.getFileName().maybePartNumberStr() ?: "0"
+                val volumeNum = volumeNumStr.toInt()
+                anArchiveSetInfo.corruptedVolumes.add(volumePath)
+                break
+            }
+        }
+        // delete elements from existVolumes by index of newMissingVolume
+        newCorruptedVolume.reverse()
+        for (i in newCorruptedVolume) {
+            anArchiveSetInfo.existVolumes.removeAt(i)
+        }
+    }
+    println("FINAL Result")
+    for (info in archiveSetInfos) {
+        println("Common: ${info.commonPath}")
+        println("Last: ${info.lastVolumeNumber}")
+        println("Exist: ${info.existVolumes}")
+        println("Missing: ${info.missingVolumes}")
+        println("Corrupted: ${info.corruptedVolumes}")
+    }
+    return archiveSetInfos
 }

@@ -12,6 +12,13 @@ Changelog for ArchiveDiffer-Kotlin
 * Real Report filter - some are implemented, but others not yet
 
 
+## 0.7.6.0  -- 2024/06/18
+
+### Added
+* Add missing/corrupted file checking function
+  * Corruption check by size only
+
+
 ## 0.7.5.0  -- 2024/06/07
 
 ### Added

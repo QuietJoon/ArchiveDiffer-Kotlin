@@ -70,7 +70,8 @@ class EntryPoint : Application() {
         // Drag & Drop
         aTabSpace.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val newPackagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            // TODO: Add popup for missing/corrupted files
+            val (newPackagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
             val newAnalyzeTab = generateAnalyzeTab(tabPane, newPackagedFilePaths)
             event.consume()
 
@@ -113,7 +114,6 @@ class EntryPoint : Application() {
             else -> {}
         }
 
-        // TODO: Not implemented yet
         val titleFromFileName = packagedFilePaths.getCommonFileName()
 
         var theTable: TheTable? = null
@@ -309,6 +309,49 @@ class EntryPoint : Application() {
     }
 
 
+    private fun generateCheckTab (tabPane: TabPane, checks: List<ArchiveSetInfo>): Tab {
+        tabCount += 1
+
+        // Interface
+        val tab = Tab()
+        tab.text = "CheckTab$tabCount"
+        val fxml = javaClass.getResource("fxml/CheckTab.fxml")
+        val aTabSpace: Pane = FXMLLoader.load(fxml)
+        val filePathArea= aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
+        tab.content = aTabSpace
+
+        filePathArea.text = ""
+        // if every check is not missing nor corrupted, then show "Good"
+        val noProblem = checks.all { !it.isMissing }
+        if (noProblem) {
+            filePathArea.text = "No missing nor corrupted volume"
+            tab.text = "Good"
+            tab.style = defaultBlackTabStyle.plus("-fx-background-color: green")
+        } else {
+            tab.text = "Bad"
+            tab.style = defaultBlackTabStyle.plus("-fx-background-color: yellow")
+            var aText = filePathArea.text
+            for (aCheck in checks) {
+                if (aCheck.isMissing) {
+                    aText += "Missing: ${aCheck.commonPath}\n"
+                    var missingText = ""
+                    for (aMissingVolume in aCheck.missingVolumes) {
+                        missingText += "  $aMissingVolume\n"
+                    }
+                    aText += missingText
+                    var corruptedText = ""
+                    for (aCorruptedVolume in aCheck.corruptedVolumes) {
+                        corruptedText += "  $aCorruptedVolume\n"
+                    }
+                }
+            }
+            filePathArea.text = aText
+        }
+        filePathArea.font = Font.font(null,FontWeight.NORMAL,14.0)
+        return tab
+    }
+
+
     private fun generateResultTab (resultTabPane: TabPane, resultType: ResultType, aTable: TableView<ObservableList<StringProperty>>): Tab {
         val tab = Tab()
         tab.text = resultType.toString()
@@ -465,6 +508,7 @@ class EntryPoint : Application() {
 
             val packagedFilePathList = mutableListOf<ArchiveSetPaths>()
 
+            val checks = mutableListOf<ArchiveSetInfo>()
             if (groupIDSet.size > 1) {
                 for (i in 0 until groupIDSet.size) {
                     val unpackagedPathList = mutableListOf<RealPath>()
@@ -472,11 +516,14 @@ class EntryPoint : Application() {
                         if (anItem.getGroupID() == i)
                             unpackagedPathList.add(anItem.getPath())
                     }
-                    packagedFilePathList.add(packageFilePathsForGrouped(unpackagedPathList))
+                    val (packaged,check) = packageFilePathsForGrouped(unpackagedPathList)
+                    packagedFilePathList.add(packaged)
+                    checks.addAll(check)
                 }
                 packagedFilePaths = packagedFilePathList.toTypedArray()
             }
-
+            // TODO: Add popup for missing/corrupted files
+            // if any info of checks is missing, then show the popup
             val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths!!)
             tabPane.tabs.add(newAnalyzeTab)
             tabPane.selectionModel.select(newAnalyzeTab)
@@ -522,6 +569,7 @@ class EntryPoint : Application() {
         val epPane= root.lookup("#EPPane") as AnchorPane // Entry Point Pane
         val dropPane= root.lookup("#DropPane") as AnchorPane // Drop Pane
         val tabPane= root.lookup("#TabPane") as TabPane // Tab Pane
+        val checkDropPoint= root.lookup("#ForCheck") as Rectangle // Single-ArchiveSet drop point
         val singleDropPoint= root.lookup("#ForSingle") as Rectangle // Single-ArchiveSet drop point
         val multiDropPoint = root.lookup("#ForMulti") as Rectangle // Multi-ArchiveSet drop point
         val closeSameOnlyButton = root.lookup("#CloseSameOnlyButton") as Button
@@ -529,14 +577,17 @@ class EntryPoint : Application() {
 
         tabPane.tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS // or SELECTED_TAB, UNAVAILABLE
 
-        singleDropPoint.heightProperty().bind(epPane.heightProperty().divide(32).multiply(19))
+        checkDropPoint.heightProperty().bind(epPane.heightProperty().divide(32).multiply(4))
+
+        singleDropPoint.heightProperty().bind(epPane.heightProperty().divide(32).multiply(15))
 
         multiDropPoint.yProperty().bind(singleDropPoint.yProperty().add(dropPane.heightProperty().divide(2)))
-        multiDropPoint.heightProperty().bind(epPane.heightProperty().divide(8).multiply(3))
+        multiDropPoint.heightProperty().bind(epPane.heightProperty().divide(32).multiply(11))
 
         primaryStage.scene = scene
         primaryStage.show()
 
+        val checkColor = checkDropPoint.fill
         val singleColor = singleDropPoint.fill
         val multiColor = multiDropPoint.fill
         val selectedColor = Paint.valueOf("Green")
@@ -549,13 +600,40 @@ class EntryPoint : Application() {
         }
         tabPane.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            // TODO: Add popup for missing/corrupted files
             val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
             event.consume()
 
             tabPane.tabs.add(newAnalyzeTab)
             tabPane.selectionModel.select(newAnalyzeTab)
             event.isDropCompleted = true
+        }
+
+        checkDropPoint.onDragEntered = EventHandler { event ->
+            checkDropPoint.fill = selectedColor
+            event.consume()
+        }
+        checkDropPoint.onDragOver = EventHandler { event ->
+            val db = event.dragboard
+            if (db.hasFiles())
+                event.acceptTransferModes(TransferMode.COPY)
+            event.consume()
+        }
+        checkDropPoint.onDragDropped = EventHandler { event ->
+            val db = event.dragboard
+            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            // TODO: Add popup for missing/corrupted files
+            val newCheckTab = generateCheckTab(tabPane, checks)
+            event.consume()
+
+            tabPane.tabs.add(newCheckTab)
+            tabPane.selectionModel.select(newCheckTab)
+            event.isDropCompleted = true
+        }
+        checkDropPoint.onDragExited = EventHandler { event ->
+            checkDropPoint.fill = checkColor
+            event.consume()
         }
 
         singleDropPoint.onDragEntered = EventHandler { event ->
@@ -570,7 +648,8 @@ class EntryPoint : Application() {
         }
         singleDropPoint.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val packagedFilePaths = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            // TODO: Add popup for missing/corrupted files
             val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
             event.consume()
 

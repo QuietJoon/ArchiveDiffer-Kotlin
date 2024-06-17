@@ -14,6 +14,7 @@ import directoryDelimiter
 import minimumLCSLength
 import java.nio.file.Paths
 
+data class ArchiveSetInfo(var isMissing: Boolean, val commonPath: String, val lastVolumeNumber: Int, val existVolumes: MutableList<String>, val missingVolumes: MutableList<String>, val corruptedVolumes: MutableList<String>)
 
 // TODO: Mixed with CLI printing code
 fun generatePackagedFilePaths (packagedFilePaths: Array<ArchiveSetPaths>): String {
@@ -77,7 +78,63 @@ fun groupingFilePaths(paths : List<Path>) : Map <Int, List<Path>>{
     return groupedByDrive
 }
 
-fun packageFilePathsWithoutGuide(paths: List<String>): Array<ArchiveSetPaths> {
+fun checkMissingMultiArchive(paths: List<Path>): List<ArchiveSetInfo> {
+    val sorted = paths.sorted()
+    /*
+    for (path in sorted) {
+        println("Path: $path")
+    }
+    */
+    // Filter only multipart archives
+    val multiVolumePaths = sorted.filter { !it.isSingleVolume() }
+    // Grouping by common name before .part
+    val grouped = multiVolumePaths.groupBy { it.getCommonNameOfMultiVolume() }
+    // For each grouped archives, check if there is any missing volume
+    val volumeInfos = mutableListOf<ArchiveSetInfo>()
+    for (group in grouped) {
+        //println("Group： ${group.key}")
+        val existVolumes = mutableListOf<String>()
+        val missingVolumes = mutableListOf<String>()
+        val corruptedVolumes = mutableListOf<String>()
+        var lastVolume = 1
+        for (path in group.value) {
+            //println("Path: $path")
+            val volumeNumStr = path.getFileName().maybePartNumberStr() ?: "0"
+            //println("Volume: $volumeNumStr")
+            val volumeNum = volumeNumStr.toInt()
+            for (c in lastVolume..volumeNum) {
+                //println("Checking volume: $c")
+                if (c == volumeNum) {
+                    //println("Exist volume: $c")
+                    lastVolume = volumeNum+1
+                    existVolumes.add(path)
+                    break
+                } else {
+                    println("Missing volume: $c")
+                    val name = path.getDirectory() + "\\" + path.getFileName()
+                    val missingVolumeNumStr = c.toString().padStart(volumeNumStr.length, '0')
+                    val newExt = if (path.getExtension() == "exe") {
+                        "rar"
+                    } else path.getExtension()
+                    val missingVolume = name.substring(0, name.length - volumeNumStr.length) + "$missingVolumeNumStr." + newExt
+                    missingVolumes.add(missingVolume)
+                }
+            }
+        }
+        lastVolume -= 1
+        volumeInfos.add(ArchiveSetInfo(missingVolumes.isNotEmpty(), group.key, lastVolume, existVolumes, missingVolumes, corruptedVolumes))
+    }
+    for (info in volumeInfos) {
+        println("Common: ${info.commonPath}")
+        println("Last: ${info.lastVolumeNumber}")
+        println("Exist: ${info.existVolumes}")
+        println("Missing: ${info.missingVolumes}")
+    }
+    return volumeInfos
+}
+
+fun packageFilePathsWithoutGuide(paths: List<String>): Pair<Array<ArchiveSetPaths>, List<ArchiveSetInfo>> {
+    val infos = checkMissingMultiArchiveFile(paths)
     val sorted = paths.sorted()
     val resultList = mutableListOf<ArchiveSetPaths>()
     var aList = mutableListOf<JointPath>()
@@ -91,10 +148,11 @@ fun packageFilePathsWithoutGuide(paths: List<String>): Array<ArchiveSetPaths> {
         }
     }
     resultList.add(arrayOf(aList.toTypedArray()))
-    return resultList.toTypedArray()
+    return resultList.toTypedArray() to infos
 }
 
-fun packageFilePathsForGrouped(paths: List<String>): ArchiveSetPaths {
+fun packageFilePathsForGrouped(paths: List<String>): Pair<ArchiveSetPaths, List<ArchiveSetInfo>> {
+    val infos = checkMissingMultiArchiveFile(paths)
     val sorted = paths.sorted()
     val resultList = mutableListOf<ArchivePaths>()
     var aList = mutableListOf<JointPath>()
@@ -108,7 +166,7 @@ fun packageFilePathsForGrouped(paths: List<String>): ArchiveSetPaths {
         }
     }
     resultList.add(aList.toTypedArray())
-    return resultList.toTypedArray()
+    return resultList.toTypedArray() to infos
 }
 
 
@@ -184,6 +242,13 @@ fun String.maybePartNumber(): Int? {
     val maybeNumberString = this.substringAfterLast(".part","")
     //println(String.format("<maybePartNumber>: %s",maybeNumberString))
     return maybeNumberString.toIntOrNull()
+}
+
+fun String.maybePartNumberStr(): String? {
+    val maybeNumberString = this.substringAfterLast(".part","")
+    //println(String.format("<maybePartNumber>: %s",maybeNumberString))
+    if (maybeNumberString.toIntOrNull() == null) return null
+    return maybeNumberString
 }
 
 fun String.isSingleVolume(): Boolean = getFileName().maybePartNumber() == null
