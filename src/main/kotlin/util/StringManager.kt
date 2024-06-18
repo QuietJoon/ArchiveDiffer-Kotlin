@@ -321,7 +321,7 @@ fun String.getWidth(): Int {
 }
 
 fun Char.getCharWidth(): Int {
-    val width = UCharacter.getIntPropertyValue(this.toInt(), UProperty.EAST_ASIAN_WIDTH)
+    val width = UCharacter.getIntPropertyValue(this.code, UProperty.EAST_ASIAN_WIDTH)
     return when (width) {
         UCharacter.EastAsianWidth.NARROW -> 1
         UCharacter.EastAsianWidth.NEUTRAL -> 1
