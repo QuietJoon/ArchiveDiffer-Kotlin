@@ -16,6 +16,7 @@ import Message
 import MessageType
 import Path
 import directoryDelimiter
+import MultiArchiveVolumeInfo
 
 
 fun getCRC32OfZipArchive(filename:String):Int? {
@@ -131,20 +132,20 @@ fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Message {
 }
 
 
-fun checkMissingMultiArchiveFile(paths: List<Path>): List<ArchiveSetInfo> {
+fun checkMissingMultiVolumeFile(paths: List<Path>): List<MultiArchiveVolumeInfo> {
     println("Checking missing volumes...")
-    var archiveSetInfos = util.checkMissingMultiArchive(paths)
+    var archiveSetInfos = util.checkMissingMultiVolume(paths)
     // check for each ArchiveSetInfo, if its there exist more than two volume, then check the file size of any other archive of not first volume, and last volume.
     // If the file size is same, then the last one is not last, otherwise it is OK.
     for (anArchiveSetInfo in archiveSetInfos) {
         println("Checking missing volumes for ${anArchiveSetInfo.commonPath}")
-        // print each existVolumes
-        for (existVolume in anArchiveSetInfo.existVolumes) {
+        // print each existenceVolumes
+        for (existVolume in anArchiveSetInfo.existingVolumes) {
             println("Exist volume: $existVolume")
         }
-        val firstVolume = anArchiveSetInfo.existVolumes[0]
+        val firstVolume = anArchiveSetInfo.existingVolumes[0]
         println("First volume: $firstVolume")
-        val lastVolume = anArchiveSetInfo.existVolumes[anArchiveSetInfo.existVolumes.size - 1]
+        val lastVolume = anArchiveSetInfo.existingVolumes[anArchiveSetInfo.existingVolumes.size - 1]
         println("Last volume: $lastVolume")
         val firstVolumeSize = File(firstVolume).length()
         println("First volume size: $firstVolumeSize")
@@ -173,8 +174,8 @@ fun checkMissingMultiArchiveFile(paths: List<Path>): List<ArchiveSetInfo> {
                 anArchiveSetInfo.missingVolumes.add("And more...")
             }
         }
-        for (i in 1 until anArchiveSetInfo.existVolumes.size - 1) {
-            val volumePath = anArchiveSetInfo.existVolumes[i]
+        for (i in 1 until anArchiveSetInfo.existingVolumes.size - 1) {
+            val volumePath = anArchiveSetInfo.existingVolumes[i]
             val volumeSize = File(volumePath).length()
             println("Volume $volumePath size: $volumeSize")
             if (volumeSize != firstVolumeSize) {
@@ -187,17 +188,17 @@ fun checkMissingMultiArchiveFile(paths: List<Path>): List<ArchiveSetInfo> {
                 break
             }
         }
-        // delete elements from existVolumes by index of newMissingVolume
+        // delete elements from existenceVolumes by index of newMissingVolume
         newCorruptedVolume.reverse()
         for (i in newCorruptedVolume) {
-            anArchiveSetInfo.existVolumes.removeAt(i)
+            anArchiveSetInfo.existingVolumes.removeAt(i)
         }
     }
     println("FINAL Result")
     for (info in archiveSetInfos) {
         println("Common: ${info.commonPath}")
         println("Last: ${info.lastVolumeNumber}")
-        println("Exist: ${info.existVolumes}")
+        println("Exist: ${info.existingVolumes}")
         println("Missing: ${info.missingVolumes}")
         println("Corrupted: ${info.corruptedVolumes}")
     }

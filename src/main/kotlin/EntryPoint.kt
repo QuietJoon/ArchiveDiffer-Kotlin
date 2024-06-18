@@ -309,7 +309,7 @@ class EntryPoint : Application() {
     }
 
 
-    private fun generateCheckTab (tabPane: TabPane, checks: List<ArchiveSetInfo>): Tab {
+    private fun generateCheckTab (tabPane: TabPane, checks: List<MultiArchiveVolumeInfo>): Tab {
         tabCount += 1
 
         // Interface
@@ -508,7 +508,7 @@ class EntryPoint : Application() {
 
             val packagedFilePathList = mutableListOf<ArchiveSetPaths>()
 
-            val checks = mutableListOf<ArchiveSetInfo>()
+            val checks = mutableListOf<MultiArchiveVolumeInfo>()
             if (groupIDSet.size > 1) {
                 for (i in 0 until groupIDSet.size) {
                     val unpackagedPathList = mutableListOf<RealPath>()

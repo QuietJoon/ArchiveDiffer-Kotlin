@@ -71,3 +71,12 @@ class Archive (
 }
 
 typealias ArchiveID = Int
+
+data class MultiArchiveVolumeInfo(
+    var isMissing: Boolean,
+    val commonPath: String,
+    val lastVolumeNumber: Int,
+    val existingVolumes: MutableList<String>,
+    val missingVolumes: MutableList<String>,
+    val corruptedVolumes: MutableList<String>
+)

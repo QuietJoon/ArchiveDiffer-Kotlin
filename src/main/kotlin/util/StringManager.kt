@@ -13,8 +13,8 @@ import dateFormat
 import directoryDelimiter
 import minimumLCSLength
 import java.nio.file.Paths
+import MultiArchiveVolumeInfo
 
-data class ArchiveSetInfo(var isMissing: Boolean, val commonPath: String, val lastVolumeNumber: Int, val existVolumes: MutableList<String>, val missingVolumes: MutableList<String>, val corruptedVolumes: MutableList<String>)
 
 // TODO: Mixed with CLI printing code
 fun generatePackagedFilePaths (packagedFilePaths: Array<ArchiveSetPaths>): String {
@@ -78,7 +78,7 @@ fun groupingFilePaths(paths : List<Path>) : Map <Int, List<Path>>{
     return groupedByDrive
 }
 
-fun checkMissingMultiArchive(paths: List<Path>): List<ArchiveSetInfo> {
+fun checkMissingMultiVolume(paths: List<Path>): List<MultiArchiveVolumeInfo> {
     val sorted = paths.sorted()
     /*
     for (path in sorted) {
@@ -90,10 +90,10 @@ fun checkMissingMultiArchive(paths: List<Path>): List<ArchiveSetInfo> {
     // Grouping by common name before .part
     val grouped = multiVolumePaths.groupBy { it.getCommonNameOfMultiVolume() }
     // For each grouped archives, check if there is any missing volume
-    val volumeInfos = mutableListOf<ArchiveSetInfo>()
+    val volumeInfos = mutableListOf<MultiArchiveVolumeInfo>()
     for (group in grouped) {
         //println("Group： ${group.key}")
-        val existVolumes = mutableListOf<String>()
+        val existenceVolumes = mutableListOf<String>()
         val missingVolumes = mutableListOf<String>()
         val corruptedVolumes = mutableListOf<String>()
         var lastVolume = 1
@@ -107,7 +107,7 @@ fun checkMissingMultiArchive(paths: List<Path>): List<ArchiveSetInfo> {
                 if (c == volumeNum) {
                     //println("Exist volume: $c")
                     lastVolume = volumeNum+1
-                    existVolumes.add(path)
+                    existenceVolumes.add(path)
                     break
                 } else {
                     println("Missing volume: $c")
@@ -122,19 +122,19 @@ fun checkMissingMultiArchive(paths: List<Path>): List<ArchiveSetInfo> {
             }
         }
         lastVolume -= 1
-        volumeInfos.add(ArchiveSetInfo(missingVolumes.isNotEmpty(), group.key, lastVolume, existVolumes, missingVolumes, corruptedVolumes))
+        volumeInfos.add(MultiArchiveVolumeInfo(missingVolumes.isNotEmpty(), group.key, lastVolume, existenceVolumes, missingVolumes, corruptedVolumes))
     }
     for (info in volumeInfos) {
         println("Common: ${info.commonPath}")
         println("Last: ${info.lastVolumeNumber}")
-        println("Exist: ${info.existVolumes}")
+        println("Exist: ${info.existingVolumes}")
         println("Missing: ${info.missingVolumes}")
     }
     return volumeInfos
 }
 
-fun packageFilePathsWithoutGuide(paths: List<String>): Pair<Array<ArchiveSetPaths>, List<ArchiveSetInfo>> {
-    val infos = checkMissingMultiArchiveFile(paths)
+fun packageFilePathsWithoutGuide(paths: List<String>): Pair<Array<ArchiveSetPaths>, List<MultiArchiveVolumeInfo>> {
+    val infos = checkMissingMultiVolumeFile(paths)
     val sorted = paths.sorted()
     val resultList = mutableListOf<ArchiveSetPaths>()
     var aList = mutableListOf<JointPath>()
@@ -151,8 +151,8 @@ fun packageFilePathsWithoutGuide(paths: List<String>): Pair<Array<ArchiveSetPath
     return resultList.toTypedArray() to infos
 }
 
-fun packageFilePathsForGrouped(paths: List<String>): Pair<ArchiveSetPaths, List<ArchiveSetInfo>> {
-    val infos = checkMissingMultiArchiveFile(paths)
+fun packageFilePathsForGrouped(paths: List<String>): Pair<ArchiveSetPaths, List<MultiArchiveVolumeInfo>> {
+    val infos = checkMissingMultiVolumeFile(paths)
     val sorted = paths.sorted()
     val resultList = mutableListOf<ArchivePaths>()
     var aList = mutableListOf<JointPath>()
