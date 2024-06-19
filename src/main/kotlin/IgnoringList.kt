@@ -3,7 +3,7 @@ import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem
 import util.*
 
 
-class IgnoringItem (
+class IgnoringItem(
     val itemCRC: Leveled<Int>,
     val itemSize: Leveled<DataSize>,
     val itemName: Leveled<Name>,
@@ -41,7 +41,7 @@ fun makeItemFromRawItem(item: ISimpleInArchiveItem): IgnoringItem {
     )
 }
 
-class IgnoringList (
+class IgnoringList(
     val ignoringList: List<IgnoringItem>
 ) {
     override fun toString(): String {
@@ -49,11 +49,11 @@ class IgnoringList (
         for (item in ignoringList) {
             stringBuilder.append(item.itemCRC.level.toString())
             stringBuilder.append("|")
-            stringBuilder.append(String.format("%08X",item.itemCRC.datum))
+            stringBuilder.append(String.format("%08X", item.itemCRC.datum))
             stringBuilder.append("|")
             stringBuilder.append(item.itemSize.level.toString())
             stringBuilder.append("|")
-            stringBuilder.append(String.format("%12s",item.itemSize.datum))
+            stringBuilder.append(String.format("%12s", item.itemSize.datum))
             stringBuilder.append("|")
             stringBuilder.append(item.itemModifiedDate.level.toString())
             stringBuilder.append("|")
@@ -68,8 +68,8 @@ class IgnoringList (
     }
 
     fun match(item: Item): Boolean {
-        for ( ignoringItem in ignoringList) {
-            if ( ignoringItem.match(item)) {
+        for (ignoringItem in ignoringList) {
+            if (ignoringItem.match(item)) {
                 return true
             }
         }
@@ -90,11 +90,14 @@ fun ignoringListFromString(content: List<String>): IgnoringList {
         val itemModifiedDateV = tokens[5].toLong()
         val itemNameL = Level.valueOf(tokens[6].trim())
         val itemNameV = tokens[7]
-        rawIgnoringList.add(IgnoringItem(
-            Leveled(itemCRCL,itemCRCV)
-            , Leveled(itemSIZEL,itemSIZEV)
-            , Leveled(itemNameL, itemNameV)
-            , Leveled(itemModifiedDateL,itemModifiedDateV)))
+        rawIgnoringList.add(
+            IgnoringItem(
+                Leveled(itemCRCL, itemCRCV),
+                Leveled(itemSIZEL, itemSIZEV),
+                Leveled(itemNameL, itemNameV),
+                Leveled(itemModifiedDateL, itemModifiedDateV)
+            )
+        )
     }
 
     return IgnoringList(rawIgnoringList.toList())
@@ -106,5 +109,5 @@ fun readIgnoringList(inputPath: RealPath): IgnoringList {
 
 fun writeIgnoringList(ignoringList: IgnoringList, outputPath: RealPath) {
     val content = ignoringList.toString()
-    writeFileUsingBufferedWriter(outputPath,content)
+    writeFileUsingBufferedWriter(outputPath, content)
 }

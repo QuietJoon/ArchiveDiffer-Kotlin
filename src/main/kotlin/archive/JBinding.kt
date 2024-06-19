@@ -5,7 +5,7 @@ import net.sf.sevenzipjbinding.*
 import java.io.File
 
 
-fun jBindingChecker(aState: Boolean, aSZJBPath: Path): Boolean{
+fun jBindingChecker(aState: Boolean, aSZJBPath: Path): Boolean {
     return try {
         if (aState)
             SevenZip.initSevenZipFromPlatformJAR()

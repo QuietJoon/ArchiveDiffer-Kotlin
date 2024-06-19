@@ -12,38 +12,45 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="480.0" prefWidth="720.0" spacing="4.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <AnchorPane prefHeight="64.0">
-         <children>
-            <HBox fx:id="MessageBox" layoutX="0.0" layoutY="0.0" prefHeight="64.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="0.0" />
-            <Button fx:id="CancelButton" layoutX="640.0" layoutY="50.0" mnemonicParsing="false" text="CANCEL" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <CheckBox fx:id="OnlyFirst" layoutX="640.0" layoutY="128.0" mnemonicParsing="false" selected="true" text="FV Only" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-         </children>
-      </AnchorPane>
-      <TextArea fx:id="FilePaths" prefHeight="128.0" prefWidth="200.0" />
-      <AnchorPane maxHeight="28.0" prefHeight="32.0">
-         <children>
-            <HBox layoutX="0.0" layoutY="0.0" prefHeight="40.0" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="128.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <RadioButton mnemonicParsing="false" text="Hash/Size Only">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="ComparingMethod" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" text="+FileName" toggleGroup="$ComparingMethod" />
-                  <RadioButton mnemonicParsing="false" text="+Directory" toggleGroup="$ComparingMethod" />
-                  <CheckBox fx:id="ShowIgnored" mnemonicParsing="false" selected="true" text="Show Ig." />
-                  <CheckBox fx:id="ShowExtracted" mnemonicParsing="false" text="Show Ex.ed" />
-                  <CheckBox fx:id="ShowDirectory" mnemonicParsing="false" selected="true" text="Show Directory" />
-               </children>
-            </HBox>
-            <ChoiceBox fx:id="ChoiceBox" layoutX="520.0" layoutY="0.0" prefWidth="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-         </children>
-      </AnchorPane>
-      <TabPane fx:id="ResultTab" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
-   </children>
-   <padding>
-      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-   </padding>
+<VBox prefHeight="480.0" prefWidth="720.0" spacing="4.0" xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <AnchorPane prefHeight="64.0">
+            <children>
+                <HBox fx:id="MessageBox" layoutX="0.0" layoutY="0.0" prefHeight="64.0" AnchorPane.bottomAnchor="0.0"
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="0.0"/>
+                <Button fx:id="CancelButton" layoutX="640.0" layoutY="50.0" mnemonicParsing="false" text="CANCEL"
+                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                <CheckBox fx:id="OnlyFirst" layoutX="640.0" layoutY="128.0" mnemonicParsing="false" selected="true"
+                          text="FV Only" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+            </children>
+        </AnchorPane>
+        <TextArea fx:id="FilePaths" prefHeight="128.0" prefWidth="200.0"/>
+        <AnchorPane maxHeight="28.0" prefHeight="32.0">
+            <children>
+                <HBox layoutX="0.0" layoutY="0.0" prefHeight="40.0" spacing="4.0" AnchorPane.bottomAnchor="0.0"
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="128.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <RadioButton mnemonicParsing="false" text="Hash/Size Only">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="ComparingMethod"/>
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" text="+FileName" toggleGroup="$ComparingMethod"/>
+                        <RadioButton mnemonicParsing="false" text="+Directory" toggleGroup="$ComparingMethod"/>
+                        <CheckBox fx:id="ShowIgnored" mnemonicParsing="false" selected="true" text="Show Ig."/>
+                        <CheckBox fx:id="ShowExtracted" mnemonicParsing="false" text="Show Ex.ed"/>
+                        <CheckBox fx:id="ShowDirectory" mnemonicParsing="false" selected="true" text="Show Directory"/>
+                    </children>
+                </HBox>
+                <ChoiceBox fx:id="ChoiceBox" layoutX="520.0" layoutY="0.0" prefWidth="150.0"
+                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            </children>
+        </AnchorPane>
+        <TabPane fx:id="ResultTab" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+                 VBox.vgrow="ALWAYS"/>
+    </children>
+    <padding>
+        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+    </padding>
 </VBox>

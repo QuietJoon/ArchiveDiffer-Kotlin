@@ -33,7 +33,7 @@ fun printItemList(inArchive: IInArchive) {
 
 
 fun printItemListByIDs(inArchive: IInArchive, ids: IntArray) {
-    if ( ids.isNotEmpty() ) {
+    if (ids.isNotEmpty()) {
         val simpleInArchive = inArchive.simpleInterface
 
         print("  ID  |   CRC    |     Size     |   Compr.Sz.  |    Modified Date    | Filename\n")

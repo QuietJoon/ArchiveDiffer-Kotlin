@@ -4,7 +4,7 @@ import com.xenomachina.argparser.ArgParser
 import archive.*
 import util.*
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     println("ArchiveDiffer-Kotlin")
 
     ArgParser(args).parseInto(::Config).run {

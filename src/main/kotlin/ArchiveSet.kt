@@ -3,8 +3,8 @@ import net.sf.sevenzipjbinding.IInArchive
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem
 
 
-class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray: ArchiveSetPaths) {
-    val archiveMap: MutableMap<ArchiveID,Archive>
+class ArchiveSet constructor(archiveSetID: ArchiveSetID, realArchivePathsArray: ArchiveSetPaths) {
+    val archiveMap: MutableMap<ArchiveID, Archive>
     val itemMap: ItemMap
     val archiveSetID: ArchiveSetID
 
@@ -13,8 +13,9 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
         itemMap = mutableMapOf()
         archiveMap = mutableMapOf()
 
-        for ( realPaths in realArchivePathsArray) {
-            val anAns = openArchive(realPaths[0].last()) ?: error("[ERROR]<init<ArchiveSet>>: Couldn't open ${realPaths[0].last()}")
+        for (realPaths in realArchivePathsArray) {
+            val anAns = openArchive(realPaths[0].last())
+                ?: error("[ERROR]<init<ArchiveSet>>: Couldn't open ${realPaths[0].last()}")
             val anArchive = Archive(realPaths, anAns, 0, archiveSetID)
             archiveMap[anArchive.archiveID] = anArchive
 
@@ -29,7 +30,7 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
 
     fun addNewItem(parentPath: JointPath, itemID: ItemID, archiveID: ArchiveID, sItem: ISimpleInArchiveItem) {
         val anItem = sItem.makeItemFromArchiveItem(parentPath, itemID, archiveID, archiveSetID)
-        anItem.fixCRC(null,parentPath.toString())
+        anItem.fixCRC(null, parentPath.toString())
         if (theIgnoringList.match(anItem)) {
             print("Skip: ${anItem.path.last()}\n")
             return
@@ -40,7 +41,7 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
             if (queryItem == null) {
                 itemMap[aKey] = anItem
                 break
-            // This condition never satisfied
+                // This condition never satisfied
             } else if (queryItem.equalsWithoutRealPath(anItem)) {
                 print("[ERROR]<ArchiveSet.addNewItem>: Skip because completely same item: ${anItem.path.last()}\n")
                 itemMap[aKey] = anItem
@@ -69,9 +70,9 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
 
     fun getThisIDs(): Array<ItemIndices> {
         val aList = mutableListOf<ItemIndices>()
-        for ( itemPair in itemMap ) {
+        for (itemPair in itemMap) {
             val item = itemPair.value
-            aList.add(Triple(item.parentArchiveID,item.idInArchive,archiveSetID))
+            aList.add(Triple(item.parentArchiveID, item.idInArchive, archiveSetID))
         }
         return aList.toTypedArray()
     }
@@ -80,5 +81,5 @@ class ArchiveSet constructor (archiveSetID: ArchiveSetID, realArchivePathsArray:
 typealias ArchiveSetPaths = Array<ArchivePaths>
 typealias ArchivePaths = Array<JointPath>
 typealias ArchiveSetID = Int
-typealias ItemIndices = Triple<ArchiveID,ItemIndex,ArchiveSetID>
-typealias ItemMap = MutableMap<ItemKey,Item>
+typealias ItemIndices = Triple<ArchiveID, ItemIndex, ArchiveSetID>
+typealias ItemMap = MutableMap<ItemKey, Item>

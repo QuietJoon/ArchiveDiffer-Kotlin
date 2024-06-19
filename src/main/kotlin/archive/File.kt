@@ -12,7 +12,11 @@ import util.*
 import RealPath
 
 
-class ArchiveAndStream (val inArchive: IInArchive, private var randomAccess: RandomAccessFile?, private var archiveCallback: ArchiveOpenVolumeCallback?) {
+class ArchiveAndStream(
+    val inArchive: IInArchive,
+    private var randomAccess: RandomAccessFile?,
+    private var archiveCallback: ArchiveOpenVolumeCallback?
+) {
     private fun isSingle() = randomAccess != null
     fun isMulti() = archiveCallback != null
 
@@ -87,7 +91,7 @@ private fun openSingleVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
 }
 
 
-private fun openMultiVolumeArchive(aFilePath : RealPath): ArchiveAndStream? {
+private fun openMultiVolumeArchive(aFilePath: RealPath): ArchiveAndStream? {
     print("Open multi-volume with $aFilePath\n")
 
     val archiveOpenVolumeCallback: ArchiveOpenVolumeCallback

@@ -19,27 +19,25 @@ import directoryDelimiter
 import MultiArchiveVolumeInfo
 
 
-fun getCRC32OfZipArchive(filename:String):Int? {
+fun getCRC32OfZipArchive(filename: String): Int? {
     val buffer = ByteArray(18)
-    try
-    {
+    try {
         val `in` = BufferedInputStream(FileInputStream(filename))
         var length = `in`.read(buffer)
         if (length < 18) {
             return null
         }
-    }
-    catch (e: IOException) {
+    } catch (e: IOException) {
         System.err.println(e)
         exitProcess(2)
     }
     val crcList = buffer.drop(14)
     println(crcList)
     for (byte in crcList) {
-        println(String.format("%02X",byte))
+        println(String.format("%02X", byte))
     }
     val crc = byteToInt(crcList)
-    println(String.format( "%08X\n", crc))
+    println(String.format("%08X\n", crc))
     return crc
 }
 
@@ -67,10 +65,9 @@ private fun byteToIntOriginal(byteList: List<Byte>): Int {
 
 
 //FIXME: Not sure do I need to declare variables{crc,in,buffer} as val or var
-fun getCRC32Value(filename:String):Int {
+fun getCRC32Value(filename: String): Int {
     val crc = CRC32()
-    try
-    {
+    try {
         val `in` = BufferedInputStream(FileInputStream(filename))
         val buffer = ByteArray(32768)
         var length = `in`.read(buffer)
@@ -79,8 +76,7 @@ fun getCRC32Value(filename:String):Int {
             length = `in`.read(buffer)
         }
         `in`.close()
-    }
-    catch (e: IOException) {
+    } catch (e: IOException) {
         System.err.println(e)
         exitProcess(2)
     }
@@ -122,7 +118,7 @@ fun checkArchiveExistence(packagedFilePaths: Array<ArchiveSetPaths>): Message {
             for (aPath in archivePaths) {
                 val thePath = aPath.joinToString(separator = directoryDelimiter)
                 if (!File(thePath).exists())
-                    return Pair(MessageType.Bad,"Can't access\n${aPath.last()}")
+                    return Pair(MessageType.Bad, "Can't access\n${aPath.last()}")
                 else
                     println("Exist: $thePath")
             }

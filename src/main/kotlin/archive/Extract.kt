@@ -32,10 +32,12 @@ class Extract internal constructor(
         private var isFolder: Boolean = false
 
         @Throws(SevenZipException::class)
-        override fun setTotal(total: Long) {}
+        override fun setTotal(total: Long) {
+        }
 
         @Throws(SevenZipException::class)
-        override fun setCompleted(completeValue: Long) {}
+        override fun setCompleted(completeValue: Long) {
+        }
 
         @Throws(SevenZipException::class)
         override fun getStream(
@@ -107,7 +109,8 @@ class Extract internal constructor(
         }
 
         @Throws(SevenZipException::class)
-        override fun prepareOperation(extractAskMode: ExtractAskMode) {}
+        override fun prepareOperation(extractAskMode: ExtractAskMode) {
+        }
 
         @Throws(SevenZipException::class)
         override fun setOperationResult(

@@ -6,15 +6,17 @@ import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem
 import util.*
 
 
-class Item (
-      var dataCRC: Int?
-    , val dataSize: DataSize
-    , val modifiedDate: Date?
-    , val path: JointPath
-    , val parentID: ItemID // Real parentArchiveID
-    , val idInArchive: ItemIndex
-    , val parentArchiveID: ArchiveID // Virtual parentArchiveID (Not real, but same archive)
-    , val archiveSetID: ArchiveSetID
+class Item(
+    var dataCRC: Int?,
+    val dataSize: DataSize,
+    val modifiedDate: Date?,
+    val path: JointPath,
+    val parentID: ItemID // Real parentArchiveID
+    ,
+    val idInArchive: ItemIndex,
+    val parentArchiveID: ArchiveID // Virtual parentArchiveID (Not real, but same archive)
+    ,
+    val archiveSetID: ArchiveSetID
 ) {
     val id: ItemID
 
@@ -29,23 +31,23 @@ class Item (
 
     fun getFullName() = path.last().getFullName()
 
-    fun generateItemKey() = ItemKey(path.last().isArchiveSensitively(),dataCRC, dataSize, 1)
-    fun generateItemKey(dupCount: Int) = ItemKey(path.last().isArchiveSensitively(),dataCRC, dataSize, dupCount)
+    fun generateItemKey() = ItemKey(path.last().isArchiveSensitively(), dataCRC, dataSize, 1)
+    fun generateItemKey(dupCount: Int) = ItemKey(path.last().isArchiveSensitively(), dataCRC, dataSize, dupCount)
 
 
     fun makeItemRecordFromItem(archiveSetNum: Int, theArchiveID: ArchiveID, archiveSetID: ArchiveSetID): ItemRecord {
         val existence = arrayOfNulls<ExistenceMark>(archiveSetNum)
-        existence[archiveSetID]=Pair(theArchiveID,id)
+        existence[archiveSetID] = Pair(theArchiveID, id)
         return ItemRecord(
-            dataCRC = dataCRC
-            , dataSize = dataSize
-            , modifiedDate = modifiedDate
-            , path = path.last()
-            , existence = existence
-            , isFilled = false
-            , isArchive = getFullName().isArchiveSensitively()
-            , isExtracted = false
-            , isFirstOrSingle = getFullName().isSingleVolume() || getFullName().isFirstVolume()
+            dataCRC = dataCRC,
+            dataSize = dataSize,
+            modifiedDate = modifiedDate,
+            path = path.last(),
+            existence = existence,
+            isFilled = false,
+            isArchive = getFullName().isArchiveSensitively(),
+            isExtracted = false,
+            isFirstOrSingle = getFullName().isSingleVolume() || getFullName().isFirstVolume()
         )
     }
 
@@ -90,31 +92,37 @@ class Item (
     }
 }
 
-fun ISimpleInArchiveItem.makeItemFromArchiveItem(parentPath: JointPath, parentID: ItemID, parentArchiveID: ArchiveID, archiveSetID: ArchiveSetID): Item {
+fun ISimpleInArchiveItem.makeItemFromArchiveItem(
+    parentPath: JointPath,
+    parentID: ItemID,
+    parentArchiveID: ArchiveID,
+    archiveSetID: ArchiveSetID
+): Item {
 
     val newPath = parentPath.plus(this.path)
 
-    return Item (
-          dataCRC = this.crc
-        , dataSize = this.size
-        , modifiedDate = this.lastWriteTime?.time
-        , path = newPath
-        , parentID = parentID
-        , idInArchive = this.itemIndex
-        , parentArchiveID = parentArchiveID
-        , archiveSetID = archiveSetID
+    return Item(
+        dataCRC = this.crc,
+        dataSize = this.size,
+        modifiedDate = this.lastWriteTime?.time,
+        path = newPath,
+        parentID = parentID,
+        idInArchive = this.itemIndex,
+        parentArchiveID = parentArchiveID,
+        archiveSetID = archiveSetID
     )
 }
 
 fun Item.fixCRC(ans: ArchiveAndStream?, archivePath: Path) {
     if (this.dataCRC == null) {
         val theANS = ans ?: openArchive(archivePath)
-        val tempDirectoryPath = theWorkingDirectory+directoryDelimiter+"temp"
+        val tempDirectoryPath = theWorkingDirectory + directoryDelimiter + "temp"
         val extract = Extract(archivePath, tempDirectoryPath, false, null)
         extract.prepareOutputDirectory()
         val ids = IntArray(this.idInArchive)
         extract.extractSomething(theANS!!.inArchive, ids)
-        val extractedFilePath = tempDirectoryPath+directoryDelimiter+theANS.inArchive.simpleInterface.getArchiveItem(this.idInArchive).path
+        val extractedFilePath =
+            tempDirectoryPath + directoryDelimiter + theANS.inArchive.simpleInterface.getArchiveItem(this.idInArchive).path
         println("<<<<>>>> $extractedFilePath")
 
         this.dataCRC = getCRC32Value(extractedFilePath)

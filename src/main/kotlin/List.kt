@@ -50,7 +50,7 @@ fun getIDArrayWithoutIgnoringItem(inArchive: IInArchive, ignoringList: IgnoringL
     val idList = mutableListOf<Int>()
 
     simpleInArchive.archiveItems.forEachIndexed { idx, sItem ->
-        val item: Item = sItem.makeItemFromArchiveItem(emptyArray(),0,0, -1)
+        val item: Item = sItem.makeItemFromArchiveItem(emptyArray(), 0, 0, -1)
         if (!ignoringList.match(item)) {
             idList.add(idx)
         }
@@ -100,13 +100,14 @@ fun TheTable.printStatus() {
 
 
 fun TheTable.printSameItemTable(len: Int, fullNameOnly: Boolean, relativePathOnly: Boolean) {
-    for ( itemEntry in theItemTable ) {
+    for (itemEntry in theItemTable) {
         if (itemEntry.value.isFilled) {
             print(itemEntry.key.toString().plus("\n"))
             itemEntry.value.existence.forEach {
                 if (it == null) error("[Error]<printSameItemTable>: No item when `isFilled = true`")
                 else {
-                    val theItem = theItemList[it.second] ?: error("[Error]<printSameItemTable>: No queried item from the key in existence: $itemEntry.key")
+                    val theItem = theItemList[it.second]
+                        ?: error("[Error]<printSameItemTable>: No queried item from the key in existence: $itemEntry.key")
                     val thePath = when {
                         fullNameOnly -> theItem.path.last().getFullName()
                         relativePathOnly -> theItem.path.last()
@@ -146,7 +147,7 @@ fun TheTable.printResult() {
     }
 }
 
-fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
+fun TheTable.printFinalResult(): Pair<Int, MutableList<String>> {
     var count = 0
     val resultList = mutableListOf<String>()
 
@@ -172,5 +173,5 @@ fun TheTable.printFinalResult(): Pair<Int,MutableList<String>> {
             print(theString.plus("\n"))
         }
     }
-    return Pair(count,resultList)
+    return Pair(count, resultList)
 }

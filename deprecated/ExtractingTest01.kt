@@ -9,7 +9,7 @@ import java.io.RandomAccessFile
 import java.util.Arrays
 
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     println("Multi-volume RAR Test")
     if (!jBindingChecker()) {
         println("7-Zip JBinding linking error")

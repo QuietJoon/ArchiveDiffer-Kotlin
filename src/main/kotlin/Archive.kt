@@ -3,11 +3,11 @@ import net.sf.sevenzipjbinding.IInArchive
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem
 
 
-class Archive (
-      val realArchivePaths: Array<JointPath>
-    , val ans: ArchiveAndStream
-    , val itemID: ItemID
-    , val archiveSetID: ArchiveSetID
+class Archive(
+    val realArchivePaths: Array<JointPath>,
+    val ans: ArchiveAndStream,
+    val itemID: ItemID,
+    val archiveSetID: ArchiveSetID
 ) {
     val archiveID: ArchiveID
     val itemMap: ItemMap
@@ -31,12 +31,9 @@ class Archive (
 
     fun addNewItem(sItem: ISimpleInArchiveItem) {
         val anItem = sItem.makeItemFromArchiveItem(
-            realArchivePaths[0]
-            , itemID
-            , archiveID
-            , archiveSetID
+            realArchivePaths[0], itemID, archiveID, archiveSetID
         )
-        anItem.fixCRC(ans,realArchivePaths[0].toString())
+        anItem.fixCRC(ans, realArchivePaths[0].toString())
         if (theIgnoringList.match(anItem)) {
             print("Skip: ${anItem.path.last()}\n")
             return
@@ -60,9 +57,9 @@ class Archive (
 
     fun getThisIDs(): Array<ItemIndices> {
         val aList = mutableListOf<ItemIndices>()
-        for ( itemPair in itemMap ) {
+        for (itemPair in itemMap) {
             val item = itemPair.value
-            aList.add(Triple(item.parentArchiveID,item.idInArchive,archiveSetID))
+            aList.add(Triple(item.parentArchiveID, item.idInArchive, archiveSetID))
         }
         return aList.toTypedArray()
     }

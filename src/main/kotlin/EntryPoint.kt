@@ -27,7 +27,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import util.*
 
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     println("EntryPoint")
 
     Application.launch(EntryPoint().javaClass, *args)
@@ -36,15 +36,17 @@ fun main(args : Array<String>) {
 class EntryPoint : Application() {
 
     private var tabCount = 0
-    private val defaultMessageLabelStyle = "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold;"
+    private val defaultMessageLabelStyle =
+        "-fx-stroke: white; -fx-padding: 6 6 6 6; -fx-font-size: 16px; -fx-font-weight: bold;"
     private val defaultWhiteMessageLabelStyle = defaultMessageLabelStyle.plus(" -fx-text-fill: white;")
     private val defaultBlackMessageLabelStyle = defaultMessageLabelStyle.plus(" -fx-text-fill: Black;")
-    private val defaultTabStyle = "-fx-font-size: 16px; -fx-font-weight: bold; -fx-focus-color: yellow; -fx-faint-focus-color: transparent;"
+    private val defaultTabStyle =
+        "-fx-font-size: 16px; -fx-font-weight: bold; -fx-focus-color: yellow; -fx-faint-focus-color: transparent;"
     private val defaultWhiteTabStyle = defaultTabStyle.plus(" -fx-text-base-color: white;")
     private val defaultBlackTabStyle = defaultTabStyle.plus(" -fx-text-base-color: Black;")
 
     @DelicateCoroutinesApi
-    private fun generateAnalyzeTab (tabPane: TabPane, packagedFilePaths: Array<ArchiveSetPaths>): Tab {
+    private fun generateAnalyzeTab(tabPane: TabPane, packagedFilePaths: Array<ArchiveSetPaths>): Tab {
         tabCount += 1
 
         // Interface
@@ -52,26 +54,40 @@ class EntryPoint : Application() {
         tab.text = "Tab$tabCount"
         val fxml = javaClass.getResource("fxml/NestTab.fxml")
         val aTabSpace: Pane = FXMLLoader.load(fxml)
-        val filePathArea= aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
-        val messageBox= aTabSpace.lookup("#MessageBox") as HBox
-        val resultTabPane= aTabSpace.lookup("#ResultTab") as TabPane
-        val cancelButton= aTabSpace.lookup("#CancelButton") as Button
+        val filePathArea = aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
+        val messageBox = aTabSpace.lookup("#MessageBox") as HBox
+        val resultTabPane = aTabSpace.lookup("#ResultTab") as TabPane
+        val cancelButton = aTabSpace.lookup("#CancelButton") as Button
         val showIgnrBox = aTabSpace.lookup("#ShowIgnored") as CheckBox
         val showExedBox = aTabSpace.lookup("#ShowExtracted") as CheckBox
         val showDirBox = aTabSpace.lookup("#ShowDirectory") as CheckBox
 
-        messageBox.border = Border(BorderStroke(Paint.valueOf("Red"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
-        resultTabPane.border = Border(BorderStroke(Paint.valueOf("Green"),BorderStrokeStyle.DASHED, CornerRadii.EMPTY, BorderWidths.DEFAULT))
+        messageBox.border = Border(
+            BorderStroke(
+                Paint.valueOf("Red"),
+                BorderStrokeStyle.DASHED,
+                CornerRadii.EMPTY,
+                BorderWidths.DEFAULT
+            )
+        )
+        resultTabPane.border = Border(
+            BorderStroke(
+                Paint.valueOf("Green"),
+                BorderStrokeStyle.DASHED,
+                CornerRadii.EMPTY,
+                BorderWidths.DEFAULT
+            )
+        )
         tab.content = aTabSpace
 
         filePathArea.text = generatePackagedFilePaths(packagedFilePaths)
-        filePathArea.font = Font.font(null,FontWeight.NORMAL,14.0)
+        filePathArea.font = Font.font(null, FontWeight.NORMAL, 14.0)
 
         // Drag & Drop
         aTabSpace.onDragDropped = EventHandler { event ->
             val db = event.dragboard
             // TODO: Add popup for missing/corrupted files
-            val (newPackagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val (newPackagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map { it.toString() })
             val newAnalyzeTab = generateAnalyzeTab(tabPane, newPackagedFilePaths)
             event.consume()
 
@@ -90,7 +106,7 @@ class EntryPoint : Application() {
         var rASV: Message = checkArchiveExistence(packagedFilePaths)
         addMessageLabel(messageBox, rASV.first, rASV.second)
         if (rASV.first != MessageType.NoProblem) {
-            tab.text =  "No such Archive"
+            tab.text = "No such Archive"
             tab.style = defaultBlackTabStyle.plus("-fx-background-color: yellow")
             aTabSpace.style = "-fx-background-color: yellow"
             return tab
@@ -98,19 +114,21 @@ class EntryPoint : Application() {
 
         rASV = checkArchiveVolume(packagedFilePaths)
         addMessageLabel(messageBox, rASV.first, rASV.second)
-        when(rASV.first) {
+        when (rASV.first) {
             MessageType.Warning -> {
                 tab.text = "Only One"
                 tab.style = defaultBlackTabStyle.plus("-fx-background-color: LightSkyBlue")
                 aTabSpace.style = "-fx-background-color: CornflowerBlue"
                 return tab
-                }
+            }
+
             MessageType.Critical -> {
                 tab.text = "Missing"
                 tab.style = defaultBlackTabStyle.plus("-fx-background-color: yellow")
                 aTabSpace.style = "-fx-background-color: yellow"
                 return tab
             }
+
             else -> {}
         }
 
@@ -309,7 +327,7 @@ class EntryPoint : Application() {
     }
 
 
-    private fun generateCheckTab (tabPane: TabPane, checks: List<MultiArchiveVolumeInfo>): Tab {
+    private fun generateCheckTab(tabPane: TabPane, checks: List<MultiArchiveVolumeInfo>): Tab {
         tabCount += 1
 
         // Interface
@@ -317,7 +335,7 @@ class EntryPoint : Application() {
         tab.text = "CheckTab$tabCount"
         val fxml = javaClass.getResource("fxml/CheckTab.fxml")
         val aTabSpace: Pane = FXMLLoader.load(fxml)
-        val filePathArea= aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
+        val filePathArea = aTabSpace.lookup("#FilePaths") as TextArea // FilePaths TextArea
         tab.content = aTabSpace
 
         filePathArea.text = ""
@@ -347,12 +365,16 @@ class EntryPoint : Application() {
             }
             filePathArea.text = aText
         }
-        filePathArea.font = Font.font(null,FontWeight.NORMAL,14.0)
+        filePathArea.font = Font.font(null, FontWeight.NORMAL, 14.0)
         return tab
     }
 
 
-    private fun generateResultTab (resultTabPane: TabPane, resultType: ResultType, aTable: TableView<ObservableList<StringProperty>>): Tab {
+    private fun generateResultTab(
+        resultTabPane: TabPane,
+        resultType: ResultType,
+        aTable: TableView<ObservableList<StringProperty>>
+    ): Tab {
         val tab = Tab()
         tab.text = resultType.toString()
         tab.content = aTable
@@ -370,7 +392,7 @@ class EntryPoint : Application() {
         Platform.runLater {
             tableView.isEditable = true
             tableView.placeholder = Label("Loading....")
-            if ( inputData.isNotEmpty()) {
+            if (inputData.isNotEmpty()) {
                 for (loopIndex in 0.until(inputData[0].size)) {
                     tableView.columns.add(createColumn(loopIndex, "C-$loopIndex"))
                 }
@@ -413,7 +435,8 @@ class EntryPoint : Application() {
         }
     }
 
-    private fun createColumn(columnIndex: Int, columnTitle: String
+    private fun createColumn(
+        columnIndex: Int, columnTitle: String
     ): TableColumn<ObservableList<StringProperty>, String> {
         val column = TableColumn<ObservableList<StringProperty>, String>()
         column.text = columnTitle
@@ -425,9 +448,9 @@ class EntryPoint : Application() {
         return column
     }
 
-    private fun addMessageLabel (mb: HBox, mt: MessageType, msg: String) {
+    private fun addMessageLabel(mb: HBox, mt: MessageType, msg: String) {
         val messageLabel = Label(msg)
-        messageLabel.style = when(mt) {
+        messageLabel.style = when (mt) {
             MessageType.Critical -> defaultWhiteMessageLabelStyle.plus("-fx-background-color: red;")
             MessageType.Bad -> defaultBlackMessageLabelStyle.plus("-fx-background-color: yellow;")
             MessageType.Warning -> defaultWhiteMessageLabelStyle.plus("-fx-background-color: blue")
@@ -437,9 +460,8 @@ class EntryPoint : Application() {
     }
 
     @DelicateCoroutinesApi
-    private fun openMASGrouper (tabPane: TabPane, unpackagedFilePaths: List<Path>) {
+    private fun openMASGrouper(tabPane: TabPane, unpackagedFilePaths: List<Path>) {
         var packagedFilePaths: Array<ArchiveSetPaths>? = null
-
 
 
         val masgStage = Stage()
@@ -455,8 +477,8 @@ class EntryPoint : Application() {
 
         @Suppress("UNCHECKED_CAST")
         val candidateTable = root.lookup("#CandidateTableView") as TableView<GroupedFile>
-        val groupingButton= root.lookup("#MakeGroupButton") as Button
-        val goButton= root.lookup("#GoButton") as Button
+        val groupingButton = root.lookup("#MakeGroupButton") as Button
+        val goButton = root.lookup("#GoButton") as Button
 
         goButton.isDisable = true
 
@@ -466,13 +488,13 @@ class EntryPoint : Application() {
         val filteredFilePaths = unpackagedFilePaths.filter { it.isFirstOrSingleArchivePath() }
 
         // Grouping file path
-        val groupedFilePaths : Map<Int,List<Path>> = groupingFilePaths(filteredFilePaths)
+        val groupedFilePaths: Map<Int, List<Path>> = groupingFilePaths(filteredFilePaths)
 
         goButton.isDisable = groupedFilePaths.size < 2
 
-        val fileLists : Map<Int,List<GroupedFile>> = groupedFilePaths.mapValues { entry ->
+        val fileLists: Map<Int, List<GroupedFile>> = groupedFilePaths.mapValues { entry ->
             val key = entry.key
-            val paths : List<GroupedFile> = entry.value.map {
+            val paths: List<GroupedFile> = entry.value.map {
                 val anGroupingFile = GroupedFile(false, key, it)
                 anGroupingFile.select.addListener { _, _, newVal ->
                     print("Set " + anGroupingFile.getPath() + " as '" + newVal + "'.\n")
@@ -483,7 +505,7 @@ class EntryPoint : Application() {
         }
 
         // Concat fileLists to fileList
-        val fileList : List<GroupedFile> = fileLists.flatMap { it.value }
+        val fileList: List<GroupedFile> = fileLists.flatMap { it.value }
 
         candidateTable.items = FXCollections.observableArrayList(fileList)
 
@@ -516,7 +538,7 @@ class EntryPoint : Application() {
                         if (anItem.getGroupID() == i)
                             unpackagedPathList.add(anItem.getPath())
                     }
-                    val (packaged,check) = packageFilePathsForGrouped(unpackagedPathList)
+                    val (packaged, check) = packageFilePathsForGrouped(unpackagedPathList)
                     packagedFilePathList.add(packaged)
                     checks.addAll(check)
                 }
@@ -540,7 +562,7 @@ class EntryPoint : Application() {
                     groupIDSet.add(anItem.getGroupID())
             }
             var newID = 0
-            for ( idx in groupIDSet ) {
+            for (idx in groupIDSet) {
                 if (newID < idx) break
                 newID++
             }
@@ -566,11 +588,11 @@ class EntryPoint : Application() {
         val root: Parent = FXMLLoader.load(fxml)
         val scene = Scene(root)
 
-        val epPane= root.lookup("#EPPane") as AnchorPane // Entry Point Pane
-        val dropPane= root.lookup("#DropPane") as AnchorPane // Drop Pane
-        val tabPane= root.lookup("#TabPane") as TabPane // Tab Pane
-        val checkDropPoint= root.lookup("#ForCheck") as Rectangle // Single-ArchiveSet drop point
-        val singleDropPoint= root.lookup("#ForSingle") as Rectangle // Single-ArchiveSet drop point
+        val epPane = root.lookup("#EPPane") as AnchorPane // Entry Point Pane
+        val dropPane = root.lookup("#DropPane") as AnchorPane // Drop Pane
+        val tabPane = root.lookup("#TabPane") as TabPane // Tab Pane
+        val checkDropPoint = root.lookup("#ForCheck") as Rectangle // Single-ArchiveSet drop point
+        val singleDropPoint = root.lookup("#ForSingle") as Rectangle // Single-ArchiveSet drop point
         val multiDropPoint = root.lookup("#ForMulti") as Rectangle // Multi-ArchiveSet drop point
         val closeSameOnlyButton = root.lookup("#CloseSameOnlyButton") as Button
         val closeAllButton = root.lookup("#CloseAllButton") as Button
@@ -600,7 +622,7 @@ class EntryPoint : Application() {
         }
         tabPane.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map { it.toString() })
             // TODO: Add popup for missing/corrupted files
             val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
             event.consume()
@@ -622,7 +644,7 @@ class EntryPoint : Application() {
         }
         checkDropPoint.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map { it.toString() })
             // TODO: Add popup for missing/corrupted files
             val newCheckTab = generateCheckTab(tabPane, checks)
             event.consume()
@@ -648,7 +670,7 @@ class EntryPoint : Application() {
         }
         singleDropPoint.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map{it.toString()})
+            val (packagedFilePaths, checks) = packageFilePathsWithoutGuide(db.files.map { it.toString() })
             // TODO: Add popup for missing/corrupted files
             val newAnalyzeTab = generateAnalyzeTab(tabPane, packagedFilePaths)
             event.consume()
@@ -674,7 +696,7 @@ class EntryPoint : Application() {
         }
         multiDropPoint.onDragDropped = EventHandler { event ->
             val db = event.dragboard
-            val unpackagedFilePaths = db.files.map{it.toString()}
+            val unpackagedFilePaths = db.files.map { it.toString() }
             event.consume()
             // TODO: Open MAS Grouper with packagedFilePaths
             openMASGrouper(tabPane, unpackagedFilePaths)
@@ -691,7 +713,7 @@ class EntryPoint : Application() {
 
         closeSameOnlyButton.setOnAction {
             val tabList = mutableListOf<Tab>()
-            tabPane.tabs.forEach { if (it.style.endsWith("green;")||it.style.endsWith("blue;")) tabList.add(it) }
+            tabPane.tabs.forEach { if (it.style.endsWith("green;") || it.style.endsWith("blue;")) tabList.add(it) }
             tabList.reverse()
             for (aTab in tabList) {
                 tabPane.tabs.remove(aTab)

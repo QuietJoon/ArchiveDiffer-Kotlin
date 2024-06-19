@@ -7,24 +7,29 @@
 <?import ui.CheckBoxColumn?>
 
 
-<AnchorPane fx:id="MASGrouper" minHeight="-Infinity" prefHeight="480.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="MASGrouper" minHeight="-Infinity" prefHeight="480.0" prefWidth="720.0"
+            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <TableView fx:id="CandidateTableView" editable="true" layoutX="16.0" layoutY="16.0" prefHeight="313.0" prefWidth="565.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+        <TableView fx:id="CandidateTableView" editable="true" layoutX="16.0" layoutY="16.0" prefHeight="313.0"
+                   prefWidth="565.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="16.0"
+                   AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
             <columns>
-                <CheckBoxColumn minWidth="32.0" prefWidth="32.0" text="Check" />
+                <CheckBoxColumn minWidth="32.0" prefWidth="32.0" text="Check"/>
                 <TableColumn minWidth="32.0" prefWidth="32.0" text="Group ID">
                     <cellValueFactory>
-                        <PropertyValueFactory property="groupID" />
+                        <PropertyValueFactory property="groupID"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn prefWidth="640.0" text="Path">
                     <cellValueFactory>
-                        <PropertyValueFactory property="path" />
+                        <PropertyValueFactory property="path"/>
                     </cellValueFactory>
                 </TableColumn>
             </columns>
         </TableView>
-        <Button fx:id="MakeGroupButton" layoutX="16.0" layoutY="440.0" mnemonicParsing="false" text="Make a Group" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0"/>
-        <Button fx:id="GoButton" layoutX="640.0" layoutY="640.0" mnemonicParsing="false" text="Go" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="16.0"/>
+        <Button fx:id="MakeGroupButton" layoutX="16.0" layoutY="440.0" mnemonicParsing="false" text="Make a Group"
+                AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0"/>
+        <Button fx:id="GoButton" layoutX="640.0" layoutY="640.0" mnemonicParsing="false" text="Go"
+                AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="16.0"/>
     </children>
 </AnchorPane>

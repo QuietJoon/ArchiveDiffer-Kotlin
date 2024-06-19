@@ -17,7 +17,7 @@ import MultiArchiveVolumeInfo
 
 
 // TODO: Mixed with CLI printing code
-fun generatePackagedFilePaths (packagedFilePaths: Array<ArchiveSetPaths>): String {
+fun generatePackagedFilePaths(packagedFilePaths: Array<ArchiveSetPaths>): String {
     val sb = StringBuilder()
     packagedFilePaths.forEachIndexed { sIdx, archiveSetPaths ->
         print("ArchiveSet $sIdx\n")
@@ -32,12 +32,12 @@ fun generatePackagedFilePaths (packagedFilePaths: Array<ArchiveSetPaths>): Strin
     return sb.toString()
 }
 
-fun generateStringFromFileList (strings : List<File>): String {
+fun generateStringFromFileList(strings: List<File>): String {
     val internalString = strings.joinToString(separator = "\n") { it.toString().getFullName() }
     return arrayOf("<\n", internalString, "\n>").joinToString(separator = "")
 }
 
-fun Path.isFirstOrSingleArchivePath() : Boolean {
+fun Path.isFirstOrSingleArchivePath(): Boolean {
     if (this.isArchive()) {
         if (this.isSingleVolume()) {
             return true
@@ -48,22 +48,22 @@ fun Path.isFirstOrSingleArchivePath() : Boolean {
     return false
 }
 
-fun getFirstOrSingleArchivePaths(paths: Array<Path>) : Array<Path> {
+fun getFirstOrSingleArchivePaths(paths: Array<Path>): Array<Path> {
     val firstOrSingle: MutableList<String> = mutableListOf()
-    for ( aPath in paths ) {
-        if ( aPath.isFirstOrSingleArchivePath() ) {
+    for (aPath in paths) {
+        if (aPath.isFirstOrSingleArchivePath()) {
             firstOrSingle.add(aPath)
         }
     }
     return firstOrSingle.toTypedArray()
 }
 
-fun groupingFilePaths(paths : List<Path>) : Map <Int, List<Path>>{
+fun groupingFilePaths(paths: List<Path>): Map<Int, List<Path>> {
     val groupByDrive = paths.groupBy { Paths.get(it).root.toString() }
 
     var drive_count = 0
 
-    val groupedByDrive = mutableMapOf<Int,List<Path>>()
+    val groupedByDrive = mutableMapOf<Int, List<Path>>()
 
     groupByDrive.forEach { (drive, paths) ->
         println("Drive: $drive")
@@ -106,7 +106,7 @@ fun checkMissingMultiVolume(paths: List<Path>): List<MultiArchiveVolumeInfo> {
                 //println("Checking volume: $c")
                 if (c == volumeNum) {
                     //println("Exist volume: $c")
-                    lastVolume = volumeNum+1
+                    lastVolume = volumeNum + 1
                     existenceVolumes.add(path)
                     break
                 } else {
@@ -116,13 +116,23 @@ fun checkMissingMultiVolume(paths: List<Path>): List<MultiArchiveVolumeInfo> {
                     val newExt = if (path.getExtension() == "exe") {
                         "rar"
                     } else path.getExtension()
-                    val missingVolume = name.substring(0, name.length - volumeNumStr.length) + "$missingVolumeNumStr." + newExt
+                    val missingVolume =
+                        name.substring(0, name.length - volumeNumStr.length) + "$missingVolumeNumStr." + newExt
                     missingVolumes.add(missingVolume)
                 }
             }
         }
         lastVolume -= 1
-        volumeInfos.add(MultiArchiveVolumeInfo(missingVolumes.isNotEmpty(), group.key, lastVolume, existenceVolumes, missingVolumes, corruptedVolumes))
+        volumeInfos.add(
+            MultiArchiveVolumeInfo(
+                missingVolumes.isNotEmpty(),
+                group.key,
+                lastVolume,
+                existenceVolumes,
+                missingVolumes,
+                corruptedVolumes
+            )
+        )
     }
     for (info in volumeInfos) {
         println("Common: ${info.commonPath}")
@@ -138,8 +148,8 @@ fun packageFilePathsWithoutGuide(paths: List<String>): Pair<Array<ArchiveSetPath
     val sorted = paths.sorted()
     val resultList = mutableListOf<ArchiveSetPaths>()
     var aList = mutableListOf<JointPath>()
-    for ( path in sorted ) {
-        if ( path.isSingleVolume() || path.isFirstVolume()) {
+    for (path in sorted) {
+        if (path.isSingleVolume() || path.isFirstVolume()) {
             if (aList.size != 0) resultList.add(arrayOf(aList.toTypedArray()))
             aList = mutableListOf()
             aList.add(arrayOf(path))
@@ -156,8 +166,8 @@ fun packageFilePathsForGrouped(paths: List<String>): Pair<ArchiveSetPaths, List<
     val sorted = paths.sorted()
     val resultList = mutableListOf<ArchivePaths>()
     var aList = mutableListOf<JointPath>()
-    for ( path in sorted ) {
-        if ( path.isSingleVolume() || path.isFirstVolume()) {
+    for (path in sorted) {
+        if (path.isSingleVolume() || path.isFirstVolume()) {
             if (aList.size != 0) resultList.add(aList.toTypedArray())
             aList = mutableListOf()
             aList.add(arrayOf(path))
@@ -171,7 +181,7 @@ fun packageFilePathsForGrouped(paths: List<String>): Pair<ArchiveSetPaths, List<
 
 
 fun filePathAnalyze(files: List<File>): Array<Path> {
-    val pathArray = files.map{it.toString()}.toTypedArray()
+    val pathArray = files.map { it.toString() }.toTypedArray()
 
     return getFirstOrSingleArchivePaths(pathArray)
 }
@@ -183,22 +193,22 @@ fun String.getFileName(): String =
     this.substringAfterLast(directoryDelimiter).substringBeforeLast(".")
 
 fun String.getExtension(): String =
-    this.substringAfterLast(directoryDelimiter).substringAfterLast(".","")
+    this.substringAfterLast(directoryDelimiter).substringAfterLast(".", "")
 
 fun String.getDirectory(): String =
-    this.substringBeforeLast(directoryDelimiter,"")
+    this.substringBeforeLast(directoryDelimiter, "")
 
 fun String.dropMultiVolumeSuffix(): String {
     if (this.last().isDigit()) {
         if (this.dropLast(1).endsWith(".part")) {
             return this.dropLast(6)
-        }
-        else if (this.dropLast(2).endsWith(".part")) {
+        } else if (this.dropLast(2).endsWith(".part")) {
             return this.dropLast(7)
         }
     }
     return this
 }
+
 fun String.dropPrefixes(): String {
     var theStr = this
     if (theStr.startsWith("Maybe."))
@@ -212,8 +222,8 @@ fun String.dropPrefixes(): String {
 
 fun String.isArchive(): Boolean {
     val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "exe", "Rar", "Zip", "Exe", "RAR", "ZIP", "7Z", "EXE")
-    for ( aExt in archiveExts ) {
-        if ( this.getExtension() == aExt ) {
+    for (aExt in archiveExts) {
+        if (this.getExtension() == aExt) {
             return true
         }
     }
@@ -222,8 +232,8 @@ fun String.isArchive(): Boolean {
 
 fun String.isArchiveSensitively(): Boolean? {
     val archiveExts: Array<String> = arrayOf("rar", "zip", "7z", "Rar", "Zip", "RAR", "ZIP", "7Z")
-    for ( aExt in archiveExts ) {
-        if ( this.getExtension() == aExt ) {
+    for (aExt in archiveExts) {
+        if (this.getExtension() == aExt) {
             return true
         }
     }
@@ -239,13 +249,13 @@ fun String.isEXE() = this.getExtension() == "exe"
   * otherwise -> Not single nor first volume
  */
 fun String.maybePartNumber(): Int? {
-    val maybeNumberString = this.substringAfterLast(".part","")
+    val maybeNumberString = this.substringAfterLast(".part", "")
     //println(String.format("<maybePartNumber>: %s",maybeNumberString))
     return maybeNumberString.toIntOrNull()
 }
 
 fun String.maybePartNumberStr(): String? {
-    val maybeNumberString = this.substringAfterLast(".part","")
+    val maybeNumberString = this.substringAfterLast(".part", "")
     //println(String.format("<maybePartNumber>: %s",maybeNumberString))
     if (maybeNumberString.toIntOrNull() == null) return null
     return maybeNumberString
@@ -259,12 +269,12 @@ fun String.getCommonNameOfMultiVolume(): String = getFileName().substringBeforeL
 
 fun String.trimming(width: Int, suffix: String, suffixLength: Int): String {
     var result = ""
-    var currWidth= 0
-    for ( chr in this){
+    var currWidth = 0
+    for (chr in this) {
         val chrWidth = chr.getCharWidth()
         when {
-            currWidth+chrWidth == width-suffixLength -> return result + chr + suffix.repeat(suffixLength)
-            currWidth+chrWidth >  width-suffixLength -> return result + suffix.repeat(suffixLength+1)
+            currWidth + chrWidth == width - suffixLength -> return result + chr + suffix.repeat(suffixLength)
+            currWidth + chrWidth > width - suffixLength -> return result + suffix.repeat(suffixLength + 1)
         }
         result += chr
         currWidth += chrWidth
@@ -274,15 +284,15 @@ fun String.trimming(width: Int, suffix: String, suffixLength: Int): String {
 
 fun String.trimmingFromEnd(width: Int, suffix: String, suffixLength: Int): String {
     var result = ""
-    var currWidth= 0
+    var currWidth = 0
     var idx = this.length
     while (idx != 0) {
         idx--
         val chr = this[idx]
         val chrWidth = chr.getCharWidth()
         when {
-            currWidth+chrWidth == width-suffixLength -> return suffix.repeat(suffixLength) + chr + result
-            currWidth+chrWidth >  width-suffixLength -> return suffix.repeat(suffixLength+1) + result
+            currWidth + chrWidth == width - suffixLength -> return suffix.repeat(suffixLength) + chr + result
+            currWidth + chrWidth > width - suffixLength -> return suffix.repeat(suffixLength + 1) + result
         }
         result = chr + result
         currWidth += chrWidth
@@ -291,23 +301,23 @@ fun String.trimmingFromEnd(width: Int, suffix: String, suffixLength: Int): Strin
 }
 
 fun String.regulating(width: Int): String {
-    val suffix="."
-    val prefix=" "
+    val suffix = "."
+    val prefix = " "
     val thisWidth = this.getWidth()
     return when {
-        thisWidth < width -> this+prefix.repeat(width-thisWidth)
-        thisWidth > width -> this.trimming(width,suffix,2)
+        thisWidth < width -> this + prefix.repeat(width - thisWidth)
+        thisWidth > width -> this.trimming(width, suffix, 2)
         else -> this
     }
 }
 
 fun String.regulatingFromEnd(width: Int): String {
-    val suffix="."
-    val prefix=" "
+    val suffix = "."
+    val prefix = " "
     val thisWidth = this.getWidth()
     return when {
-        thisWidth < width -> prefix.repeat(width-thisWidth)+this
-        thisWidth > width -> this.trimmingFromEnd(width,suffix,2)
+        thisWidth < width -> prefix.repeat(width - thisWidth) + this
+        thisWidth > width -> this.trimmingFromEnd(width, suffix, 2)
         else -> this
     }
 }
@@ -339,11 +349,11 @@ fun Long?.dateFormatter(): String {
         dateFormat.format(java.util.Date(this))
 }
 
-fun MutableList<String>.getSame(): Pair<Boolean,List<Pair<String,String>>> {
-    val pairList = mutableListOf<Pair<String,String>>()
+fun MutableList<String>.getSame(): Pair<Boolean, List<Pair<String, String>>> {
+    val pairList = mutableListOf<Pair<String, String>>()
     for (str in this)
-        // TODO: Want to do more efficiently, but I couldn't find something like `splitAt` or `breakOnEnd` in Haskell
-        pairList.add(Pair(str.getDirectory(),str.getFullName()))
+    // TODO: Want to do more efficiently, but I couldn't find something like `splitAt` or `breakOnEnd` in Haskell
+        pairList.add(Pair(str.getDirectory(), str.getFullName()))
     val head = pairList[0].second
     for (strPair in pairList.drop(1)) {
         if (head != strPair.second) return Pair(false, pairList)
@@ -360,7 +370,7 @@ fun Array<ArchiveSetPaths>.getCommonFileName(): String {
     return if (theLCS.length >= minimumLCSLength) theLCS else ""
 }
 
-fun getLCS(strings: List<String>):String {
+fun getLCS(strings: List<String>): String {
     val solver = LCSubstringSolver(DefaultCharSequenceNodeFactory())
     for (s in strings)
         solver.add(s)
